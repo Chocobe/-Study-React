@@ -281,4 +281,82 @@ const MyHeader = () => {
 
 
 
-## 01-04.
+## 01-04. State (상태)
+
+``React`` 에서 ``State (상태)`` 를 만들기 위해서 ``useState()`` 를 사용 합니다.
+
+``useState()`` 는 배열을 반환하는데, 다음과 같은 용도를 가집니다.
+
+* ``useState()[0]``: ``State (상태)`` 값
+* ``useState()[1]``: ``State (상태)`` 값을 변경하기 위한 ``SETTER`` 함수
+
+<br />
+
+그리고 ``useState(기본값)`` 처럼 인자로 ``초기값`` 을 넘겨줄 수 있습니다.
+
+```javascript
+import {
+  useState,
+} from "react";
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  const onIncrease = () => setCount(count + 1);
+  const onDecrease = () => setCount(count - 1);
+
+  return (
+    <div>
+      <p>카운터값: {counter}</p>
+
+      <button onClick={onIncrease}>1 증가</button>
+      <button onClick={onDecrease}>1 감소</button>
+    </div>
+  );
+};
+```
+
+<br />
+
+``State (상태)`` 를 만들 때, ``const count = 0`` 이 아닌, ``useState(0)`` 을 사용한 이유는 ``re-rendering`` 을 위해서 입니다.
+
+``useState(0)`` 로 만든 ``State (상태)`` 가 변경되면, 해당 컴포넌트는 변경된 ``State (상태)`` 를 반영하여 다시 ``return`` 하게 됩니다.
+
+결과적으로, 컴포넌트가 새로 ``return`` 한 요소가 ``re-rendering`` 되면서, 사용자의 화면에도 ``State (상태)`` 가 바뀌어 나타나게 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
+## ``useState()`` 의 ``State (상태)`` 변경 시, 2번씩 ``re-rendering`` 되는 이유
+
+``React`` 의 ``StrickMode`` 에서는 ``development`` 환경일 때, ``re-rendering`` 을 ``2번씩`` 합니다.
+
+이유는 컴포넌트의 개발을 ``순수 함수`` 로 만들도록 유도하는 것으로서, ``re-rendering`` 이 ``2번`` 되어도, 기대값에는 영향을 주지 않는것을 확인하기 위함 입니다.
+
+```javascript
+// ./src/index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  // StrictMode 로 동작 합니다.
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+```
+
+
+
+<br /><hr /><br />
+
+
+
