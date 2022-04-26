@@ -359,4 +359,175 @@ root.render(
 <br /><hr /><br />
 
 
+## 01-05. Props
 
+### 01-05-01. Props 기본
+
+``Props`` 는 ``부모 컴포넌트`` 에서 ``자식 컴포넌트`` 로 데이터를 전달하는 방법 입니다.
+
+``부모 컴포넌트`` 는 전달할 데이터를 ``자식 컴포넌트`` 의 ``attrs`` 로 넘겨줄 수 있습니다.
+
+```javascript
+// 부모 컴포넌트
+
+import ChildComponent from "./ChildComponent";
+
+const ParentComponent = () => {
+  return (
+    <div>
+      <ChildComponent a={1} b={2} c={3} />
+    </div>
+  );
+};
+```
+
+<br />
+
+``자식 컴포넌트`` 에서는 ``Object`` 에 담겨 있는 ``Props`` 를 받을 수 있습니다.
+
+```javascript
+// 자식 컴포넌트
+
+const ChildComponent = props => {
+  console.log(props); // { a: 1, b: 2, c: 3 } 으로 받습니다.
+
+  return (
+    <div>Child Component</div>
+  );
+};
+
+export default ChildComponent;
+```
+
+<br />
+
+``부모 컴포넌트`` 에서 ``Props`` 를 전달할 때에는 ``Props`` 객체를 만들고, ``비구조화`` 방식으로 ``자식 컴포넌트`` 에 내려주면 코드를 깔끔하게 작성할 수 있습니다.
+
+```javascript
+// 부모 컴포넌트
+
+import ChildComponent from "./ChildComponent";
+
+const ParentComponent = () => {
+  const props = {
+    a: 1,
+    b: 2,
+    c: 3,
+  };
+
+  return (
+    <div>
+      <ChildComponent {...props} />
+    </div>
+  )
+}
+```
+
+<br />
+
+``자식 컴포넌트`` 에서 받는 ``Props`` 는 ``Object`` 이므로, ``구조분해`` 로 사용할 수 있습니다.
+
+```javascript
+// 자식 컴포넌트
+
+const ChildComponent = ({ a, b, c }) => {
+  return (
+    <div>
+      <span>a: {a}</span>
+      <span>b: {b}</span>
+      <span>c: {c}</span>
+    </div>
+  );
+};
+```
+
+
+<br /><br />
+
+
+### 01-05-02. Props 의 default value 설정하기 (``defaultProps``)
+
+``자식 컴포넌트`` 에서는 ``Props`` 의 ``default value`` 를 설정할 수 있습니다.
+
+``default value`` 를 설정하게 되면, ``부모 컴포넌트`` 에서 ``Props`` 를 받지 못하여도 정상동작을 유도할 수 있습니다. (이경우 ``default value`` 를 사용하게 됩니다)
+
+```javascript
+// 자식 컴포넌트
+
+const ChildComponent = ({ a, b, c }) => {
+  return (
+    <div>
+      <span>a: {a}</span>
+      <span>b: {b}</span>
+      <span>c: {c}</span>
+    </div>
+  );
+};
+
+// Props 의 default value 설정
+ChildComponent.defaultProps = {
+  a: 1000,
+  b: 2000,
+  c: 3000,
+};
+```
+
+
+
+<br /><hr /><br />
+
+
+
+## 01-06. slot 사용하기
+
+``부모 컴포넌트`` 는 ``Props`` 로 ``컴포넌트`` 도 전달할 수 있습니다.
+
+``Vue`` 의 ``Slot`` 과 유사한 기능이지만, ``컴포넌트 body`` 를 통해서만 전달할 수 있습니다.
+
+즉, ``Vue`` 의 ``default slot`` 만 제공합니다.
+
+<br />
+
+사용방법은 다음과 같습니다.
+
+1. ``부모 컴포넌트`` 에서 ``자시 컴포넌트`` 의 ``body`` 영역에 ``컴포넌트`` 를 넘겨줍니다.
+2. ``자식 컴포넌트`` 함수의 ``Props`` 에서 ``children`` 속성으로 받을 수 있습니다.
+
+```javascript
+// 부모 컴포넌트
+
+const ParentComponent = () => {
+  return (
+    <ChildComponent>
+      <h1>Hello World</h1>
+    </ChildComponent>
+  );
+};
+```
+
+<br />
+
+```javascript
+// 자식 컴포넌트
+
+const ChildComponent = ({ children }) => {
+  return (
+    <div>
+      {children}
+    </div>
+  );
+};
+```
+
+
+
+<br /><hr /><br />
+
+
+
+
+## 🔥 ``React`` 의 ``re-rendering`` 이 되는 3가지 상황
+
+1. 컴포넌트 자신의 ``State (상태)`` 가 바뀌면 ``re-rendering`` 됩니다.
+2. 부모로 부터 받은 ``Props`` 가 바뀌면 ``re-rendering`` 됩니다.
+3. 부모가 ``Props`` 를 넘겨주지 않아도, 부모가 ``re-rendering`` 되면, 자식도 ``re-rendering`` 됩니다.
