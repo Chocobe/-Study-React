@@ -10,7 +10,7 @@
 
 
 
-# 01. ReactJs 기초
+# 01. ReactJs 입문
 
 ## 01-01. React 를 사용하는 이유
 
@@ -531,3 +531,164 @@ const ChildComponent = ({ children }) => {
 1. 컴포넌트 자신의 ``State (상태)`` 가 바뀌면 ``re-rendering`` 됩니다.
 2. 부모로 부터 받은 ``Props`` 가 바뀌면 ``re-rendering`` 됩니다.
 3. 부모가 ``Props`` 를 넘겨주지 않아도, 부모가 ``re-rendering`` 되면, 자식도 ``re-rendering`` 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 02. React 기초
+
+## 02-01. ``<input />`` 제어하기
+
+``<input />`` 요소는 ``입력`` 과 ``입력 Event`` 를 사용하여 제어할 수 있습니다.
+
+제어를 위한 ``Attrs`` 는 다음과 같습니다.
+
+* ``value``: ``<input />`` 요소에 입력한 값
+* ``change`` Event: ``<input />`` 에 값을 입력했을 때 발생하는 Event 입니다.
+
+<br />
+
+컴포넌트를 만들 때 주의할 점은, 입력값은 ``React`` 에서 제공하는 ``useState()`` 로 생성한 값을 사용하는 것 입니다.
+
+이유는 ``useState()`` 로 만든 값이 변할 경우에, ``React`` 가 변화를 감지하고 ``DOM`` 을 ``re-rendering`` 해주기 때문 입니다.
+
+```javascript
+import { useState } from "react";
+
+const MyInput = () => {
+  const [myValue, setMyValue] = useState("입력 초기값");
+
+  return (
+    <input
+      value={myValue}
+      onChange={e => setMyValue(e.target.value)}
+    />
+  );
+};
+
+export default MyInput;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+## 02-02. 복수의 ``입력값`` 을 깔끔하게 제어하기
+
+회원가입을 할 때, 사용자는 여러가지 데이터를 입력합니다.
+
+``id``, ``password``, ``name``, ``skill grade`` 를 입력한다고 가정하면, 다음과 같은 ``interface`` 를 가질 수 있습니다.
+
+```typescript
+interface User {
+  id: string;
+  password: string;
+  name: string;
+  skillGrade: number;
+}
+```
+
+<br />
+
+위의 4가지 데이터를 따로 따로 제어한다면, 입력값 개수만큼의 ``state`` 와 ``SETTER`` 를 만들어야 합니다.
+
+```javascript
+import { useState } from "react";
+
+const UserJoin = () => {
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [skillGrade, setSkillGrade] = useState(0);
+
+  return (
+    <div>
+      <div className="userJoin">
+        {/* ID 입력 요소 */}
+        <div className="userJoin-inputWrapper">
+          <label htmlFor="id">ID</label>
+          <input
+            id="id"
+            value={id}
+            onChanage={e => setId(e.target.value)}
+          />
+        </div>
+
+        {/* Password 입력 요소 */}
+        <div className="userJoin-inputWrapper">
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </div>
+
+        {/* ... Name, SkillGrade 생략 */}
+      </div>
+    </div>
+  )
+}
+```
+
+<br />
+
+이와같이 동일한 객체의 맴버를 입력받을 경우, ``useState()`` 의 대상을 ``object`` 로 만들면 한번에 처리할 수 있습니다.
+
+```javascript
+import { useState } from "react";
+
+const UserJoin = () => {
+  const [user, setUser] = useState({
+    id: "",
+    password: "",
+    name: "",
+    skillGrade: 1,
+  });
+
+  /** target 의 ``name`` 속성에만, 입력받은 ``value`` 를 반영 합니다. */
+  const onChangeUserInfo = e => {
+    const { target: { name, value } } = e;
+
+    setUser({
+      ...user,
+      [name]: value,
+    });
+  };
+
+  return (
+    <div>
+      <div className="userJoin">
+        {/* ID 입력 요소 */}
+        <div className="userJoin-inputWrapper">
+          <label htmlFor="id">ID</label>
+          <input
+            name="id"
+            id="id"
+            value={user.id}
+            onChange={e => onChangeUserInfo(e)}
+          />
+        </div>
+
+        {/* Password 입력 요소 */}
+        <div className="userJoin-inputWrapper">
+          <label htmlFor="password">Password</label>
+          <input
+            name="password"
+            id="password"
+            value={user.password}
+            onChange={e => onChangeUserInfo(e)}
+          />
+        </div>
+
+        {/* ... Name, SkillGrade 생략 */}
+      </div>
+    </div>
+  );
+};
+```
