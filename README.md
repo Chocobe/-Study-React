@@ -12,7 +12,7 @@
 
 # 01. ReactJs 입문
 
-## 01-01. React 를 사용하는 이유
+# 01-01. React 를 사용하는 이유
 
 1. Component 기반으로 개발할 수 있습니다.
      * Component 기반이 아니라면, 서로 다른 페이지에 사용한 동일한 요소들, ``<header />``, ``<footer />`` 등을 각 페이지마다 동일한 코드를 작성해 주어야 합니다.
@@ -30,7 +30,7 @@
 
 
 
-## 01-02. React 프로젝트 생성하기
+# 01-02. React 프로젝트 생성하기
 
 * React 의 ``Bolier Plate`` 명령어는 다음과 같습니다.
 
@@ -84,13 +84,23 @@ function renderHeader() {
 
 
 
-## 01-03. JSX
+<br /><hr /><br />
+
+
+
+# 01-03. JSX
 
 ``JSX`` 문법은 ``Javascript`` 와 ``HTML`` 을 혼합한 형식을 가집니다.
 
 그래서 ``JSX`` 의 추가적인 문법이 있습니다.
 
-### 01-03-01. Close Tag 필수
+
+
+<br /><hr /><br />
+
+
+
+# 01-03-01. Close Tag 필수
 
 ``<img>`` 나 ``<br>`` 같은 Tag 는 ``HTMl`` 에서 사용할 때, 굳이 ``</img>`` 나 ``</br>`` 같은 ``Close Tag`` 를 사용하지 않아도 되었습니다.
 
@@ -103,7 +113,7 @@ function renderHeader() {
 <br /><br />
 
 
-### 01-03-02. 컴포넌트는 ``단일 부모`` 로 만들기
+# 01-03-02. 컴포넌트는 ``단일 부모`` 로 만들기
 
 컴포넌트를 만들 때는 ``단일 부모`` 의 형태로 만들어야 합니다.
 
@@ -124,7 +134,7 @@ const MyHeader = () => {
 <br /><br />
 
 
-### 01-03-03. ``단일 부모`` 없이 컴포넌트 만들기
+# 01-03-03. ``단일 부모`` 없이 컴포넌트 만들기
 
 순수 ``JSX`` 문법에서 컴포넌트는 ``단일 부모`` 에 묶인 형태로 만들어야 합니다.
 
@@ -170,7 +180,7 @@ const MyHeader = () => {
 <br /><br />
 
 
-### 01-03-04. Tag 의 Class 는 ``className`` 으로 작성
+# 01-03-04. Tag 의 Class 는 ``className`` 으로 작성
 
 ``HTML Tag`` 에는 ``class`` 속성을 사용할 수 있습니다.
 
@@ -200,7 +210,7 @@ const MyHeader = () => {
 <br /><br />
 
 
-### 01-03-05. inline style 사용하기
+# 01-03-05. inline style 사용하기
 
 ``inline style`` 은 다음과 같이 사용할 수 있습니다.
 
@@ -237,7 +247,7 @@ const MyHeader = () => {
 <br /><br />
 
 
-### 01-03-06. JSX 는 ``string``, ``number`` 만 출력가능
+# 01-03-06. JSX 는 ``string``, ``number`` 만 출력가능
 
 ``JSX`` 를 사용하여 ``DOM`` 에 값을 나타낼 때는 ``string`` 이나 ``number`` 만 ``Rendering`` 됩니다.
 
@@ -281,7 +291,7 @@ const MyHeader = () => {
 
 
 
-## 01-04. State (상태)
+# 01-04. State (상태)
 
 ``React`` 에서 ``State (상태)`` 를 만들기 위해서 ``useState()`` 를 사용 합니다.
 
@@ -330,7 +340,7 @@ const Counter = () => {
 
 
 
-## ``useState()`` 의 ``State (상태)`` 변경 시, 2번씩 ``re-rendering`` 되는 이유
+# 🚀 ``useState()`` 의 ``State (상태)`` 변경 시, 2번씩 ``re-rendering`` 되는 이유
 
 ``React`` 의 ``StrickMode`` 에서는 ``development`` 환경일 때, ``re-rendering`` 을 ``2번씩`` 합니다.
 
@@ -359,9 +369,9 @@ root.render(
 <br /><hr /><br />
 
 
-## 01-05. Props
+# 01-05. Props
 
-### 01-05-01. Props 기본
+# 01-05-01. Props 기본
 
 ``Props`` 는 ``부모 컴포넌트`` 에서 ``자식 컴포넌트`` 로 데이터를 전달하는 방법 입니다.
 
@@ -445,7 +455,7 @@ const ChildComponent = ({ a, b, c }) => {
 <br /><br />
 
 
-### 01-05-02. Props 의 default value 설정하기 (``defaultProps``)
+# 01-05-02. Props 의 default value 설정하기 (``defaultProps``)
 
 ``자식 컴포넌트`` 에서는 ``Props`` 의 ``default value`` 를 설정할 수 있습니다.
 
@@ -478,7 +488,7 @@ ChildComponent.defaultProps = {
 
 
 
-## 01-06. slot 사용하기
+# 01-06. slot 사용하기
 
 ``부모 컴포넌트`` 는 ``Props`` 로 ``컴포넌트`` 도 전달할 수 있습니다.
 
@@ -526,7 +536,7 @@ const ChildComponent = ({ children }) => {
 
 
 
-## 🔥 ``React`` 의 ``re-rendering`` 이 되는 3가지 상황
+# 🔥 ``React`` 의 ``re-rendering`` 이 되는 3가지 상황
 
 1. 컴포넌트 자신의 ``State (상태)`` 가 바뀌면 ``re-rendering`` 됩니다.
 2. 부모로 부터 받은 ``Props`` 가 바뀌면 ``re-rendering`` 됩니다.
@@ -540,7 +550,7 @@ const ChildComponent = ({ children }) => {
 
 # 02. React 기초
 
-## 02-01. ``<input />`` 제어하기
+# 02-01. ``<input />`` 제어하기
 
 ``<input />`` 요소는 ``입력`` 과 ``입력 Event`` 를 사용하여 제어할 수 있습니다.
 
@@ -578,7 +588,7 @@ export default MyInput;
 
 
 
-## 02-02. 복수의 ``입력값`` 을 깔끔하게 제어하기
+# 02-02. 복수의 ``입력값`` 을 깔끔하게 제어하기
 
 회원가입을 할 때, 사용자는 여러가지 데이터를 입력합니다.
 
@@ -699,7 +709,7 @@ const UserJoin = () => {
 
 
 
-## 02-03. ``useRef()`` 를 사용하여 ``DOM`` 제어하기
+# 02-03. ``useRef()`` 를 사용하여 ``DOM`` 제어하기
 
 ``DOM`` 요소를 제어하기 위해서는 특정 ``DOM`` 에 접근할 수 있어야 합니다.
 
@@ -791,7 +801,7 @@ const MyComponent = () => {
 
 
 
-## 02-04. ``Array`` 를 ``DOM`` 요소로 만들기
+# 02-04. ``Array`` 를 ``DOM`` 요소로 만들기
 
 ``Array`` 는 복수의 데이터를 가지고 있습니다.
 
@@ -862,7 +872,7 @@ const MyList = ({ item }) => {
 
 
 
-## 02-05. 형제 컴포넌트간 데이터 통신하기
+# 02-05. 형제 컴포넌트간 데이터 통신하기
 
 ``React`` 에서 데이터 전달은 ``부모 => 자식`` 방향의 단방향 통신만 가능 합니다.
 
@@ -1015,7 +1025,7 @@ const Viewer = ({ state }) => {
 
 
 
-## 02-06. 프로퍼티 내리꽂기 (``Prop Drilling``)
+# 02-06. 프로퍼티 내리꽂기 (``Prop Drilling``)
 
 자식 컴포넌트는 부모 컴포넌트로 부터 ``Props`` 를 받을 수 있습니다.
 
@@ -1040,7 +1050,7 @@ const Viewer = ({ state }) => {
 
 
 
-## 02-07. React Life Cycle (생명주기)
+# 02-07. React Life Cycle (생명주기)
 
 컴포넌트는 생명주기(``Lifecycle``) 을 가집니다.
 
@@ -1057,11 +1067,11 @@ const Viewer = ({ state }) => {
 
 
 
-<br /><br />
+<br /><hr /><br />
 
 
 
-### 02-07-01. ``React Hooks`` 를 사용하게 된 배경
+# 02-07-01. ``React Hooks`` 를 사용하게 된 배경
 
 ``React Hooks`` 는 ``(2019년) 16.8버전`` 부터 사용할 수 있게 되었습니다.
 
@@ -1116,7 +1126,7 @@ class MyComponent extends React.Component {
 
 
 
-### 02-07-02. ``React Component`` 를 만들수 있는 방법 2가지
+# 02-07-02. ``React Component`` 를 만들수 있는 방법 2가지
 
 현재 ``React Component`` 를 만들수 있는 방법은 총 2가지가 있습니다.
 
@@ -1200,7 +1210,7 @@ const FunctionComponent = props => {
 
 
 
-### 02-07-03. ``React Hooks`` 를 사용한 ``State (상태)`` 만들기
+# 02-07-03. ``React Hooks`` 를 사용한 ``State (상태)`` 만들기
 
 ``Function React Component`` 에 ``State (상태)`` 를 지정하려면, ``useState`` 를 사용하여 만들 수 있습니다.
 
@@ -1231,7 +1241,7 @@ const MyComponent = _props => {
 
 
 
-### 02-07-04. ``React Hooks`` 를 사용한 ``Lifecycle (생명주기)`` 만들기
+# 02-07-04. ``React Hooks`` 를 사용한 ``Lifecycle (생명주기)`` 만들기
 
 ``Lifecycle`` 은 ``useEffect()`` 로 모든 ``Lifecycle`` 을 만들 수 있습니다.
 
@@ -1341,7 +1351,7 @@ const MyComponent = _props => {
 
 
 
-##
+#
 
 
 
@@ -1349,6 +1359,6 @@ const MyComponent = _props => {
 
 
 
-## (정리해야할 메모)
+# (정리해야할 메모 - 이후 강좌에서 언급 예정)
 
 * ``Prop Drilling`` 으로 ``Props`` 을 하용하는 경우 ``Props`` 명을 바꾸게 되면, 관련된 모든 파일을 직접 수정해야하는 불편함이 있다.
