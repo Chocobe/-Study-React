@@ -1,5 +1,6 @@
 import DiaryEditor from "./DiaryEditor/DiaryEditor";
 import DiaryList from "./DiaryList/DiaryList";
+import Lifecycle from "./Lifecycle/Lifecycle";
 
 import { useState, useRef } from "react";
 
@@ -24,7 +25,7 @@ const App = () => {
     setData([newItem, ...data]);
   };
 
-  const onDelete = targetId => {
+  const onRemove = targetId => {
     const newDiaryList = data
       .filter(item => item.id !== targetId);
 
@@ -32,13 +33,24 @@ const App = () => {
     
     console.log(`targetId: ${targetId} 가 삭제 되었습니다.`);
   };
+
+  const onEdit = (targetId, newContent) => {
+    setData(
+      data.map(item => item.id === targetId
+        ? { ...item, content: newContent}
+        : item
+      )
+    );
+  };
   
   return (
     <div className="App">
+      <Lifecycle />
       <DiaryEditor onCreate={onCreate} />
       <DiaryList 
         diaryList={data} 
-        onDelete={onDelete}
+        onRemove={onRemove}
+        onEdit={onEdit}
       />
     </div>
   )

@@ -66,7 +66,7 @@ function renderHeader() {
 
 만약, ``.js`` 파일 내부에서도 ``JSX`` 문법을 사용할 수 있도록 해주는 ``Babel Plugin`` 을 설치되어 있다면 ``.js`` 파일에서도 ``JSX`` 문법을 사용할 수 있습니다.
 
-    * Babel Plugin: ``@babel/plugin-transform-react-jsx``
+ * Babel Plugin: ``@babel/plugin-transform-react-jsx``
 
 ```javascript
 // .js 에서 JSX 문법 사용 예시
@@ -746,6 +746,45 @@ const MyInput = () => {
 export default MyInput;
 ```
 
+<br />
+
+``useRef()`` 의 특징을 좀 더 살펴보겠습니다.
+
+``useRef()`` 는 사실 ``DOM`` 참조만을 위한 것이 아닌, ``순수한 Container`` 를 만듭니다.
+
+즉, ``class 의 property`` 역할을 하게 됩니다. (=== ``class 인스턴스 변수``)
+
+
+
+<br />
+
+그래서 ``useRef()`` 는 자유롭게 값을 바꿀 수 있고, ``Function React Component`` 내에서 자유롭게 사용하는 변수로 활용할 수 있으며, ``자식 요소`` 접근뿐만 아니라, ``내부 State`` 로 활용할 할 수도 있습니다.
+
+예를들면, ``setInterval()`` 을 멈추기 위한 ``intervalId`` 를 저장할 때, ``useRef()`` 에 저장해도 됩니다.
+
+```javascript
+import React, {
+  useRef,
+  useEffect, // 02-07 에서 살펴볼 수 있습니다.
+} from "react";
+
+const MyComponent = () => {
+  const intervalId = useRef();
+
+  // 생성(Mount) 직후, 딱 1번만 호출 됩니다.
+  useEffect(() => {
+    interval.current = window.setInterval(() => {
+      console.log("1초씩 console.log() 실행");
+    }, 1000);
+
+    // 파괴(Unmount) 직전, 딱 1번만 호출 됩니다.
+    return () => {
+      window.clearInterval(intervalId.current);
+    };
+  }, []);
+};
+```
+
 
 
 <br /><hr /><br />
@@ -835,9 +874,9 @@ const MyList = ({ item }) => {
 
 ``Lifting state up (데이터 끌어올리기)`` 의 개념은 다음과 같습니다.
 * 두 형제가 통신할 데이터를 ``부모 컴포넌트`` 에서 ``정의`` 합니다.
-  * 정의할 데이터는 ``useState()`` 를 통해서 ``[state, setState]`` 형태로 만듭니다.
+    * 정의할 데이터는 ``useState()`` 를 통해서 ``[state, setState]`` 형태로 만듭니다.
 * 데이터를 생성할 컴포넌트에 ``setState()`` 를 ``Props`` 로 넘겨줍니다.
-  * ``setState`` 는 ``Event Handler`` 역할을 하게 됩니다.
+    * ``setState`` 는 ``Event Handler`` 역할을 하게 됩니다.
 * 데이터를 받을 컴포넌트에 ``state`` 를 넘겨줍니다.
 
 <br />
@@ -966,7 +1005,7 @@ const Viewer = ({ state }) => {
 2. 새로운 데이터 추가시 호출할 함수인 ``onCreate()`` 함수를 작성 합니다.
 3. ``Editor`` 컴포넌트에 ``onCreate()`` 메서드를 ``Props (Event Listener 역할)`` 로 넘겨 줍니다.
 4. ``Editor`` 는 ``제출하기`` 버튼을 클릭 할 때, 부모 컴포넌트에서 받은 ``onCreate()`` 함수를 호출 합니다.
-  * 이 때, 부모 컴포넌트의 ``state`` 가 추가됩니다.
+    * 이 때, 부모 컴포넌트의 ``state`` 가 추가됩니다.
 5. ``Viewer`` 컴포넌트는 ``Props`` 로 ``state`` 를 받아서 리스트로 보여주도록 합니다.
 6. ``state`` 가 변경되면, ``Viewer`` 컴포넌트도 ``re-rendering`` 됩니다.
 
@@ -1001,3 +1040,315 @@ const Viewer = ({ state }) => {
 
 
 
+## 02-07. React Life Cycle (생명주기)
+
+컴포넌트는 생명주기(``Lifecycle``) 을 가집니다.
+
+* 생성(``Mount``)
+    * 컴포넌트가 처음 생성되어 ``DOM`` 에 ``Rendering`` 된 직후 시점 입니다.
+* 변화(``Update``)
+    * 컴포넌트의 ``Props`` 나 ``state`` 가 바뀌어 ``DOM`` 이 ``Re-rendering`` 된 직후 시점 입니다.
+* 파괴(``Unmount``)
+    * 컴포넌트가 파괴되기 ``직전`` 시점 입니다.
+
+<br />
+
+``React`` 컴포넌트를 만들 때, 이러한 ``Lifecycle`` 은 유용한 ``Side Effect`` 를 작성할 수 있게 해줍니다.
+
+
+
+<br /><br />
+
+
+
+### 02-07-01. ``React Hooks`` 를 사용하게 된 배경
+
+``React Hooks`` 는 ``(2019년) 16.8버전`` 부터 사용할 수 있게 되었습니다.
+
+그 전에는 ``Class React Component`` 방식으로 컴포넌트를 작성 하였고, ``Lifecycle`` 을 분리된 형태로 작성해야 하였습니다.
+
+```javascript
+class MyComponent extends React.Component {
+  componentDidMount() {
+    // 생성(Mount) 직후 시점에 호출
+  }
+
+  componentDidUpdate() {
+    // 변화(Update) 직후 시점에 호출
+  }
+
+  componentWillUnmount() {
+    // 파괴(Unmount) 직전 시점에 호출
+  }
+}
+```
+
+<br />
+
+위와같은 ``Class React Component`` 의 문제점은, 각 ``Lifecycle`` 에 필요한 로직을 작성해야 하는 상황에서, 개발자가 실수로 어느 한가지를 놓칠 수 있다는 점 입니다.
+
+대표적인 예시로, ``componentWillUnmount()`` 를 작성하지 않게되어, ``Memory Leak(메모리 누수)`` 현상이 있습니다.
+
+<br />
+
+``React Hooks`` 이전의 ``Function React Component`` 는 ``Stateless Component`` 로 불렀습니다.
+
+이유는, ``Function React Component`` 의 특성상 ``re-rendering`` 될 때, ``함수내의 모든 코드`` 가 실행되기 때문입니다.
+
+즉, ``Function React Class`` 의 ``함수내의 모든 코드`` 가 실행되면서, ``Scope`` 변수는 매번 초기화가 되므로, ``상태`` 를 유지하지 못하게 됩니다.
+
+그래서 ``React Hooks`` 이전의 ``Function React Component`` 를 ``Stateless Component`` 라고 불렀습니다.
+
+<br />
+
+소개한 2가지 ``React Hooks`` 탄생 배경을 정리하면 다음과 같습니다.
+
+1. ``Class React Component`` 의 ``Lifecycle`` 은 각각 독립적으로 구성되므로, 개발자의 실수 및 버그발생 소지가 됩니다.
+2. ``React Hooks`` 를 사용해야지만 ``Function React Component`` 가 ``State`` 를 가질 수 있습니다.
+
+<br />
+
+이러한 문제점이 ``React Hooks`` 가 탄생하게된 배경이 되었습니다.
+
+
+
+<br /><br />
+
+
+
+### 02-07-02. ``React Component`` 를 만들수 있는 방법 2가지
+
+현재 ``React Component`` 를 만들수 있는 방법은 총 2가지가 있습니다.
+
+* ``Class React Component``
+* ``Function React Component``
+
+<br />
+
+``React 16.8`` 버전에서 사용할 수 있게된 ``React Hooks`` 를 사용할 수 있게 되면서, ``Function React Component`` 방식으로 개발할 수 있게 되었습니다.
+
+이유는 ``함수`` 자체로는 ``React Lifecycle`` 와 ``State`` 를 만들 수 없지만, ``React Hooks`` 를 사용하면 ``Class React Component`` 의 모든 ``Lifecycle`` 과 ``State`` 를 사용할 수 있게 됩니다.
+
+<br />
+
+아래 코드는 ``Class React Component`` 와 ``Function React Component`` 예시 코드 입니다.
+
+```javascript
+// Class React Component
+
+class ClassComponent extends React.Component(
+  constructor(props) {
+    // 생성자
+  }
+
+  componentDidMount() {
+    // 생성(Mount) 직후 호출 됩니다.
+  }
+
+  componentDidUpdate() {
+    // 변화 (Update) 직후 호출 됩니다.
+  }
+
+  componentWillUnmount() {
+    // 파괴 (Unmount) 직전 호출 됩니다.
+  }
+)
+```
+
+<br />
+
+```javascript
+// Function React Component
+
+import React, {
+  // Lifecycle 
+  useEffect,
+  useState,
+} from "react";
+
+const FunctionComponent = props => {
+  // 생성 (Mount) 직후 시점에 호출 됩니다.
+  useEffect(() => {
+    // 2번째 인자에 ``빈 배열`` 을 넘겨준 형식
+  }, []);
+
+  // 변화 (Update) 직후 시점에 호출됩니다.
+  useEffect(() => {
+    // 2번째 인자를 넘겨주지 않는 형식
+  });
+
+  // 파괴 (Unmount) 직전 시점에 호출됩니다.
+  useEffect(() => {
+    return () => {
+      // Unmount 시점에 호출되는 Callback 함수 입니다.
+    };
+  });
+
+  // useState() 를 사용하면, State 를 유지할 수 있습니다.
+  const [count, setCount] = useState(0);
+
+  // 특정 State 변화 (Update) 직후에만 호출됩니다.
+  useEffect(() => {
+    // 2번째 인자에 ``대상 State`` 를 넘겨줍니다.
+  }, [count]);
+}
+```
+
+
+
+<br /><br />
+
+
+
+### 02-07-03. ``React Hooks`` 를 사용한 ``State (상태)`` 만들기
+
+``Function React Component`` 에 ``State (상태)`` 를 지정하려면, ``useState`` 를 사용하여 만들 수 있습니다.
+
+```javascript
+import React, {
+  useState,
+} from "react";
+
+const MyComponent = _props => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <div>Count: {count}</div>
+      <button onClick={setCount(count + 1)}>카운트 증가</button>
+    </div>
+  );
+};
+```
+
+<br />
+
+위와 같이 ``useState()`` 를 사용하여야, ``Function React Component`` 의 ``State (상태)`` 를 유지할 수 있습니다.
+
+
+
+<br /><br />
+
+
+
+### 02-07-04. ``React Hooks`` 를 사용한 ``Lifecycle (생명주기)`` 만들기
+
+``Lifecycle`` 은 ``useEffect()`` 로 모든 ``Lifecycle`` 을 만들 수 있습니다.
+
+사용방법은 ``useEffect()`` 를 어떻게 구성하느냐에 따라서 다른 ``Lifecycle`` 이 됩니다.
+
+``useEffect()`` 의 ``interface`` 를 살펴보면 다음과 같습니다.
+
+```typescript
+function useEffect(
+  effect: EffectCallback,
+  deps: DependencyList
+): void;
+```
+
+<br />
+
+각 ``Lifecycle`` 에 대한 ``Side Effect`` 를 만든 예시코드는 다음과 같습니다.
+
+```javascript
+// ``생성 (Mount)``
+
+import React, {
+  useEffect,
+} from "react";
+
+const MyComponent = _props => {
+  useEffect(() => {
+    // ``deps (2번째 인자)`` 에 빈 Array 를 넘겨주면, 
+    // ``생성 (Mount)`` 직후 시점에 딱 1번만 호출 됩니다.
+  }, []);
+};
+```
+
+<br />
+
+```javascript
+// ``변화 (Update)``
+
+import React, {
+  useEffect,
+} from "react";
+
+const MyComponent = _props => {
+  useEffect(() => {
+    // ``deps (2번째 인자)`` 를 넘겨주지 않으면,
+    // 이 컴포넌트가 ``re-rendering`` 될 때마다 호출 됩니다.
+  });
+};
+```
+
+<br />
+
+```javascript
+// ``파괴 (Unmount)``
+
+import React, {
+  useEffect,
+} from "react";
+
+const MyComponent = _props => {
+  useEffect(() => {
+    // ``effect (1번째 Callback 인자)`` 에서 ``함수 반환`` 시,
+    // ``파괴 (Unmount)`` 시점에 ``반환된 함수`` 가 호출 됩니다.
+
+    return () => {
+      // ``파괴 (Unmount)`` 시점에 딱 1번만 호출 됩니다.
+    };
+  });
+};
+```
+
+<br />
+
+```javascript
+// 특정 ``State`` 의 ``변화 (Update)``
+
+import React, {
+  useState,
+  useEffect,
+} from "react";
+
+const MyComponent = _props => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    // ``deps (2번째 인자)`` 에 변화감지 대상 ``State`` 를
+    // 배열로 묶어 넘겨주면,
+    // 해당 ``State`` 가 ``변화 (Update)`` 될 때만 호출 됩니다.
+  }, [count]);
+};
+```
+
+<br />
+
+지금까지 살펴본 ``useEffect`` 를 공식문서에서는 다음과 같이 설명 합니다.
+
+> * ``useEffect()`` 는 ``Rendering`` 이후 호출되는 ``Function`` 입니다.
+> * ``useEffect()`` 는 ``componentDidMount()``, ``componentDidUpdate()``, ``componentWillUnmount()`` 가 합쳐진 것으로 생각해도 좋습니다.
+> * ``useEffect()`` 는 브라우저가 화면을 업데이트하는 것을 차단하지 않으므로, ``동기적`` 으로 실행될 필요는 없습니다.
+> 만약 ``Layout`` 을 측정할 필요가 있을 경우 (``Element.getBoundingClientRect()``), ``useLayoutEffect()`` 라는 별도의 ``Hook`` 을 사용합니다.
+> ``Hook`` 에서 여러가지 관심사를 처리해야 할 경우, 복수의 ``Hook`` 을 사용할 수 있습니다. (``관심사의 분리``)
+> ``Hook`` 은 ``메모리`` 를 사용하기 때문에, 남용할 경우 ``성능저하`` 의 원인이 될 수 있습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+##
+
+
+
+<br /><hr /><br />
+
+
+
+## (정리해야할 메모)
+
+* ``Prop Drilling`` 으로 ``Props`` 을 하용하는 경우 ``Props`` 명을 바꾸게 되면, 관련된 모든 파일을 직접 수정해야하는 불편함이 있다.
