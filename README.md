@@ -692,3 +692,59 @@ const UserJoin = () => {
   );
 };
 ```
+
+
+
+<br /><hr /><br />
+
+
+
+## 02-03. ``useRef()`` 를 사용하여 ``DOM`` 제어하기
+
+``DOM`` 요소를 제어하기 위해서는 특정 ``DOM`` 에 접근할 수 있어야 합니다.
+
+``Vanila JS`` 에서는 ``document.querySelector()`` 등의 메서드를 사용하여 접근할 수 있습니다.
+
+``React`` 에서는 ``useRef`` 를 사용하여 특정 ``DOM`` 요소에 접근할 수 있습니다.
+
+```javascript
+import { useRef } from "react";
+
+const MyInput = () => {
+  const $content = useRef();
+
+  return <input ref={$content} />;
+};
+
+export default MyInput;
+```
+
+<br />
+
+``useRef`` 를 사용하여 생성한 객체는 ``React.MutableRefObject`` 타입을 가지게 되는데, 이 객체를 ``DOM`` 의 ``ref`` 속성에 연결하여 사용할 수 있습니다.
+
+``<input ref={$content} />``
+
+<br />
+
+이제 ``useRef()`` 로 생성한 객체로, 실제 ``DOM`` 객체에 접근해 보겠습니다.
+
+``ReactMutableRefObject`` 의 속성 중, ``current`` 속성을 통해서 실제 ``DOM`` 객체에 접근할 수 있습니다.
+
+```javascript
+import { useRef } from "react";
+
+const MyInput = () => {
+  const $content = useRef();
+
+  // 대상 <input /> 요소의 focus() 메서드 호출
+  $content.current.focus();
+
+  return <input ref={$content} />;
+};
+
+export default MyInput;
+```
+
+<br />
+

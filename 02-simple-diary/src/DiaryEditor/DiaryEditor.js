@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import "./DiaryEditor.css";
 
 const DiaryEditor = () => {
+  const $authorInput = useRef();
+  const $contentInput = useRef();
+  
   const [state, setState] = useState({
-    author: "111",
-    content: "222",
+    author: "",
+    content: "",
     emotion: 1,
   });
 
@@ -19,8 +22,18 @@ const DiaryEditor = () => {
   }
 
   const handleSubmit = () => {
+    if (state.author.length < 1) {
+      $authorInput.current.focus();
+      return;
+    }
+
+    if (state.content.length < 5) {
+      $contentInput.current.focus();
+      return;
+    }
+    
+    console.log("저장 완료");
     console.log(state);
-    alert("저장 성공");
   }
 
   return (
@@ -29,6 +42,7 @@ const DiaryEditor = () => {
 
       <div>
         <input 
+          ref={$authorInput}
           name="author"
           value={state.author}
           onChange={e => handleChangeState(e)}
@@ -37,6 +51,7 @@ const DiaryEditor = () => {
 
       <div>
         <textarea
+          ref={$contentInput}
           name="content"
           value={state.content}
           onChange={e => handleChangeState(e)}
