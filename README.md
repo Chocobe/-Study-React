@@ -823,3 +823,156 @@ const MyList = ({ item }) => {
 
 
 
+## 02-05. 형제 컴포넌트간 데이터 통신하기
+
+``React`` 에서 데이터 전달은 ``부모 => 자식`` 방향의 단방향 통신만 가능 합니다.
+
+그래서 ``형제 컴포넌트`` 간의 데이터 통신이 필요할 경우, ``공통 부모 컴포넌트`` 를 통해서 데이터를 전달받아야 합니다.
+
+이러한 데이터 구조를 ``Lifting state up (데이터 끌어올리기)`` 라고 합니다.
+
+<br />
+
+``Lifting state up (데이터 끌어올리기)`` 의 개념은 다음과 같습니다.
+* 두 형제가 통신할 데이터를 ``부모 컴포넌트`` 에서 ``정의`` 합니다.
+  * 정의할 데이터는 ``useState()`` 를 통해서 ``[state, setState]`` 형태로 만듭니다.
+* 데이터를 생성할 컴포넌트에 ``setState()`` 를 ``Props`` 로 넘겨줍니다.
+  * ``setState`` 는 ``Event Handler`` 역할을 하게 됩니다.
+* 데이터를 받을 컴포넌트에 ``state`` 를 넘겨줍니다.
+
+<br />
+
+위와같이 구성하게 되면, ``setState()`` 가 호출되면서 변경되는 ``state`` 가 ``형제 컴포넌트`` 의 ``Props`` 이므로, 변경된 데이터가 ``형제 컴포넌트`` 에 전달되게 됩니다.
+
+아래 코드예시의 구조는 다음과 같습니다.
+
+```bash
+── Parent.js
+      ├─ Editor.js (데이터 생성 역할)
+      └─ Viewer.js (데이터 뷰어 역할)
+```
+
+<br />
+
+```javascript
+// Parent.js
+
+import { useState } from "react";
+
+const Parent = () => {
+  const [state, setState] = useState([]);
+
+  onCreate = ({ author, content }) => {
+    const newItem = { author, content };
+    setState([newItem, ...state]);
+  };
+
+  return (
+    <div className="parent">
+      <Editor onCreate={onCreate} />
+      <Viewer state={state} />
+    </div>
+  );
+};
+
+export default Parent;
+```
+
+<br />
+
+```javascript
+// Editor.js
+
+import { useState, useRef } from "react";
+
+const Editor = ({ onCreate }) => {
+  const $author = useRef();
+  const $content = useRef();
+
+  const [newItem, setNewItem] = useState({
+    author: "",
+    content: "",
+  });
+
+  const onInputItem = ({ target: { name, value } }) => {
+    setNewItem({
+      ...newItem,
+      [name]: value,
+    });
+  };
+
+  const onSubmit = () => {
+    onCreate(newItem);
+  };
+
+  return (
+    <div className="editor">
+      <div className="editor-author">
+        Author: 
+        <input
+          name="author"
+          ref={$author}
+          value={newItem.author}
+          onInput={e => onInputItem(e)}
+        />
+      </div>
+
+      <div className="editor-content">
+        Content
+        <input
+          name="content"
+          ref={$content}
+          value={newItem.content}
+          onInput={e => onInputItem(e)}
+        />
+      </div>
+
+      <div className="submit">
+        <button onClick={onSubmit}>Item 추가</button>
+      </div>
+    </div>
+  );
+};
+```
+
+<br />
+
+```javascript
+// Viewer.js
+
+const Viewer = ({ state }) => {
+  return (
+    <ul>
+      {
+        state.map((item, idx) => {
+          return (
+            <li key={idx}>
+              <h3>Author: {item.author}</h3>
+              <p>Content: {item.content}</p>
+            </li>
+          );
+        })
+      }
+    </ul>
+  );
+};
+```
+
+<br />
+
+위 코드의 흐름을 정리하면 다음과 같습니다.
+
+1. ``Parent`` 컴포넌트에서 ``[state, setState]`` 를 생성합니다.
+2. 새로운 데이터 추가시 호출할 함수인 ``onCreate()`` 함수를 작성 합니다.
+3. ``Editor`` 컴포넌트에 ``onCreate()`` 메서드를 ``Props (Event Listener 역할)`` 로 넘겨 줍니다.
+4. ``Editor`` 는 ``제출하기`` 버튼을 클릭 할 때, 부모 컴포넌트에서 받은 ``onCreate()`` 함수를 호출 합니다.
+  * 이 때, 부모 컴포넌트의 ``state`` 가 추가됩니다.
+5. ``Viewer`` 컴포넌트는 ``Props`` 로 ``state`` 를 받아서 리스트로 보여주도록 합니다.
+6. ``state`` 가 변경되면, ``Viewer`` 컴포넌트도 ``re-rendering`` 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+

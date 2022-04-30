@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 
 import "./DiaryEditor.css";
 
-const DiaryEditor = () => {
+const DiaryEditor = ({ onCreate }) => {
   const $authorInput = useRef();
   const $contentInput = useRef();
   
@@ -34,7 +34,23 @@ const DiaryEditor = () => {
     
     console.log("저장 완료");
     console.log(state);
+
+    onCreate(
+      state.author,
+      state.content,
+      state.emotion,
+    );
+
+    initState();
   }
+
+  const initState = () => {
+    setState({
+      author: "",
+      content: "",
+      emotion: 1,
+    });
+  };
 
   return (
     <div className="DiaryEditor">
@@ -91,6 +107,10 @@ const DiaryEditor = () => {
       </div>
     </div>
   );
+};
+
+DiaryEditor.defaultProps = {
+  onCreate: () => {},
 };
 
 export default DiaryEditor;
