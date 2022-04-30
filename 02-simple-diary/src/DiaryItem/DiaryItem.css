@@ -1,0 +1,21 @@
+.diaryItem {
+  margin-bottom: 20px;
+  padding: 20px;
+
+  background-color: rgb(240, 240, 240);
+}
+
+.diaryItem .info {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  
+  border-bottom: 1px solid gray;
+}
+
+.diaryItem .date {
+  color: gray;
+}
+
+.diaryItem .content {
+  margin: 30px 0 20px;
+}

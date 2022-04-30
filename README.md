@@ -746,5 +746,80 @@ const MyInput = () => {
 export default MyInput;
 ```
 
+
+
+<br /><hr /><br />
+
+
+
+## 02-04. ``Array`` 를 ``DOM`` 요소로 만들기
+
+``Array`` 는 복수의 데이터를 가지고 있습니다.
+
+이 데이터들을 동일한 모습으로 나타내고자 한다면, 반복문 등을 사용하여 만들 수 있습니다.
+
+일반적으로 ``Array`` 를 ``DOM`` 요소로 만들때는, ``Array.prototype.map()`` 을 사용합니다.
+
+아래의 코드는 ``Array.prototype.map()`` 을 사용하는 예시 코드 입니다.
+
+```javascript
+const MyList = ({ list }) => {
+  return (
+    <div>
+      {
+        list.map((item, idx) => (
+          <div>
+            <div>ID: {item.id}</div>
+            <div>작성자: {item.author}</div>
+            <div>내용: {item.content}</div>
+          </div>
+        ))
+      }
+    </div>
+  );
+};
+```
+
 <br />
+
+위와 같이 ``Array`` 데이터를 ``DOM`` 으로 만들 수 있습니다.
+
+여기서 주의할 점은, 반복문을 사용하여 ``DOM`` 을 만들때는, ``key`` 라는 ``Props`` 를 지정해 주어야 합니다.
+
+``key`` 는 반복문으로 만드는 ``DOM`` 요소의 고유값이 되며, ``key`` 값을 지정하지 않으면 에러가 발생합니다.
+
+<br />
+
+``key`` 값은 반복문 내의 고유값을 주면 되므로, ``index`` 값으로 지정할 수 있습니다.
+
+만약, ``Array`` 의 각 요소가 ``고유값`` 을 가지고 있다면, ``index`` 보다는 ``고유값`` 을 ``key`` 로 넘겨주는 것이 더 좋습니다.
+
+```javascript
+// item.idx 를 key 로 사용한 예시
+
+const MyList = ({ item }) => {
+  return (
+    <div>
+      {
+        list.map(item => {
+          return (
+            {/* item 의 고유값인 id를 key로 사용 */}
+            <div key={item.id}>
+              <div>ID: {item.id}</div>
+              <div>작성자: {item.author}</div>
+              <div>내용: {item.content}</div>
+            </div>
+          )
+        })
+      }
+    </div>
+  );
+};
+```
+
+
+
+<br /><hr /><br />
+
+
 
