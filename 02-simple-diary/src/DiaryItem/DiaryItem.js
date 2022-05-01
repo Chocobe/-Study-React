@@ -1,4 +1,8 @@
-import { useState, useRef } from "react";
+import React, { 
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 
 import "./DiaryItem.css";
 
@@ -11,6 +15,10 @@ const DiaryItem = ({
   onRemove,
   onEdit,
 }) => {
+  useEffect(() => {
+    console.log(`${id} 번째 re-rendering`);
+  });
+  
   const [isEdit, setIsEdit] = useState(false);
   const toggleIsEdit = () => setIsEdit(!isEdit);
   
@@ -83,4 +91,4 @@ const DiaryItem = ({
   );
 };
 
-export default DiaryItem;
+export default React.memo(DiaryItem);

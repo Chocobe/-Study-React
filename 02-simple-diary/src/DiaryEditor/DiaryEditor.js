@@ -1,4 +1,8 @@
-import { useState, useRef } from "react";
+import React, { 
+  useState, 
+  useRef,
+  useEffect,
+} from "react";
 
 import "./DiaryEditor.css";
 
@@ -31,9 +35,6 @@ const DiaryEditor = ({ onCreate }) => {
       $contentInput.current.focus();
       return;
     }
-    
-    console.log("저장 완료");
-    console.log(state);
 
     onCreate(
       state.author,
@@ -113,4 +114,4 @@ DiaryEditor.defaultProps = {
   onCreate: () => {},
 };
 
-export default DiaryEditor;
+export default React.memo(DiaryEditor);

@@ -1393,9 +1393,9 @@ const MyComponent = _props => {
 
 
 
-## 02-09. useMemo() 를 사용한 연산 결과 재사용 하기 (연산 최적화 방법)
+# 02-09. useMemo() 를 사용한 연산 결과 재사용 하기 (연산 최적화 방법)
 
-``useMemo()`` 는 값을 반환하는 함수에 ``Memoization 된 값`` 을 반환해 줍니다.
+``useMemo()`` 는 값을 반환하는 함수의 ``Memoization 된 값`` 을 반환해 줍니다.
 
 값을 반환하는 함수의 연산을 매번 실행하는 것이 아닌, 연산이 필요할 때만 다시 연산하게 됩니다.
 
@@ -1463,7 +1463,7 @@ export default MyComponent;
 
 
 
-## 02-10. React.memo() 를 사용하여 컴포넌트 재사용 하기 (``re-rendering`` 최적화)
+# 02-10. React.memo() 를 사용하여 컴포넌트 재사용 하기 (``re-rendering`` 최적화)
 
 여기서 ``컴포넌트를 재사용 한다`` 의 뜻은, ``re-rendering`` 을 하지 않고 그대로 사용한다는 뜻 입니다.
 
@@ -1600,6 +1600,194 @@ const App = () => {
   );
 };
 ```
+
+
+
+<br /><hr /><br />
+
+
+
+# 02-11. useCallback() 을 사용하여 Props 로 넘기는 Callback 재사용 하기 (Callback 최적화)
+
+``자식 컴포넌트`` 는 부모로 부터 ``Props`` 를 받을 수 있었습니다.
+
+이 ``Props`` 는 ``부모 컴포넌트`` 의 ``State (상태)`` 뿐만 아니라, ``Function (함수)`` 도 받을 수 있었습니다.
+
+이렇게 ``Props`` 로 넘겨받는 함수는 ``자식 컴포넌트`` 에서 ``Callback`` 으로 호출하게 됩니다.
+
+<br />
+
+아래의 코드는 ``부모 컴포넌트`` 이며, ``자식 컴포넌트`` 에 넘겨줄 ``Callback`` 함수 예시코드 입니다.
+
+```javascript
+// ParentComponent.js
+
+import React, {
+  useState,
+} from "react";
+
+import ChildComponent from "./ChildComponent";
+
+const ParentComponent = () => {
+  const [state, setState] = useState([1, 2, 3]);
+
+  const parentCallback = newValue => setState([...state, newValue]);
+
+  return (
+    <div>
+      <ChildComponent parentCallback={parentCallback} />
+    </div>
+  );
+};
+```
+
+<br />
+
+```javascript
+// ChildComponent.js
+
+import React from "react";
+
+const ChildComponent = ({ parentCallback }) => {
+  const onClick = () => {
+    const newValue = Math.random();
+    parentCallback(newValue);
+  };
+  
+  return (
+    <button onClick={onClick}>값 추가</button>
+  );
+};
+
+// Memoized Component 로 사용
+export default React.memo(ChildComponent);
+```
+
+<br />
+
+위 코드에서 ``자식 컴포넌트`` 는 ``React.memo()`` 를 사용하여 만들었으므로, ``Props`` 가 변경되지 않으면 ``re-rendering`` 을 하지 않도록 ``컴포넌트 최적화`` 를 의도하였습니다.
+
+하지만, ``부모 컴포넌트`` 가 ``re-rendering`` 되면, ``자식 컴포넌트`` 도 ``re-rendering`` 되는 현상이 발생합니다.
+
+이유는, ``부모 컴포넌트`` 가 ``re-rendering`` 될 때마다, ``parentCallback`` 을 새로 만들기 때문 입니다.
+
+<br />
+
+이러한 ``Callback`` 의 ``Memoization`` 을 만들어 주는 ``React Hook`` 이 ``useCallback()`` 입니다.
+
+아래의 코드는 ``useCallback()`` 의 ``interface`` 입니다.
+
+```typescript
+function useCallback(
+  // Memoization 을 적용할 Callback 함수
+  callback: Function,
+
+  // Callback 함수를 새로 생성할 Trigger 대상
+  deps: DependencyList
+);
+```
+
+<br />
+
+``useCallback()`` 을 사용해 보기 전, 개선할 동작을 정의해 보겠습니다.
+
+* ``부모 컴포넌트`` 가 ``re-rendering`` 되어도 ``자식 컴포넌트`` 가 ``re-rendering`` 되지 않기
+* ``Memoization`` 된 ``parentCallback()`` 을 사용하여 ``자식 컴포넌트`` 의 불필요한 ``re-rendering`` 제거하기
+
+<br />
+
+이제 ``useCallback()`` 을 사용하여 ``parentCallback()`` 을 개선하면 다음과 같습니다.
+
+```javascript
+// ParentComponent.js
+
+import React, {
+  useState,
+  useCallback,
+} from "react";
+
+const ParentComponent = () => {
+  const [state, setState] = useState([1, 2, 3]);
+
+  // useCallback() 으로 Memoization 기능을 사용합니다.
+  const parentCallback = useCallback(
+    newValue => setState([...state, newValue]),
+    [state]
+  );
+
+  return (
+    <div>
+      <ChildComponent parentCallback={parentCallback} />
+    </div>
+  )
+}
+```
+
+<br />
+
+``useCallback()`` 으로 ``parentCallback()`` 을 개선하였지만, 결과를 확인하면 여전히 ``parentCallback()`` 은 새로 생성되며, ``자식 컴포넌트`` 도 ``re-rendering`` 을 합니다.
+
+이유는, ``부모 컴포넌트`` 의 ``state`` 가 바뀌면 ``parentCallback()`` 도 새로 만들어야만 최신의 ``state`` 값을 참조할 수 있기 때문입니다.
+
+<br />
+
+그래서 우리가 의도했던 ``parentCallback()`` 이 새로 생성되지 않도록 하기 위해, ``parentCallback()`` 의 동작을 수정해 보겠습니다.
+
+``parentCallback()`` 의 내부에는 ``setState()`` 함수를 호출하고 있습니다.
+
+``setState()`` 의 인자로 사용할 ``state`` 를 최신값으로 사용하기 위해 ``parentCallback()`` 을 새로 만드므로, ``setState()`` 의 인자를 ``state`` 가 아닌, ``(state) => setState([...state, newValue])`` 로 바꿔 보겠습니다.
+
+```javascript
+// ParentComponent.js
+
+import React, {
+  useState,
+  useCallback,
+} from "react";
+
+const ParentComponent = () => {
+  const [state, setState] = useState([1, 2, 3]);
+
+  const parentCallback = useCallback(
+    newValue => setState(
+      // setState() 의 인자에 값이 아닌, 함수를 넘겨줍니다.
+      state => [...state, newValue]
+    ),
+
+    // 이전에 추가했던 state 참조는 제거 합니다.
+    []
+  );
+};
+```
+
+<br />
+
+위와같이 ``parentCallback()`` 을 수정하면, 이제 ``부모 컴포넌트`` 가 ``re-rendering`` 되더라도 ``parentCallback()`` 은 새로 생성하지 않게 됩니다.
+
+그러므로, ``부모 컴포넌트`` 의 ``re-rendering`` 에 의해서 ``자식 컴포넌트`` 가 ``re-rendering`` 되는 현상을 제거할 수 있게 되었습니다.
+
+<br />
+
+위 코드에서 핵심은 3가지 입니다.
+
+* ``Props`` 로 넘겨줄 ``callback`` 함수를 ``useCallback()`` 으로 만듭니다.
+    * ``함수의 재생성``
+* ``useCallback()`` 의 ``deps (2번째 인자)`` 를 ``빈 배열`` 로 넘겨줍니다.
+    * ``부모 컴포넌트`` 의 ``Mount`` 시점 이후부터는 ``parentCallback()`` 새로 만들지 않기
+* ``state`` 를 변경하기 위한 ``setState()`` 의 인자로 ``값`` 이 아닌, ``callback`` 을 넘겨줍니다.
+    * ``함수형 업데이트``
+
+<br />
+
+먼저 ``useCallback()`` 의 ``deps (2번째 인자)`` 에는 ``parentCallback()`` 을 새로 생성할 Trigger 대상이 없으므로, ``Mount`` 시점에 딱 1번만 ``parentCallback()`` 을 생성하게 됩니다.
+
+그러므로 ``parentCallback()`` 이 새로 생성되는 일이 없어졌습니다.
+
+<br />
+
+마지막으로 ``setState()`` 에 ``callback`` 을 넘겨주므로서, ``부모 컴포넌트`` 의 ``state`` 값을 ``setState()`` 호출 시점에서 참조할 수 있게 됩니다.
+
+이로써 우리가 의도했던 ``자식 컴포넌트`` 의 불필요한 ``re-rendering`` 을 제거할 수 있었습니다.
 
 
 

@@ -3,7 +3,13 @@ import DiaryList from "./DiaryList/DiaryList";
 // import Lifecycle from "./Lifecycle/Lifecycle";
 // import OptimizeTest from "./OptimizeTest/OptimizeTest";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { 
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 
 import "./App.css";
 
@@ -32,7 +38,7 @@ const App = () => {
     getData();
   }, []);
   
-  const onCreate = (author, content, emotion) => {
+  const _onCreate = (author, content, emotion) => {
     const createDate = new Date().getTime();
     const newItem = {
       id: diaryId.current,
@@ -44,24 +50,30 @@ const App = () => {
 
     diaryId.current += 1;
 
-    setData([newItem, ...data]);
+    // ``State (상태)`` 업데이트 기본 사용법
+    // setData([newItem, ...data]);
+
+    // 함수형 업데이트 (Functional Update) 방식으로 ``setState()`` 를 사용
+    setData(data => [newItem, ...data]);
   };
+  const onCreate = useCallback(_onCreate, []);
 
-  const onRemove = targetId => {
-    const newDiaryList = data
-      .filter(item => item.id !== targetId);
-
-    setData(newDiaryList);
+  const _onRemove = targetId => {
+    setData(data => {
+      return data.filter(item => item.id !== targetId);
+    });
   };
+  const onRemove = useCallback(_onRemove, []);
 
-  const onEdit = (targetId, newContent) => {
-    setData(
-      data.map(item => item.id === targetId
+  const _onEdit = (targetId, newContent) => {
+    setData(data => {
+      return data.map(item => item.id === targetId
         ? { ...item, content: newContent}
         : item
-      )
-    );
+      );
+    });
   };
+  const onEdit = useCallback(_onEdit, []);
 
   const getDiaryAnalysis = useMemo(() => {
     const goodCount = data.filter(item => item.emotion > 2).length;
