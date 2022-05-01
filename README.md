@@ -1393,6 +1393,80 @@ const MyComponent = _props => {
 
 
 
+## 02-09. useMemo() 를 사용한 연산 최적화
+
+``useMemo()`` 는 값을 반환하는 함수에 ``Memoization 된 값`` 을 반환해 줍니다.
+
+값을 반환하는 함수의 연산을 매번 실행하는 것이 아닌, 연산이 필요할 때만 다시 연산하게 됩니다.
+
+즉, 불필요한 연산을 줄일 수 있어서 ``연산 최적화`` 방법으로 ``useMemo()`` 를 사용합니다.
+
+* ``Vue`` 의 ``computed`` 와 유사한 기능을 합니다.
+
+<br />
+
+``useMemo()`` 의 ``interface`` 는 다음과 같습니다.
+
+```typescript
+function useMemo<T>(
+  // 수행할 연산 함수
+  factory: () => T,
+
+  // 재 연산의 Trigger 가 될 대상 변수
+  // deps 에 속한 값이 변경되면, factory() 연산을 다시 수행합니다.
+  deps: DependencyList
+);
+```
+
+<br />
+
+그리고 ``useMemo()`` 를 사용한 결과값을 사용할 때는, 변수로 사용하게 됩니다.
+
+이는 연산을 하는 함수지만, 최종 결과값은 ``Memoization`` 된 값을 반환하기 때문입니다.
+
+<br />
+
+아래의 코드는 ``useMemo()`` 사용하여, ``배열 개수`` 가 변할 때, 연산을 실행하도록 합니다.
+
+```javascript
+import React, {
+  useState,
+  useMemo,
+} from "react";
+
+const MyComponent = () => {
+  const [data, setData] = useState([
+    { id: 1, name: "초코비" },
+    {id: 2, name: "Chocobe" },
+  ]);
+
+  // Memoization 을 적용할 함수
+  const countString = () => {
+    return `데이터 개수는 ${data.length} 개 입니다.`;
+  };
+
+  useMemo(getCountString, [data.length]);
+
+  return (
+    <div>
+      {countString}
+    </div>
+  );
+};
+
+export default MyComponent;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+<br /><hr /><br />
+
+
+
 # (정리해야할 메모 - 이후 강좌에서 언급 예정)
 
 * ``Prop Drilling`` 으로 ``Props`` 을 하용하는 경우 ``Props`` 명을 바꾸게 되면, 관련된 모든 파일을 직접 수정해야하는 불편함이 있다.
