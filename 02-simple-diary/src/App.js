@@ -4,17 +4,59 @@ import DiaryList from "./DiaryList/DiaryList";
 // import OptimizeTest from "./OptimizeTest/OptimizeTest";
 
 import { 
-  useState,
   useRef,
   useEffect,
   useMemo,
   useCallback,
+  useReducer,
 } from "react";
 
 import "./App.css";
 
+const dataReducer = (data, action) => {
+  
+  switch (action.type) {
+    // getData() => INIT
+    case "INIT": {
+      return action.data;
+    }
+    
+    // onCreate() => CREATE
+    case "CREATE": {
+      const createDate = new Date().getTime();
+      
+      const newItem = {
+        ...action.data,
+        createDate,
+      };
+      
+      return [newItem, ...data];
+    }
+    
+    // onRemove() =>
+    case "REMOVE": {
+      return data.filter(item => item.id !== action.targetId);
+    }
+    
+    // onEdit() =>
+    case "EDIT": {
+      const { targetId, newContent } = action;
+      return data.map(
+        item => item.id === targetId
+        ? { ...item, content: newContent }
+        : item
+        );
+      }
+      
+    default: {
+      return data;
+    }
+  }
+}
+
 const App = () => {
-  const [data, setData] = useState([]);
+  const [data, dispatch] = useReducer(dataReducer, []);
+  
   const diaryId = useRef(0);
 
   const getData = async () => {
@@ -31,7 +73,7 @@ const App = () => {
         id: diaryId.current++,
       }));
 
-    setData(initData);
+    dispatch({ type: "INIT", data: initData });
   };
 
   useEffect(() => {
@@ -39,39 +81,24 @@ const App = () => {
   }, []);
   
   const _onCreate = (author, content, emotion) => {
-    const createDate = new Date().getTime();
-    const newItem = {
+    dispatch({ type: "CREATE", data: {
       id: diaryId.current,
       author,
       content,
       emotion,
-      createDate,
-    };
+    }});
 
     diaryId.current += 1;
-
-    // ``State (상태)`` 업데이트 기본 사용법
-    // setData([newItem, ...data]);
-
-    // 함수형 업데이트 (Functional Update) 방식으로 ``setState()`` 를 사용
-    setData(data => [newItem, ...data]);
   };
   const onCreate = useCallback(_onCreate, []);
 
   const _onRemove = targetId => {
-    setData(data => {
-      return data.filter(item => item.id !== targetId);
-    });
+    dispatch({ type: "REMOVE", targetId });
   };
   const onRemove = useCallback(_onRemove, []);
 
   const _onEdit = (targetId, newContent) => {
-    setData(data => {
-      return data.map(item => item.id === targetId
-        ? { ...item, content: newContent}
-        : item
-      );
-    });
+    dispatch({ type: "EDIT", targetId, newContent });
   };
   const onEdit = useCallback(_onEdit, []);
 

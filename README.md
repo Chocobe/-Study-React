@@ -1795,6 +1795,203 @@ const ParentComponent = () => {
 
 
 
+# 02-12. useReducer() 를 사용하여, 복작한 상태로직 분리하기
+
+지금까지는 컴포넌트의 ``State (상태)`` 를 만들기 위해 ``useState()`` 를 사용하였습니다.
+
+컴포넌트가 ``re-rendering`` 되더라도, 컴포넌트의 ``State (상태)`` 를 유지할 수 있었습니다.
+
+이번에 알아볼 ``React Hooks`` 는 ``useReducer()`` 입니다.
+
+<br />
+
+``useReducer()`` 는 ``useState()`` 처럼 ``State (상태)`` 를 만든다는 부분에서 유사합니다.
+
+차이점은 ``useReducer()`` 를 사용할 경우, ``setState()`` 가 아닌 ``dispatch()`` 함수를 받게 되는 점 입니다.
+
+<br />
+
+``useState()`` 에서 받게되는 ``setState()`` 는 단순히 ``State (상태)`` 를 ``변경 (Update)`` 하는 동작만 하였지만, ``useReducer()`` 의 ``dispatch()`` 는 ``변경 (Update)를 위한 Callback`` 을 실행해 줍니다.
+
+정리하면 다음과 같습니다.
+
+* ``useState()`` 의 ``setState()``: 인자로 넘겨준 값으로 ``State (상태)`` 를 바꿉니다.
+* ``useReducer()`` 의 ``dispatch()``: 인자로 넘겨준 값으로 ``Callback()`` 을 호출합니다.
+
+<br />
+
+아래 코드는 ``useReducer()`` 의 ``interface`` 입니다.
+
+```typescript
+function useReducer<T>(
+  // dispatch() 호출 시, 내부에서 사용할 Callback() 함수
+  reducer<T>: (state: T) => T,
+
+  // Reducer 로 생성할 State (상태) 의 초기값
+  initializerArg: ReducerState<T>
+): [
+  // State (상태) 값
+  ReducerState<T>,
+
+  // dispatch() 함수
+  (value: ReducerAction<T>) => void
+];
+```
+
+<br />
+
+``useReducer()`` 의 ``interface`` 가 복잡해 보이지만, ``useState()`` 와 비교해 보면 사용법이 유사합니다.
+
+```javascript
+// useState() 예시
+
+import { useState } from "react";
+
+const MyComponent = () => {
+  const [state, setState] = useState(
+    [] // 초기값
+  );
+};
+```
+
+<br />
+
+```javascript
+import { useReducer } from "react";
+
+const MyComponent = () => {
+  const [state, dispatch] = useReducer(
+    () => {}, // dispatch() 호출 시, 내부에서 호출할 Callback() 함수
+    [] // 초기값
+  );
+}
+```
+
+<br />
+
+코드로 살펴본 가장 큰 차이점은 ``useReducer()`` 의 ``첫번째 인자`` 로 넘겨주는 ``callback (reducer)`` 함수 입니다.
+
+``State (상태)`` 를 변경하기 위해, ``dispatch()`` 를 실행하면, ``useReducer()`` 의 ``첫번째 인자`` 로 넘겨준 ``callback`` 을 호출하여 ``State (상태)`` 를 변경시키는 방식 입니다.
+
+<br />
+
+``useState()`` 로 상태값을 ``변화 (Update)`` 시킬 수 있음에도 불구하고, ``useReducer()`` 를 사용하는 이유는, ``State (상태)`` 를 ``변화 (Update)`` 하는 복수의 함수를 사용할 경우, ``상태변화 로직 (함수)`` 를 ``컴포넌트 외부`` 로 분리하기 위해서 입니다.
+
+이렇게 ``상태변화 로직`` 을 분리하지 않으면, 다양한 ``State (상태)`` 를 가지며 ``변화 (Update)`` 시키는 컴포넌트의 코드가 너무 복잡해 집니다.
+
+따라서, ``useReducer()`` 를 사용하여 ``관심사 분리`` 를 하기위해 사용합니다.
+
+<br />
+
+아래의 코드는 ``useReducer()`` 를 사용한 예시코드 입니다.
+
+```javascript
+import React, {
+  useReducer,
+  useEffect,
+  useMemo,
+} from "react";
+
+/**
+ * state 의 변화 로직을 MyComponent 에서 분리한 ``callback (reducer)`` 함수 입니다.
+ * @param { number[] } state
+ * @param {{
+ *    type: "INIT" | "CREATE" | "EDIT" | "REMOVE";
+ *    state: number;
+ *    newState?: number;
+ *    targetIdx?: number;
+ * }} action
+ */
+const stateReducer = (state, action) => {
+  const { type } = action;
+
+  switch (type) {
+    case "INIT": {
+      return action.state;
+    }
+
+    case "CREATE": {
+      return [...state, action.newState];
+    }
+
+    case "EDIT": {
+      return state.map((curState, curIdx) => {
+        return curIdx === action.targetIdx
+          ? action.newState
+          : curState;
+      });
+    }
+
+    case "REMOVE": {
+      return state.filter((curState, curIdx) => {
+        return curIdx !== targetIdx;
+      });
+    }
+
+    default: {
+      return state;
+    }
+  }
+};
+
+const MyComponent = () => {
+  const [state, stateDispatch] = useReducer(stateReducer, []);
+
+  // Mount 시점에 초기화 실행 Hook
+  useEffect(() => {
+    stateDispatch({
+      type: "INIT",
+      state: [1, 2, 3],
+    });
+  }, []);
+
+  // State 생성 Callback
+  const onCreate = useMemo(newState => {
+    stateDispatch({
+      type: "CREATE",
+      newState,
+    });
+  }, []);
+
+  // State 수정 Callback
+  const onEdit = useMemo((targetIdx, newState) => {
+    stateDispatch({
+      type: "EDIT",
+      targetIdx,
+      newState,
+    });
+  }, []);
+
+  // State 삭제 Callback
+  const onRemove = useCallback(targetIdx => {
+    stateDispatch({
+      type: "REMOVE",
+      targetIdx,
+    });
+  }, []);
+
+  return (
+    <div>
+      <자식컴포넌트1 onCreate={onCreate} />
+      <자식컴포넌트2 onEdit={onEdit} />
+      <자식컴포넌트3 onRemove={onRemove} />
+    </div>
+  );
+};
+
+export default React.memo(MyComponent);
+```
+
+<br />
+
+``useReducer()`` 를 사용하여 컴포넌트 외부 ``Scope`` 에서 ``상태로직`` 을 구현할 수 있게 되었습니다.
+
+
+
+<br /><hr /><br />
+
+
+
 
 
 
