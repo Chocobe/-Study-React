@@ -1393,7 +1393,7 @@ const MyComponent = _props => {
 
 
 
-## 02-09. useMemo() 를 사용한 연산 최적화
+## 02-09. useMemo() 를 사용한 연산 결과 재사용 하기 (연산 최적화 방법)
 
 ``useMemo()`` 는 값을 반환하는 함수에 ``Memoization 된 값`` 을 반환해 줍니다.
 
@@ -1460,6 +1460,154 @@ export default MyComponent;
 
 
 <br /><hr /><br />
+
+
+
+## 02-10. React.memo() 를 사용하여 컴포넌트 재사용 하기 (``re-rendering`` 최적화)
+
+여기서 ``컴포넌트를 재사용 한다`` 의 뜻은, ``re-rendering`` 을 하지 않고 그대로 사용한다는 뜻 입니다.
+
+이전에 살펴 보았던 ``Lifecycle`` 에서, 다음과 같은 특징이 있었습니다.
+
+* ``부모 컴포넌트`` 가 ``Update (변화)`` 되면, 모든 ``자식 컴포넌트`` 도 ``re-rendering`` 됩니다.
+
+<br />
+
+이러한 특성은 부모 컴포넌트의 ``Update (변화)`` 가 ``자식 컴포넌트`` 에는 아무런 영향을 미치지 않더라도, ``부모 컴포넌트`` 에 속한 모든  ``자식 컴포넌트`` 도 ``re-rendering`` 된다는 것 입니다.
+
+즉, 아무런 ``Update (변화)`` 가 없는 ``자식 컴포넌트`` 도 ``re-rendering`` 되기 때문에, 성능저하의 문제가 됩니다.
+
+<br />
+
+``React`` 에서는 ``React.memo()`` 를 사용하여, 불필요한 ``re-rendering`` 을 막을 수 있습니다.
+
+``React.memo()`` 의 ``interface`` 는 다음과 같습니다.
+
+```typescript
+function memo(
+  component: FunctionComponent,
+  propsAreEqual?: (prevProps, nextProps): boolean
+);
+```
+
+<br />
+
+``React.memo()`` 의 첫번째 인자로 ``Function React Component`` 를 넘겨주면, ``HOC (Higher Order Component)`` 를 반환해 줍니다.
+
+``반환된 컴포넌트`` 는 ``Props`` 가 변경되지 않으면, ``re-rendering`` 을 하지 않게 됩니다.
+
+* ``자식 컴포넌트`` 자신의 ``State`` 가 변경되는 경우는 ``re-rendering`` 됩니다.
+
+<br />
+
+아래 코드는 ``React.memo()`` 를 사용하여, ``re-rendering`` 조건을 설정한 예시 입니다.
+
+```javascript
+// MyComponent.js
+
+import React from "react";
+
+const MyComponent = ({ content }) => {
+  return <div>{count}</div>
+};
+
+// 전달받는 props 가 변경될 때에만 ``re-rendering`` 되는 컴포넌트 입니다.
+const MemoizedMyComponent = React.memo(MyComponent);
+```
+
+<br />
+
+```javascript
+// App.js
+
+import MemoizedMyComponent from "./MyComponent";
+
+import React, {
+  useState,
+} from "react";
+
+const App = () => {
+  const [count, setCount] = useState(1);
+
+  return (
+    <div>
+      <MemoizedMyComponent count={count} />
+    </div>
+  );
+};
+```
+
+<br />
+
+위에서 사용한 ``MemoizedMyComponent`` 는 ``props`` 로 ``정형 데이터 (Primitive Data)`` 인 ``count: number`` 를 받습니다.
+
+그래서 우리가 의도했던 ``re-rendering`` 조건이 잘 동작합니다.
+
+<br />
+
+만약, ``props`` 로 ``비 정형 데이터 (None Primitive Data)`` 를 넘겨주는 경우에는, ``re-rendering`` 조건이 동작하지 않고, 의도치 않은 ``re-rendering`` 을 하게 됩니다.
+
+원인은, ``React.memo()`` 가 ``props`` 의 변화를 감지하는 ``기본 동작`` 은 ``shallow comparison (얕은 비교)`` 이기 때문 입니다.
+
+* ``shallow comparison (얕은 비교)`` 는 ``정형 데이터 (Primitive Data)`` 는 정상 동작이 되지만, ``Object`` 처럼 ``비 정형 데이터 (None Primitive Data)`` 는 ``Reference Value (참조값)`` 을 비교 합니다.
+
+<br />
+
+이렇게 ``Props`` 가 ``Object`` 같은 데이터를 넘겨받는 경우에는 ``React.memo`` 의 ``2 번째 인자 (propsAreEqual)`` 에 ``비교 함수`` 를 넘겨주어 ``re-rendering`` 조건을 설정할 수 있습니다.
+
+* ``2 번째 인자 (propsAreEqual)`` 이 ``true`` 를 반환하면 ``re-rendering`` 하지 않습니다.
+
+<br />
+
+```javascript
+// MyComponent.js
+
+import React from "react";
+
+// prevProps 와 nextProps 비교 함수
+const propsAreEqual = (prevProps, nextProps) => {
+  return prevProps.count === nextProps.count;
+};
+
+const MyComponent = ({ count }) => {
+  return <div>{count}</div>;
+};
+
+// ``props`` 의 하위 속성 ``{ count }`` 값이 같으면, ``re-rendering`` 하지않는 컴포넌트 입니다.
+const MemoizedMyComponent = React.memo(MyComponent, propsAreEqual);
+
+export default MemoizedMyComponent;
+```
+
+<br />
+
+```javascript
+import MemoisedMyComponent from "./MyComponent";
+
+import React, {
+  useState,
+} from "react";
+
+const App = () => {
+  const [obj, setObj] = useState({
+    count: 1,
+  });
+
+  return (
+    <div>
+      <MemoisedMyComponent obj={obj} />
+    </div>
+  );
+};
+```
+
+
+
+<br /><hr /><br />
+
+
+
+
 
 
 

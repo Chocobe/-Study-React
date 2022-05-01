@@ -1,6 +1,7 @@
 import DiaryEditor from "./DiaryEditor/DiaryEditor";
 import DiaryList from "./DiaryList/DiaryList";
-import Lifecycle from "./Lifecycle/Lifecycle";
+// import Lifecycle from "./Lifecycle/Lifecycle";
+// import OptimizeTest from "./OptimizeTest/OptimizeTest";
 
 import { useState, useRef, useEffect, useMemo } from "react";
 
@@ -51,8 +52,6 @@ const App = () => {
       .filter(item => item.id !== targetId);
 
     setData(newDiaryList);
-    
-    console.log(`targetId: ${targetId} 가 삭제 되었습니다.`);
   };
 
   const onEdit = (targetId, newContent) => {
@@ -65,8 +64,6 @@ const App = () => {
   };
 
   const getDiaryAnalysis = useMemo(() => {
-    console.log("일기 분석 시작");
-
     const goodCount = data.filter(item => item.emotion > 2).length;
     const badCount = data.length - goodCount;
     const goodRatio = (goodCount / data.length) * 100 || 0;
@@ -86,7 +83,9 @@ const App = () => {
   
   return (
     <div className="App">
-      <Lifecycle />
+      {/* <Lifecycle /> */}
+      {/* <OptimizeTest /> */}
+
       <DiaryEditor onCreate={onCreate} />
 
       <div>
