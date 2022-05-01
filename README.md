@@ -1351,7 +1351,41 @@ const MyComponent = _props => {
 
 
 
-#
+# 02-08. React Developer Tools (React 개발자 도구)
+
+``React Developer Tools`` 는 ``React`` 개발에 유용한 ``Chrome Extension`` 입니다.
+
+``Extension`` 설치 방법은 다음과 같습니다.
+
+1. ``Chrome 웹 스토어`` 검색 => 열기
+2. 우측 상단의 검색창에 ``react developer tools`` 검색 => 열기
+3. ``Chrome에 추가`` 버튼으로 ``Install`` 하기
+
+<br />
+
+``localhost`` 에서 ``React`` 개발 시, ``React Developer Tools`` 를 사용하기 위해서는 ``Chrome 확장 설정`` 에서 다음과 같은 설정을 해주어야 합니다.
+
+1. 브라우저의 ``확장 프로그램 관리`` 열기
+2. ``React Developer Tools`` 항목의 ``세부정보`` 열기
+    1. ``사이트 액세스`` 를 ``모든 사이트에서`` 로 설정
+    2. ``파일 URL에 대한 엑세스 허용`` 을 ``활성화`` 설정
+
+<br />
+
+설치한 ``React Developer Tools`` 는 ``개발자 도구 (F12)`` 에서 사용할 수 있습니다.
+
+각 컴포넌트의 ``계층구조`` 나 ``State (상태)`` 등을 실시간으로 확인할 수 있습니다.
+
+<br />
+
+``React Developer Tools`` 의 기능 중 ``components`` 의 ``re-rendering`` 중인 컴포넌트를 ``강조`` 해주는 기능도 유용합니다.
+
+해당 기능은 ``components Tab`` 의 설정을 해주어야 합니다.
+
+1. 개발자 도구의 ``components Tab`` 을 클릭
+2. 우측 상단의 ``설정 아이콘`` 클릭
+3. ``General Tab`` 클릭
+4. 옵션 중, ``Highlight update when components render.`` 를 ``활성화`` 설정
 
 
 
