@@ -1,8 +1,10 @@
 import React, { 
   useState,
   useRef,
-  useEffect,
+  useContext,
 } from "react";
+
+import { DiaryDispatchContext } from "../App";
 
 import "./DiaryItem.css";
 
@@ -12,12 +14,8 @@ const DiaryItem = ({
   content,
   emotion,
   createDate,
-  onRemove,
-  onEdit,
 }) => {
-  useEffect(() => {
-    console.log(`${id} 번째 re-rendering`);
-  });
+  const { onEdit, onRemove } = useContext(DiaryDispatchContext);
   
   const [isEdit, setIsEdit] = useState(false);
   const toggleIsEdit = () => setIsEdit(!isEdit);

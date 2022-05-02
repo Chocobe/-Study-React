@@ -1992,6 +1992,489 @@ export default React.memo(MyComponent);
 
 
 
+# 02-13. React.createContext() 를 사용하여 Props Drilling 해소하기
+
+컴포넌트는 Tree 구조로 구성됩니다.
+
+그래서 여러 계층의 부모 컴포넌트들과 자식 컴포넌트들로 연결되어 있습니다.
+
+이러한 구조에서 부모 컴포넌트는 ``State (상태)`` 와 ``Callback`` 을 자식 컴포넌트에 Props 로 내려주어 데이터 통신을 구현 합니다.
+
+<br />
+
+내려받은 ``Props`` 를 컴포넌트 자신은 직접 사용하지 않지만, 자신의 자식 컴포넌트에 필요하여 받는 경우가 있습니다.
+
+즉, 전달만을 위해 받는 ``Props`` 가 됩니다.
+
+<br />
+
+이러한 ``Props`` 를 ``Props Drilling`` 이라고 부릅니다.
+
+``Props Drilling`` 은 직접 사용하지 않는 ``Props`` 까지 받게되니, 코드가 복잡해지는 문제를 가집니다.
+
+또한, ``Props`` 를 처음 내려준 ``부모 컴포넌트`` 에서 ``Props`` 명을 바꾸면, 관련된 모든 컴포넌트에 수정작업을 해주어야 합니다.
+
+<br />
+
+이러한 ``Props Drilling`` 을 해소하고 코드를 깔끔하게 해주는, ``React`` 는 ``Context API`` 를 제공 합니다.
+
+다만 한가지 단점이 있는데, ``Context`` 를 사용하는 자식 컴포넌트들은 ``범용 컴포넌트`` 로 활용하기 어려워 집니다.
+
+
+
+<br /><hr /><br />
+
+
+
+## 02-13-01. ``Context API`` 살펴보기
+
+``React`` 의 ``Context`` 는 전역 Props 를 정의하는 기능 입니다.
+
+프로젝트의 전역 뿐만 아니라, ``국지적 전역 Props`` 로도 만들 수 있습니다.
+
+즉, ``Context`` 에 속한 ``모든 자식 컴포넌트`` 는 직접 해당 ``Context`` 에 접근할 수 있게 됩니다.
+
+<br />
+
+컴포넌트의 조합으로 구성된 ``React`` 는 ``Context`` 역시 컴포넌트로 만듭니다.
+
+* ``Context`` 역할을 하는 컴포넌트의 다른 표현으로는 ``Provider Component`` 입니다.
+
+
+
+<br /><hr /><br />
+
+
+
+## 02-13-02. ``Context`` 만들기
+
+``Context`` 는 다음과 같이 생성할 수 있습니다.
+
+```javascript
+import React from "react";
+
+const MyContext = React.createContext();
+```
+
+<br />
+
+``Context`` 생성 메서드인 ``React.createContext()`` 의 ``interface`` 를 살펴보면 다음과 같습니다.
+
+```typescript
+function createContext<T>(
+  defaultValue: T
+): Context<T>;
+```
+
+<br />
+
+``defaultValue`` 로 받는 값은 ``Context`` 의 ``default props`` 가 됩니다.
+
+이름이 ``defaultValue`` 인 이유는, ``Context`` 가 ``Global Props`` 로 전달할 데이터를 받는 속성명이 ``value`` 이기 때문입니다.
+
+<br />
+
+이제 ``Context`` 의 ``모든 자식 컴포넌트`` 가 사용할 수 있는 ``Global Props`` 를 작성해 보겠습니다.
+
+```javascript
+import React, { useState } from "react";
+
+import NameComponent from "./NameComponent";
+import PasswordComponent from "./PasswordComponent";
+import AgeComponent from "./AgeComponent";
+
+export const MyContext = React.createContext();
+
+const ParentComponent = () => {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [age, setAge] = useState(0);
+
+  return (
+    <div className="parentComponent">
+      <MyContext.Provider value={{ name, password }}>
+        <NameComponent />
+        <PasswordComponent />
+        <AgeComponent />
+      </MyContext.Provider>
+    </div>
+  );
+};
+
+export default parentComponent;
+```
+
+<br />
+
+위 코드에서 ``MyContext`` 는 ``ParentComponent`` 의 ``State (상태)`` 를 ``Global Props`` 로 만들어 줍니다.
+
+``ParentComponent`` 의 반환문을 살펴보면, ``<MyContext />`` 를 컴포넌트로 사용하고 있고, ``<MyContext/>`` 의 ``자식 컴포넌트`` 를 작성한 상태 입니다.
+
+이렇게 ``Context`` 컴포넌트의 ``자식 컴포넌트`` 는 ``계층 깊이`` 에 상관없이 ``Context`` 에 접근하고 사용할 수 있게 됩니다.
+
+<br />
+
+``Context`` 를 사용할 때, 일반적인 컴포넌트와 다른점은 ``<컴포넌트명.Provider />`` 형식으로 사용하는 것 입니다.
+
+이는 ``React.createContext()`` 로 만든 ``Context`` 객체를 사용하는 방법 입니다.
+
+<br />
+
+그리고 ``Global Props`` 로 사용할 ``State (상태)`` 는 ``Context`` 의 ``value`` 속성으로 설정합니다.
+
+위 코드의 ``age`` 처럼 ``Context`` 의 ``value`` 에 넘겨주지 않은 값은 ``Context`` 로 접근할 수 없습니다.
+
+그러므로 ``name`` 과 ``password`` 만 ``Global Props`` 가 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
+## 02-13-03. useContext() 를 사용하여, 자식 컴포넌트에서 Context 사용하기
+
+이번에는 ``자식 컴포넌트`` 에서 ``Context`` 에 접근하여 ``State (상태)`` 를 사용할 때는 ``useContext()`` 를 사용합니다.
+
+아래 코드는 ``useContext()`` 의 ``interface`` 입니다.
+
+```typescript
+function useContext<T>(
+  context: Context<T>
+): T;
+```
+
+<br />
+
+``useContext()`` 의 ``인자`` 에, 사용할 ``Context`` 를 넘겨주고, ``Context`` 의 ``value`` 속성값을 받게 됩니다.
+
+아래의 코드는 ``useContext()`` 를 사용하는 ``자식 컴포넌트`` 예시 입니다.
+
+```javascript
+import { useContext } from "react";
+
+import { MyContext } from "./ParentComponent";
+
+const NameComponent = () => {
+  const { name } = useContext(NameComponent);
+
+  // ... 생략 ...
+};
+
+export default NameComponent;
+```
+
+
+
+# 02-13-03. ``Context`` 를 사용한 예시 코드
+
+``React.createContext()`` 와 ``useContext()`` 를 사용한 전체 예시코드를 작성해 보겠습니다.
+
+```javascript
+// ParentComponent
+
+import React, { useState } from "react";
+
+import NameComponent from "./NameComponent";
+import PasswordComponent from "./PasswordComponent";
+import AgeComponent from "./AgeComponent";
+
+// Context 생성
+export const MyContext = React.createContext();
+
+const ParentComponent = () => {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [age, setAge] = useState(0);
+
+  return (
+    <div className="parentComponent">
+      <MyContext.Provider value={{
+        name, setName,
+        password, setPassword,
+        age, setAge,
+      }}>
+        <NameComponent />
+        <PasswordComponent />
+        <AgeComponent />
+      </MyContext.Provider>
+    </div>
+  );
+};
+
+export default ParentComponent;
+```
+
+<br />
+
+```javascript
+// NameComponent
+
+import React, { useContext } from "react";
+
+import { MyContext } from "./ParentComponent";
+
+const NameComponent = () => {
+  const { name, setName } = useContext(MyContext);
+
+  return (
+    <div className="nameComponent">
+      <h1>Name: {name}</h1>
+      <input value={name} onChange={e => setName(e.target.name)} />
+    </div>
+  );
+};
+
+export default NameComponent;
+```
+
+<br />
+
+```javascript
+// PasswordComponent
+
+import React, { useContext } from "react";
+
+import { MyContext } from "./ParentComponent";
+
+const PasswordComponent = () => {
+  const { password, setPassword } = useContext(MyContext);
+
+  return (
+    <div className="passwordComponent">
+      <h1>Password: {password}</h1>
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+    </div>
+  );
+};
+
+export default PasswordComponent;
+```
+
+<br />
+
+```javascript
+// AgeComponent 도 동일한 구조입니다.
+```
+
+
+
+# 02-14. ``Context`` 와 ``re-rendering``
+
+``Context`` 의 ``value`` 가 ``변화 (Update)`` 되면, ``모든 자식컴포넌트`` 는 ``re-rendering`` 됩니다.
+
+이는 ``React.memo()`` 로 만들어진 ``자식 컴포넌트`` 까지 ``re-rendering`` 됩니다.
+
+<br />
+
+우리가 ``React.memo()`` 를 사용하여 컴포넌트를 만들었던 이유는, 컴포넌트에 ``변화 (Update)`` 가 없을 때 ``re-rendering`` 을 하지 않도록 하여, 성능저하를 막기 위해서 였습니다.
+
+``Context`` 를 사용할 때에도 ``React.memo()`` 가 ``re-rendering`` 을 피하도록 코드를 작성해 보겠습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 02-14-01. React.memo() 를 사요하여 자식 컴포넌트 만들기
+
+자식 컴포넌트의 불필요한 ``re-rendering`` 을 막기 위해서는 ``React.memo()`` 사용하여 만들어야 합니다.
+
+```javascript
+import React from "react";
+
+const ChildComponent = () => {
+  return (
+    <div>Child Component</div>
+  );
+};
+
+export default React.memo(ChildComponent);
+```
+
+
+
+<br /><hr /><br />
+
+
+
+## 02-14-02. React.createContext() 를 사용하여 Context 만들기
+
+``부모 컴포넌트`` 는 자식 컴포넌트에 ``Props`` 를 넘겨주지 않고, ``Context`` 를 제공하도록 작성 합니다.
+
+이 때, ``State (상태)`` 와 ``State SETTER`` 는 별개의 ``Context`` 로 나누어 만드는 것이 중요합니다.
+
+이유는, ``State (상태)`` 를 사용하지 않고, ``State SETTER`` 만 사용하는 ``자식 컴포넌트`` 의 ``re-rendering`` 을 막기 위함 입니다.
+
+<br />
+
+여기서 나누어진 두개의 ``Context`` 를 다음과 같이 정의해 보겠습니다.
+
+* ``State (상태)`` 전용 ``Context``: ``StateContext``
+* ``State SETTER`` 전용 ``Context``: ``DispatchContext``
+
+<br />
+
+두개로 나눈 ``Context`` 는 다음과 같이 사용하게 될 것입니다.
+
+```javascript
+import React from "react";
+
+const StateContext = React.createContext();
+const DispatchContext = React.createContext();
+
+const App = () => {
+  return (
+    <StateContext>
+      <DispatchContext>
+        {/* 자식 컴포넌트 위치 */}
+      </DispatchContext>
+    </StateContext>
+  );
+};
+```
+
+<br />
+
+``Context`` 에 ``변화 (Update)`` 가 발생하면 모든 컴포넌트를 ``re-rendering`` 하게 됩니다.
+
+하지만, ``DispatchContext`` 의 ``value`` 가 ``Memoization`` 된 값이라면, ``re-rendering`` 되지 않고, 컴포넌트 재사용을 하게 됩니다.
+
+결론적으로 ``DispatchContext`` 의 ``자식 컴포넌트`` 는 ``State (상태)`` 가 변한 경우에만 ``re-rendering`` 됩니다.
+
+<br />
+
+정리하면 다음과 같습니다.
+
+* ``State`` 와 ``State SETTER`` 를 별개의 ``Context`` 로 나누어 만듭니다.
+* ``StateContext`` 의 직속 자식컴포넌트로 ``DispatchContext`` 를 배치 합니다.
+* ``DispatchContext`` 의 ``value`` 에는 ``callback`` 들을 하나의 ``Memoization`` 객체로 만들어 넘겨줍니다.
+* 실제 ``StateContext`` 나 ``DispatchContext`` 를 사용하는 ``자식 컴포넌트`` 들은 ``React.memo()`` 로 만들어 줍니다.
+
+
+
+<br /><hr /><br />
+
+
+
+TODO: 연습 프로젝트 생성하여 예시 코드 만들기
+TODO: 연습 프로젝트 생성하여 예시 코드 만들기
+TODO: 연습 프로젝트 생성하여 예시 코드 만들기
+TODO: 연습 프로젝트 생성하여 예시 코드 만들기
+TODO: 연습 프로젝트 생성하여 예시 코드 만들기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+아래의 코드는 ``Context`` 를 만드는 예시 입니다.
+
+```javascript
+import React from "react";
+
+// Context 를 생성 합니다.
+const MyContext = React.createContext();
+```
+
+<br />
+
+``React.createContext()`` 를 사용하여 ``Context`` 를 만들 수 있으며, ``인자`` 에 ``defaultValue`` 를 지정할 수도 있습니다.
+
+<br />
+
+
+
+
+
+
+
+
+
+
+* 부모 컴포넌트로 부터 받은 Props 를 컴포넌트 자신은 사용하지 않지만, 자식 컴포넌트에 전달하기 위해 받는 현상을 Props Drilling 이라고 한다.
+* 부모 컴포넌트는 Provider Component(공급자 컴포넌트) 를 자식으로 갖고, 부모 컴포넌트의 모든 Props 를 Provider Component 에 넘겨준다.
+  * Provider Component 는 부모 컴포넌트의 모든 Props 를 받은 후, Props 가 필요한 자식 컴포넌트에 직접 제공하는 역할을 한다.
+ 
+
+
+* Props Drilling 을 효율적으로 해결할 수 있다.
+* 코드가 깔끔해진다.
+
+
+* React 는 Provider Component 를 위한 Context API 기능을 제공한다.
+
+```javascript
+// 부모 컴포넌트
+
+import React from "react";
+
+// Context 생성 === Provider Component
+export const MyContext = React.createContext(defaultValue);
+
+// Context Provider 를 사용하여 데이터 공급
+const ParentComponent = () => {
+  return (
+    <MyContext value={}>
+      {/* ParentComponent 의 Props 를 공급받을 모든 자식 컴포넌트 위치 */}
+    </MyContext>
+  );
+};
+
+export default ParentComponent;
+```
+
+<br />
+
+```javascript
+// 자식 컴포넌트
+
+import { useContext } from "react";
+
+import { MyContext } from "./App";
+
+const ChildComponent = () => {
+  const contextFromProvider = useContext(MyContext);
+}
+```
+
+
+* Context 를 받은 자식 컴포넌트는 개발자 도구에서 확인할 수 있다.
+* 경로: "자식 컴포넌트" => "hooks" => "Context"
+
+
+State 를 공급하는 Context 는 State 만 내려줘야 한다.
+만약, 부모 컴포넌트의 상태변화 함수 (dispatch()) 를 같이 내려주면, 상태변화 함수 (dispatch()) 가 바뀔때 마다, 모든 자식컴포넌트가 ``re-rendering`` 되기 때문
+  * 자식 컴포넌트에 설정했던 React.memo() 가 풀리게 됨
+
+그래서 부모 컴포넌트의 상태변화 함수를 Props 로 내려줄 때에는 별도의 Context 를 만들어야 한다.
+
+
+
+* Provider Component 가 re-rendering 되면, 모든 자식요소도 re-rendering 된다.
+* 자식 컴포넌트에 적용한 React.memo() 를 적용시키기 위해서는 다음과 같은 처리가 필요 하다.
+    1. Provider Component 를 State 와 Dispatch 를 별도로 만든다.
+        * StateContext
+        * DispatchContext
+    2. DispatchContext 의 value 로 넘겨주는 Props 는 useMemo() 로 Memoization 객체를 넘겨준다.
+
 
 
 

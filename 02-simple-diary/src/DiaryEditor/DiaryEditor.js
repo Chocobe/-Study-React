@@ -1,12 +1,16 @@
 import React, { 
   useState, 
   useRef,
-  useEffect,
+  useContext,
 } from "react";
+
+import { DiaryDispatchContext } from "../App";
 
 import "./DiaryEditor.css";
 
-const DiaryEditor = ({ onCreate }) => {
+const DiaryEditor = () => {
+  const { onCreate } = useContext(DiaryDispatchContext);
+  
   const $authorInput = useRef();
   const $contentInput = useRef();
   
@@ -110,8 +114,8 @@ const DiaryEditor = ({ onCreate }) => {
   );
 };
 
-DiaryEditor.defaultProps = {
-  onCreate: () => {},
-};
+// DiaryEditor.defaultProps = {
+//   onCreate: () => {},
+// };
 
 export default React.memo(DiaryEditor);

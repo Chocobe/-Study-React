@@ -3,7 +3,7 @@ import DiaryList from "./DiaryList/DiaryList";
 // import Lifecycle from "./Lifecycle/Lifecycle";
 // import OptimizeTest from "./OptimizeTest/OptimizeTest";
 
-import { 
+import React, { 
   useRef,
   useEffect,
   useMemo,
@@ -54,6 +54,10 @@ const dataReducer = (data, action) => {
   }
 }
 
+export const DiaryStateContext = React.createContext();
+
+export const DiaryDispatchContext = React.createContext();
+
 const App = () => {
   const [data, dispatch] = useReducer(dataReducer, []);
   
@@ -102,6 +106,14 @@ const App = () => {
   };
   const onEdit = useCallback(_onEdit, []);
 
+  const memoizedDispatches = useMemo(() => {
+    return {
+      onCreate,
+      onEdit,
+      onRemove,
+    }
+  }, []);
+
   const getDiaryAnalysis = useMemo(() => {
     const goodCount = data.filter(item => item.emotion > 2).length;
     const badCount = data.length - goodCount;
@@ -121,24 +133,30 @@ const App = () => {
   } = getDiaryAnalysis;
   
   return (
-    <div className="App">
-      {/* <Lifecycle /> */}
-      {/* <OptimizeTest /> */}
+    // <DiaryDispatchContext.Provider value={{
+    //   onCreate, onEdit, onRemove,
+    // }}>
+    //   <DiaryStateContext.Provider value={data}>
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider value={memoizedDispatches}>
+        <div className="App">
+          {/* <Lifecycle /> */}
+          {/* <OptimizeTest /> */}
 
-      <DiaryEditor onCreate={onCreate} />
+          <DiaryEditor />
 
-      <div>
-        <div>Good Count: {goodCount}</div>
-        <div>Bad Count: {badCount}</div>
-        <div>Good Ratio: {goodRatio}</div>
-      </div>
-      
-      <DiaryList 
-        diaryList={data} 
-        onRemove={onRemove}
-        onEdit={onEdit}
-      />
-    </div>
+          <div>
+            <div>Good Count: {goodCount}</div>
+            <div>Bad Count: {badCount}</div>
+            <div>Good Ratio: {goodRatio}</div>
+          </div>
+          
+          <DiaryList />
+        </div>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
+    //   </DiaryStateContext.Provider>
+    // </DiaryDispatchContext.Provider>
   )
 }
 
