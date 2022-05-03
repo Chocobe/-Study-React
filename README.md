@@ -2366,116 +2366,47 @@ TODO: 연습 프로젝트 생성하여 예시 코드 만들기
 
 
 
+<br /><hr /><br />
 
 
 
+# 03. Router
 
+위키백과에 정의된 ``Routing`` 은, 어떤 네트워크 내에서 통신 데이터를 보낼 경로를 선택하는 일련의 과정이라고 합니다.
 
+그리고 데이터의 경로를 정해주는 장치를 ``Router`` 라고 합니다.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-아래의 코드는 ``Context`` 를 만드는 예시 입니다.
-
-```javascript
-import React from "react";
-
-// Context 를 생성 합니다.
-const MyContext = React.createContext();
-```
+이 두가지 개념을 합쳐서, 경로를 정해주는 행위 자체와 그 과정들을 모두 포함하여 ``Routing`` 이라고 부릅니다.
 
 <br />
 
-``React.createContext()`` 를 사용하여 ``Context`` 를 만들 수 있으며, ``인자`` 에 ``defaultValue`` 를 지정할 수도 있습니다.
+``Routing`` 의 개념은 ``웹 페이지`` 에서도 사용되는데, ``Page Routing`` 이라 함은, 어떤 페이지(웹 문서)를 열지 결정하는 개념이 됩니다.
 
 <br />
 
+웹 페이지의 ``Router`` 는 두가지 방법으로 동작할 수 있습니다.
 
-
-
-
-
-
-
-
-
-* 부모 컴포넌트로 부터 받은 Props 를 컴포넌트 자신은 사용하지 않지만, 자식 컴포넌트에 전달하기 위해 받는 현상을 Props Drilling 이라고 한다.
-* 부모 컴포넌트는 Provider Component(공급자 컴포넌트) 를 자식으로 갖고, 부모 컴포넌트의 모든 Props 를 Provider Component 에 넘겨준다.
-  * Provider Component 는 부모 컴포넌트의 모든 Props 를 받은 후, Props 가 필요한 자식 컴포넌트에 직접 제공하는 역할을 한다.
- 
-
-
-* Props Drilling 을 효율적으로 해결할 수 있다.
-* 코드가 깔끔해진다.
-
-
-* React 는 Provider Component 를 위한 Context API 기능을 제공한다.
-
-```javascript
-// 부모 컴포넌트
-
-import React from "react";
-
-// Context 생성 === Provider Component
-export const MyContext = React.createContext(defaultValue);
-
-// Context Provider 를 사용하여 데이터 공급
-const ParentComponent = () => {
-  return (
-    <MyContext value={}>
-      {/* ParentComponent 의 Props 를 공급받을 모든 자식 컴포넌트 위치 */}
-    </MyContext>
-  );
-};
-
-export default ParentComponent;
-```
+* 사용자가 요청하면, 서버에서 해당 페이지를 전달해 주는 방식 (``Miltipage Application``)
+* 모든 페이지가 하나의 문서로 되어있는 방식 (``Single Page Application``)
 
 <br />
 
-```javascript
-// 자식 컴포넌트
+우리가 사용하는 ``React`` 는 ``Single Page Application`` 이며, 이를 ``Client Side Rendering`` 이라고 부릅니다.
 
-import { useContext } from "react";
+웹 페이지의 ``Router`` 에 접목해 보면 다음과 같습니다.
 
-import { MyContext } from "./App";
+* ``Multipage Application``: ``Server Side Rendering``
+* ``Single Page Application``: ``Client Side Rendering``
 
-const ChildComponent = () => {
-  const contextFromProvider = useContext(MyContext);
-}
-```
+<br />
 
+우리가 사용하는 ``React`` 는 ``Single Page Application`` 입니다.
 
-* Context 를 받은 자식 컴포넌트는 개발자 도구에서 확인할 수 있다.
-* 경로: "자식 컴포넌트" => "hooks" => "Context"
+``Single Page Application`` 의 장점으로는 다음과 같습니다.
 
-
-State 를 공급하는 Context 는 State 만 내려줘야 한다.
-만약, 부모 컴포넌트의 상태변화 함수 (dispatch()) 를 같이 내려주면, 상태변화 함수 (dispatch()) 가 바뀔때 마다, 모든 자식컴포넌트가 ``re-rendering`` 되기 때문
-  * 자식 컴포넌트에 설정했던 React.memo() 가 풀리게 됨
-
-그래서 부모 컴포넌트의 상태변화 함수를 Props 로 내려줄 때에는 별도의 Context 를 만들어야 한다.
-
-
-
-* Provider Component 가 re-rendering 되면, 모든 자식요소도 re-rendering 된다.
-* 자식 컴포넌트에 적용한 React.memo() 를 적용시키기 위해서는 다음과 같은 처리가 필요 하다.
-    1. Provider Component 를 State 와 Dispatch 를 별도로 만든다.
-        * StateContext
-        * DispatchContext
-    2. DispatchContext 의 value 로 넘겨주는 Props 는 useMemo() 로 Memoization 객체를 넘겨준다.
-
-
+* 단일 페이지이기 때문에, 페이지 이동은 ``React App`` 에서 해당하는 부분을 보여주는 방식으로 페이지 이동을 합니다.
+* 페이지 이동에 대한, 서버에 웹 페이지를 요청하지 않으므로, 서버의 부하를 줄일 수 있습니다.
+* 페이지에 필요한 데이터가 있다면, 서버에 해당 데이터만 받아오는 Rest API 요청만 합니다.
 
 
 
@@ -2483,6 +2414,4 @@ State 를 공급하는 Context 는 State 만 내려줘야 한다.
 
 
 
-# (정리해야할 메모 - 이후 강좌에서 언급 예정)
-
-* ``Prop Drilling`` 으로 ``Props`` 을 하용하는 경우 ``Props`` 명을 바꾸게 되면, 관련된 모든 파일을 직접 수정해야하는 불편함이 있다.
+# 03-01. 
