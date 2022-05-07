@@ -2809,4 +2809,122 @@ export default App;
 
 
 
-#
+# 04. React 개발 팁
+
+# 04-01. ``process.env.PUBLIC_URL``: 프로젝트 public 폴더 경로
+
+```javascript
+const publicURL = process.env.PUBLIC_URL;
+```
+
+
+<br /><hr /><br />
+
+
+# 04-02. 공통 컴포넌트 개발 마인드셋
+
+* UI 컴포넌트를 개발하기 전에 고려할 사항은 다음과 같습니다.
+    * UI 요소가 어떤 기준으로 얼만큼 변화하는가
+    * 변화하는 것들을 ``패턴화`` 하기
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-03. Enum 처럼 사용하는 Props 처리하기
+
+컴포넌트의 ``type`` 처럼 ``특정 string`` 을 받는 경우가 있습니다.
+
+``Props`` 로 받은 ``type`` 을 그대로 사용할 경우, 사용가능한 ``type`` 은 문제없지만, 제공되지 않는 ``type`` 을 입력한 경우, ``type: "default"`` 처럼 기본값으로 처리해 주어야 할 수 있습니다.
+
+이러한 경우, ``Array.prototype.includes()`` 를 사용하여 ``Props`` 를 보정해 줄 수 있습니다.
+
+```javascript
+/**
+ * @enum { string } ButtonType
+ */
+const ButtonType = {
+  DEFAULT: "default",
+  POSITIVE: "positive",
+  NEGATIVE: "negative",
+};
+
+const MyButton = ({ type }) => {
+  const buttonType = ["positive", "negative"].includes(type) ? type : "default";
+
+  return (
+    <button className={buttonType}>
+      버튼
+    </button>
+  );
+};
+
+export default MyButton;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-04. ``React`` 의 ``Named Slots``
+
+``React`` 의 ``slot`` 은 ``Vue`` 의 ``defaultSlot`` 만 제공 합니다.
+
+``defaultSlot`` 은 컴포넌트의 ``body`` 에 작성하여 사용할 수 있습니다.
+
+<br />
+
+만약 ``Vue`` 의 `` Named Slot`` 을 사용하고자 할 경우, ``Props`` 를 통해서 사용할 수 있습니다.
+
+``React`` 컴포넌트의 ``Props`` 에 ``컴포넌트`` 를 넘겨주면, 해당 컴포넌트 내부에서 ``Named Slot`` 처럼 사용할 수 있습니다.
+
+```javascript
+// MyHeader.js
+
+const MyHeader = ({ leftSide, text, rightSide }) => (
+  return (
+    <header className="MyHeader">
+      <div className="MyHeader-leftSide">{leftSide}</div>
+      <div className="MyHeader-text">{text}</div>
+      <div className="MyHeader-rightSide">{rightSide}</div>
+    </header>
+  );
+);
+
+export default MyHeader;
+```
+
+<br />
+
+```javascript
+// App.js
+
+import MyHeader from "./MyHeader";
+import MyButton from "./MyButton";
+
+const App = () => (
+  <div className="App">
+    <MyHeader
+      leftSide={
+        <MyButton onClick={() => alert("좌측 버튼 클릭")}>좌측 버튼</MyButton>
+      }
+      rightSide={
+        <MyButton onClick={() => alert("우측 버튼 클릭")}>우측 버튼</MyButton>
+      }
+    >
+      MyHeader text Props 
+    </MyHeader>
+  </div>
+)
+```
+
+
+
+<br /><hr /><br />
+
+
+
