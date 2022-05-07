@@ -2677,3 +2677,136 @@ export default MyApp;
 
 
 
+# 03-05. useRoutes() 를 사용하여 Router 깔끔하게 관리하기 - Nested Routing (중첩 라우팅)
+
+``<Routes />``, ``<Route />`` 를 사용하여 ``JSX`` 스타일로 만들게 되면, 가독성이 좋지 않은 단점이 있습니다.
+
+```javascript
+import { Routes, Route } from "react-router-dom";
+
+import Home from "./Home";
+import HomeFirst from "./HomeFirst";
+import HomeSecond from "./HomeSecond";
+
+import About from "./About";
+import AboutFirst from "./AboutFirst";
+import AboutSecond from "./AboutSecond";
+
+const MyRouter = () => (
+  <Routes>
+    <Route path="/" element={Home}>
+      <Route path="first" element={HomeFirst} />
+      <Route path="second" element={HomeSecond} />
+    </Route>
+
+    <Route path="/about" element={About}>
+      <Route path="first" element={AboutFirst} />
+      <Route path="second" element={AboutSecond} />
+    </Route>
+  </Routes>
+);
+
+export default AppRouter;
+```
+
+<br />
+
+``Nested Routing (중첩 라우팅)`` 을 사용한다면, 더더욱 가독성이 나빠집니다.
+
+그래서 ``react-router-dom`` 의 ``Custom Hook`` 으로 ``useRoutes()`` 를 제공하고 있으며, ``useRoutes()`` 를 사용하면 ``javascript object`` 로 ``<Routes />`` 를 만들 수 있습니다.
+
+<br />
+
+다음은 ``useRoutes()`` 의 ``interface`` 입니다.
+
+```typescript
+function useRoutes(
+  routes: RouteObject[],
+  locationArg: Partial<Location> | string
+)
+```
+
+<br />
+
+``useRoutes()`` 에 ``routes`` 를 인자로 넘겨주면, ``<Routes />`` 컴포넌트가 생성됩니다.
+
+``<Routes />`` 와 ``<Route />`` 로 작성된 복잡한 ``JSX`` 가 아닌, ``컴포넌트`` 로 사용하게 됩니다.
+
+```javascript
+// AppRoutes.js
+
+import { useRoutes } from "react-router-dom";
+
+import Home from "./Home";
+import HomeFirst from "./HomeFirst";
+import HomeSecond from "./HomeSecond";
+
+import About from "./About";
+import AboutFirst from "./AboutFirst";
+import AboutSecond from "./AboutSecond";
+
+const AppRoutes = () => useRoutes([
+  {
+    path: "/",
+    element: <Home />,
+    children: [
+      {
+        path: "first",
+        element: <HomeFirst />,
+      },
+      {
+        path: "second",
+        element: <HomeSecond />,
+      },
+    ],
+  },
+  {
+    path: "/about",
+    element: <About />,
+    children: [
+      {
+        path: "first",
+        element: <AboutFirst />,
+      },
+      {
+        path: "second",
+        element: <AboutSecond />,
+      },
+    ],
+  },
+]);
+
+export default AppRoutes;
+```
+
+<br />
+
+```javascript
+// App.js 
+
+import AppRoutes from "./AppRoutes";
+
+import { BrowserRouter } from "react-router-dom";
+
+const App = () => (
+  <div className="app">
+    <nav>
+      <AppRouter />
+    </nav>
+  </div>
+);
+
+export default App;
+```
+
+<br />
+
+``JSX`` 로 작성했던 ``<Routes />`` 와 ``<Route />`` 코드에 비해 훨씬 가독성도 좋고, ``RouteObject[]`` 를 한 곳에서 관리할 수 있게 되었습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+#
