@@ -2414,4 +2414,266 @@ TODO: 연습 프로젝트 생성하여 예시 코드 만들기
 
 
 
-# 03-01. 
+# 03-01. react-router-dom 을 사용하여 Router 만들기
+
+``React`` 의 ``Router`` 는 ``react-router-dom`` 라이브러리를 사용합니다. (``6버전``)
+
+``react router`` 를 검색하면, ``React`` 용 ``Router`` 공식 홈페이지를 찾을 수 있습니다.
+
+```bash
+npm i react-router-dom@6
+```
+
+<br />
+
+``react-router-dom`` 은 컴포넌트 형식으로 사용합니다.
+
+* ``<BrowserRouter />``: ``History Mode`` 로 페이지 이동을 합니다.
+  * ``<App />`` 의 부모 컴포넌트로 사용합니다.
+* ``<Routes />``: 각 페이지에 대한 ``Route`` 들의 부모 컴포넌트 입니다.
+* ``<Route />``: ``Route`` 컴포넌트 입니다.
+
+<br />
+
+위의 ``react-router-dom`` 을 사용하여, ``Router`` 를 구현하면 다음과 같습니다.
+
+```javascript
+// App.js
+
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+
+const HomePage = () => <div>HOME Page</div>;
+const AboutPage = () => <div>ABOUT Page</div>;
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <h1>고정된 요소 입니다.</h1>
+
+      {/* 해당하는 Route 가 rendering 될 위치 */}
+      <Routes>
+        {/* 사용할 Route 정보(컴포넌트) - 여기 없는 페이지 요청시, 404 */}
+        <Route path="/" element={<HomePage />} /> |
+        <Route path="/about" element={<AboutPage />} />
+      </Routes>
+
+      {/* Route 이동 컴포넌트 (페이지 이동 메뉴) */}
+      <Link to="/">HOME</Link> |
+      <Link to="/about">ABOUT</Link>
+    </BrowserRouter>
+  );
+};
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 03-02. Path Variable
+
+``URL`` 에는 경로 변수를 담을 수 있습니다.
+
+```bash
+https://my-app.com/my-page/:id
+```
+
+<br />
+
+위 경로에서 ``/:id`` 를 ``Path Varialbe`` 이라고 합니다.
+
+이 경로를 사용하여, 게시판의 ``현재 페이지 번호``, ``게시글 id`` 등을 넘겨줄 수 있습니다.
+
+<br />
+
+``URL`` 로 넘겨받은 ``Path Varaible`` 에 접근하기 위해, ``react-router-dom`` 에서 제공하는 ``useParams()`` 라는 ``Custom Hook`` 을 사용합니다.
+
+```javascript
+import { useParams } from "react-router-dom";
+
+const MyApp = () => {
+  const { id } = useParams();
+
+  console.log(`id: ${id}`);
+
+  return <></>;
+}
+```
+
+<br />
+
+위 코드에서 사용한 ``useParams()`` 를 통해서, ``URL`` 에 담긴 ``/:id`` 값을 가져올 수 있습니다.
+
+하지만, ``useParams()`` 만 사용해서는 ``Path Variable`` 을 사용할 수 없습니다.
+
+``<Route />`` 에서 ``/:id`` 경로를 추가해 주어야 합니다.
+
+<br />
+
+주의할 점은, ``Path Variable`` 은 ``URL`` 에 영향을 주기 때문에, ``/:id`` 사용여부에 따라 서로 다른 ``URL`` 이 됩니다.
+
+아래의 두 경로는 서로 별개의 ``URL`` 이 됩니다.
+
+* ``https://my-app/my-page``
+* ``https://my-app/my-page/:id``
+
+<br />
+
+```javascript
+// <Route /> 설정
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import MyPage from "./MyPage";
+
+const MyApp = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/myPage" component={MyPage} />
+        <Route path="/myPage/:id/:mode/:page" element={MyPage} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+export default MyApp;
+```
+
+<br />
+
+```javascript
+// <Route /> 경로: "/myPage/:id/:mode/:page"
+
+import { useParams } from "react-router-dom";
+
+const MyPage = () => {
+  const { id, mode, page } = useParams();
+
+  console.log(`id: ${id}`);
+  console.log(`mode: ${mode}`);
+  console.log(`page: ${page}`);
+
+  return <></>;
+};
+
+export default MyPage;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 03-03. Query String
+
+``Query String`` 도 ``Path Variable`` 과 유사한 기능으로, ``URL`` 에 값을 넘겨줍니다.
+
+차이점은 다음과 같습니다.
+
+* ``URL`` 에서 ``?`` 뒤에 위치 합니다.
+* ``key=value`` 형식으로 사용합니다.
+* ``URL`` 에 영향을 주지 않기 때문에, ``<Route />`` 에 추가 설정이 필요없습니다.
+
+<br />
+
+``Query String`` 은 ``react-router-dom`` 에서 제공하는 ``Custom Hook`` 인 ``useSearchParams()`` 로 사용할 수 있습니다.
+
+``useSearchParams()`` 는 배열을 반환하며, 값은 다음과 같습니다.
+
+* ``const [searchParams, setSearchParams] = useSearchParams()``
+* ``searchParams``: ``Query String`` 을 가지고 있는 객체
+* ``setSearchParams``: ``Query String`` 을 변경하기 위한 함수
+
+<br />
+
+```javascript
+// URL 경로: "/my-app?id=chocobe&mode=day&page=333"
+
+import { useSearchParams } from "react-router-dom";
+
+const MyApp = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const id = searchParams.get("id");
+  const mode = searchParams.get("mode");
+  const page = searchParams.get("page");
+
+  console.log(`id: ${id}`);
+  console.log(`mode: ${mode}`);
+  console.log(`page: ${page}`);
+
+  return <></>;
+};
+
+export default MyApp;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 03-04. Navigate
+
+이전에 살펴보았던 페이지 이동방법은 ``<Link to="경로">페이지</Link>`` 방식 이었습니다.
+
+``<Link />`` 는 ``template`` 에서 페이지 이동 방법이었고, ``Javascript`` 내부에서 페이지 이동 방법에 대해 알아 보겠습니다.
+
+<br />
+
+로그인 실패 시 특정 페이지로 이동하기 처럼, 로직에 따라 페이지 이동이 필요한 경우가 있습니다.
+
+``react-router-dom`` 에서 제공하는 ``Custom Hook`` 인, ``useNavigate()`` 를 사용하여 구현할 수 있습니다.
+
+<br />
+
+``useNavigate()`` 는 ``함수`` 를 반환하는데, 이 함수의 인자에 ``URL`` 을 넘겨서 호출하면, 해당 ``URL`` 로 페이지 이동을 하게 됩니다.
+
+```javascript
+import { useNavigate } from "react-router-dom";
+
+const MyApp = () => {
+  const navigate = useNavigate();
+
+  // "/my-page" 경로로 페이지를 이동 합니다.
+  navigate("/my-page");
+
+  return <></>;
+};
+
+export default MyApp;
+```
+
+<br />
+
+그리고 ``useNavigate(-1)`` 를 호출하면, ``History Back (뒤로가기)`` 가 됩니다.
+
+```javascript
+import { useNavigate } from "react-router-dom";
+
+const MyApp = () => {
+  const navigate = useNavigate();
+
+  navigate(-1);
+
+  return <></>;
+};
+
+export default MyApp;
+```
+
+
+
+<br /><hr /><br />
+
+
+
