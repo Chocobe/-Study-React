@@ -2928,3 +2928,37 @@ const App = () => (
 
 
 
+# 04-05. 개발중인 ``State`` 변경 확인 방법
+
+``useEffect()`` 를 사용하면, ``Lifecycle`` 에 특정 기능을 추가할 수 있었습니다.
+
+특정 ``State (상태)`` 의 값 변화를 확인하기 편한 방법으로 ``useEffect()`` 를 사용할 수 있습니다.
+
+<br />
+
+``State (상태)`` 의 변화를 파악하는 것이 목적이므로, ``useEffect()`` 의 ``dependency (2번째 인자)`` 에 대상 ``State (상태)`` 를 지정해 줍니다.
+
+```javascript
+import { useState, useEffect } from "react";
+
+const MyApp = () => {
+  const [state, setState] = useState([]);
+
+  useEffect(() => {
+    console.log("state 변화 확인 중 입니다.");
+    console.log(state);
+  }, [state]);
+
+  return <></>;
+};
+
+export deefault MyApp;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+#

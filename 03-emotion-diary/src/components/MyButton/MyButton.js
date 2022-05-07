@@ -1,7 +1,7 @@
 import "./MyButton.css";
 
 const MyButton = ({
-  type, onClick, children
+  type, onClick, children, className
 }) => {
   const btnType = ["positive", "negative"].includes(type) ? type : "default";
   
@@ -9,7 +9,8 @@ const MyButton = ({
     <button
       className={[
         "MyButton",
-        `MyButton_${btnType}`
+        `MyButton_${btnType}`,
+        className,
       ].join(" ")}
       onClick={onClick}
     >

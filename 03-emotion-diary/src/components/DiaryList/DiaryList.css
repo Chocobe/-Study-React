@@ -1,0 +1,41 @@
+.DiaryList {
+
+}
+
+.DiaryList-menuWrapper {
+  margin: 20px 0 30px;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.DiaryList-menuWrapper-lhs {
+
+}
+
+.DiaryList-menuWrapper-lhs > .ControlMenu {
+  margin-right: 10px;
+
+  border: none;
+  border-radius: 4px;
+  background-color: #ececec;
+
+  padding: 10px 20px;
+
+  font-size: 18px;
+  font-family: "Nanum Pen Script";
+
+  cursor: pointer;
+}
+
+.DiaryList-menuWrapper-rhs {
+  flex: 1;
+}
+
+.DiaryList-menuWrapper-rhs-button {
+  width: 100%;
+}
+
+.DiaryList-item {
+
+}

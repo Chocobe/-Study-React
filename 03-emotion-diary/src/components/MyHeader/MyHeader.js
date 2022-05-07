@@ -1,8 +1,13 @@
 import "./MyHeader.css";
 
-const MyHeader = ({ leftChild, rightChild, children }) => {
+const MyHeader = ({ 
+  leftChild, rightChild, children, className,
+}) => {
   return (
-    <header className="MyHeader">
+    <header className={[
+      "MyHeader",
+      className,
+    ].join(" ")}>
       <div className="MyHeader-leftSide">
         {leftChild}
       </div>

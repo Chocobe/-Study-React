@@ -55,8 +55,47 @@ const dataReducer = (state, action) => {
 export const DiaryStateContext = React.createContext();
 export const DiaryDispatchContext = React.createContext();
 
+const dummyData = [
+  {
+    id: 1,
+    date: new Date(2022, 4, 1).getTime(),
+    content: "5월 1일 봄이 와요",
+    emotion: 1,
+  },
+  {
+    id: 2,
+    date: new Date(2022, 4, 2).getTime(),
+    content: "5월 2일 비",
+    emotion: 4,
+  },
+  {
+    id: 3,
+    date: new Date(2022, 4, 3).getTime(),
+    content: "5월 3일 공기가 맑아요",
+    emotion: 3,
+  },
+  {
+    id: 4,
+    date: new Date(2022, 4, 4).getTime(),
+    content: "5월 4일 내일은 쉬는 날",
+    emotion: 5,
+  },
+  {
+    id: 5,
+    date: new Date(2022, 4, 5).getTime(),
+    content: "내일 출근...",
+    emotion: 2,
+  },
+  {
+    id: 6,
+    date: new Date(2022, 4, 6).getTime(),
+    content: "줄바꿈 테스트 중 입니다. 긴 글일 때, \"...\" 형식으로 보여줄 예정 입니다. 줄바꿈 테스트 중 입니다. 긴 글일 때, \"...\" 형식으로 보여줄 예정 입니다.",
+    emotion: 2,
+  },
+]
+
 function App() {
-  const [data, dispatchData] = useReducer(dataReducer, []);
+  const [data, dispatchData] = useReducer(dataReducer, dummyData);
 
   const dataId = useRef(0);
   
@@ -105,8 +144,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/new" element={<New />} />
-              <Route path="/edit" element={<Edit />} />
-              <Route path="/diary/:id/:mode/:page" element={<Diary />} />
+              <Route path="/edit/:id" element={<Edit />} />
+              <Route path="/diary/:id" element={<Diary />} />
             </Routes>
           </div>
         </BrowserRouter>
