@@ -1,4 +1,9 @@
-import { useState, useRef, useContext } from "react";
+import { 
+  useState, 
+  useRef, 
+  useContext,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
 
 import { DiaryDispatchContext } from "../../App";
@@ -54,8 +59,10 @@ const getStringDate = date => {
   return `${year}-${month}-${day}`;
 };
 
-const DiaryEditor = () => {
-  const { onCreate } = useContext(DiaryDispatchContext);
+const DiaryEditor = ({
+  isEdit, originData,
+}) => {
+  const { onCreate, onEdit } = useContext(DiaryDispatchContext);
   
   const navigate = useNavigate();
   
@@ -82,9 +89,33 @@ const DiaryEditor = () => {
       return;
     }
 
-    onCreate(date, content, emotion);
+    if (window.confirm(isEdit
+      ? "일기를 수정 하시겠습니까?"
+      : "새로운 일기를 등록 하시겠습니까?"
+    )) {
+      isEdit
+        ? onEdit(originData.id, date, content, emotion)
+        : onCreate(date, content, emotion);
+    }
+    
+    // isEdit
+    //   ? onEdit(date, content, emotion)
+    //   : onCreate(date, content, emotion);
     navigate("/", { replace: true });
   }
+
+  // 수정용 처리
+  useEffect(() => {
+    if (!isEdit) return;
+
+    const { date, content, emotion } = originData;
+    
+    setDate(getStringDate(new Date(
+      parseInt(date)
+    )));
+    setContent(content);
+    setEmotion(emotion);
+  }, [isEdit, originData]);
   
   return (
     <div className="DiaryEditor">
@@ -98,7 +129,7 @@ const DiaryEditor = () => {
         }
         className="DiaryEditor-header"
       >
-        새 일기쓰기
+        {isEdit ? "일기 수정하기" : "새 일기쓰기"}
       </MyHeader>
 
       <div className="DiaryEditor-content">
