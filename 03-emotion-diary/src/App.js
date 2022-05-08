@@ -86,12 +86,6 @@ const dummyData = [
     content: "내일 출근...",
     emotion: 2,
   },
-  {
-    id: 6,
-    date: new Date(2022, 4, 6).getTime(),
-    content: "줄바꿈 테스트 중 입니다. 긴 글일 때, \"...\" 형식으로 보여줄 예정 입니다. 줄바꿈 테스트 중 입니다. 긴 글일 때, \"...\" 형식으로 보여줄 예정 입니다.",
-    emotion: 2,
-  },
 ]
 
 function App() {

@@ -97,17 +97,6 @@ const DiaryList = ({ diaryList, className }) => {
           </MyButton>
         </div>
       </div>
-      
-      {/* {
-        getProcessedDiaryList.map(diary => (
-          <div 
-            className="DiaryList-item" 
-            key={diary.id}
-          >
-            {diary.content}
-          </div>
-        ))
-      } */}
 
       {
         getProcessedDiaryList.map(item => {

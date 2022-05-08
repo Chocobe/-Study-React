@@ -49,11 +49,7 @@ const DiaryItem = ({
         </div>
 
         <div className="DiaryItem-info-preview">
-          {
-            children.length > 25
-              ? `${children.slice(0, 25)}...`
-              : children
-          }
+          {children.slice(0, 25)}
         </div>
       </div>
 

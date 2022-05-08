@@ -2961,4 +2961,53 @@ export deefault MyApp;
 
 
 
-#
+# 04-06. navigate 의 뒤로가기 막기
+
+``useNavigate()`` 를 통해서 ``Router`` 이동을 할 수 있습니다.
+
+```javascript
+import { useNavigate } from "react-router-dom";
+
+const MyApp = () =:> {
+  const navigate = useNavigate();
+
+  navigate("/경로");
+
+  return <></>;
+};
+
+export default MyApp;
+```
+
+<br />
+
+특정 페이지로 이동한 후, 다시 되돌아 오지 못하도록 해야하는 경우가 있습니다.
+
+예를 들면, ``글 쓰기`` 페이지에서 제출한 후, 뒤로가기를 해도 ``글 쓰기`` 페이지로 돌아와서는 안됩니다.
+
+이 때 ``navigate()`` 의 ``options`` 를 사용할 수 있습니다.
+
+```javascript
+import { useNavigate } from "react-router-dom";
+
+const MyApp = () => {
+  const navigate = useNavigate();
+
+  navigate("/경로", { replace: true });
+
+  return <></>;
+};
+
+export default MyApp;
+```
+
+<br />
+
+``navigate()`` 함수의 ``options`` 객체에 ``replace: true`` 를 넘겨주면, 페이지 이동 후 뒤로가기를 하여도, 현재 페이지로 돌아오지 않게 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
