@@ -20,7 +20,7 @@ import "./DiaryEditor.css";
 const DiaryEditor = ({
   isEdit, originData,
 }) => {
-  const { onCreate, onEdit } = useContext(DiaryDispatchContext);
+  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
   
   const navigate = useNavigate();
   
@@ -55,12 +55,17 @@ const DiaryEditor = ({
         ? onEdit(originData.id, date, content, emotion)
         : onCreate(date, content, emotion);
     }
-    
-    // isEdit
-    //   ? onEdit(date, content, emotion)
-    //   : onCreate(date, content, emotion);
+
     navigate("/", { replace: true });
   }
+
+  // 수정 상태에서, 삭제 버튼
+  const handleRemove = () => {
+    if (window.confirm("정말 삭제 하시겠습니까?")) {
+      onRemove(originData.id);
+      navigate("/", { replace: true });
+    }
+  };
 
   // 수정용 처리
   useEffect(() => {
@@ -85,6 +90,14 @@ const DiaryEditor = ({
             〈 뒤로가기
           </MyButton>
         }
+        rightChild={isEdit && (
+          <MyButton
+            type="negative"
+            onClick={handleRemove}
+          >
+            삭제하기
+          </MyButton>
+        )}
         className="DiaryEditor-header"
       >
         {isEdit ? "일기 수정하기" : "새 일기쓰기"}

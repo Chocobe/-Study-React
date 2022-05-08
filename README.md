@@ -3026,3 +3026,22 @@ export default MyApp;
 
 
 
+# 04-08. localStorage
+
+``localStorage`` 는 사용자의 브라우저를 사용하는 저장소 입니다.
+
+localStorage 에 데이터를 저장할 때에는 ``String`` 타입으로 저장해야 합니다.
+
+그래서 ``JSON.stringify(데이터)`` 를 사용해서 데이터를 ``String`` 으로 변환하는데, 이러한 변환 과정을 ``직렬화`` 라고 합니다.
+
+<br />
+
+마찬가지로 ``localStorage`` 에서 가져온 데이터는 모두 ``String`` 이므로, ``JSON.parse(데이터)`` 를 사용해서 원래의 타입으로 형변환 해준 후 사용해야 합니다.
+
+
+
+<br /><hr /><br />
+
+
+
+#

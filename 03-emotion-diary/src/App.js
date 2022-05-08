@@ -3,6 +3,7 @@ import React, {
   useRef,
   useCallback,
   useMemo,
+  useEffect,
 } from "react";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -19,14 +20,12 @@ const dataReducer = (state, action) => {
 
   switch(action.type) {
     case "INIT": {
-      return action.data;
+      newState = action.data;
+      break;
     }
 
     case "CREATE": {
-      // const newItem = { ...action.data };
-      // newState = [newItem, ...state];
-
-      return [action.data, ...state];
+      newState = [action.data, ...state];
       break;
     }
 
@@ -49,51 +48,35 @@ const dataReducer = (state, action) => {
     }
   }
   
+  localStorage.setItem("diary", JSON.stringify(newState));
+
+  console.log("dataReducer() 에서 확인한 newState.length");
+  console.log(newState.length);
+  
   return newState;
 }
 
 export const DiaryStateContext = React.createContext();
 export const DiaryDispatchContext = React.createContext();
 
-const dummyData = [
-  {
-    id: 1,
-    date: new Date(2022, 4, 1).getTime(),
-    content: "5월 1일 봄이 와요",
-    emotion: 1,
-  },
-  {
-    id: 2,
-    date: new Date(2022, 4, 2).getTime(),
-    content: "5월 2일 비",
-    emotion: 4,
-  },
-  {
-    id: 3,
-    date: new Date(2022, 4, 3).getTime(),
-    content: "5월 3일 공기가 맑아요",
-    emotion: 3,
-  },
-  {
-    id: 4,
-    date: new Date(2022, 4, 4).getTime(),
-    content: "5월 4일 내일은 쉬는 날",
-    emotion: 5,
-  },
-  {
-    id: 5,
-    date: new Date(2022, 4, 5).getTime(),
-    content: "내일 출근...",
-    emotion: 2,
-  },
-]
-
 function App() {
-  const [data, dispatchData] = useReducer(dataReducer, dummyData);
+  const [data, dispatchData] = useReducer(dataReducer, []);
 
   const dataId = useRef(0);
   
   // INIT
+  useEffect(() => {
+    const diaryList = JSON.parse(localStorage.getItem("diary"));
+
+    if (!diaryList) return;
+
+    diaryList.sort((a, b) => b.id - a.id);
+
+    dataId.current = diaryList[0]?.id + 1;
+    
+    dispatchData({ type: "INIT", data: diaryList });
+  }, []);
+
   // CREATE
   const _onCreate = (date, content, emotion) => {
     dispatchData({ type: "CREATE", data: {

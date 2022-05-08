@@ -50,8 +50,8 @@ const DiaryList = ({ diaryList, className }) => {
       .filter(diary => {
         if (filterType === "all") return true;
 
-        if (filterType === "good") return parseInt(diary.emotion) > 2;
-        else return parseInt(diary.emotion) < 3;
+        if (filterType === "good") return parseInt(diary.emotion) < 4;
+        else return parseInt(diary.emotion) > 3;
       });
     
     const compareDiary = (a, b) => {
