@@ -3011,3 +3011,18 @@ export default MyApp;
 
 
 
+# 04-07. 줄바꿈 관련 ``CSS`` - ``word-break``, ``overflow-wrap``
+
+``word-break`` 와 ``overflow-wrap`` 은, ``Element`` 에 출력할 문자열을 어떻게 줄바꿈 할 것인가에 대한 스타일 속성 입니다.
+
+두 속성은 ``줄바꿈 기준`` 이 다릅니다.
+
+* ``word-break``: 단어나 문자 기준으로 줄바꿈을 설정합니다.
+* ``overflow-wrap``: 요소의 너비를 기준으로 줄바꿈을 설정합니다. (줄, 라인)
+
+
+
+<br /><hr /><br />
+
+
+

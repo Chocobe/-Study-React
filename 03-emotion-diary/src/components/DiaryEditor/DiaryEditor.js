@@ -12,52 +12,10 @@ import MyHeader from "../MyHeader/MyHeader";
 import MyButton from "../MyButton/MyButton";
 import EmotionItem from "../EmotionItem/EmotionItem";
 
+import { getStringDate } from "../../utils/date";
+import { emotionList } from "../../utils/emotion";
+
 import "./DiaryEditor.css";
-
-const emotionList = [
-  {
-    emotionId: 1,
-    emotionImg: `${process.env.PUBLIC_URL}/assets/emotion1.png`,
-    emotionDescription: "완전 좋음",
-  },
-  {
-    emotionId: 2,
-    emotionImg: `${process.env.PUBLIC_URL}/assets/emotion2.png`,
-    emotionDescription: "좋음",
-  },
-  {
-    emotionId: 3,
-    emotionImg: `${process.env.PUBLIC_URL}/assets/emotion3.png`,
-    emotionDescription: "그럭저럭",
-  },
-  {
-    emotionId: 4,
-    emotionImg: `${process.env.PUBLIC_URL}/assets/emotion4.png`,
-    emotionDescription: "나쁨",
-  },
-  {
-    emotionId: 5,
-    emotionImg: `${process.env.PUBLIC_URL}/assets/emotion5.png`,
-    emotionDescription: "끔찍함",
-  },
-];
-
-/** @param { Date } date */
-const getStringDate = date => {
-  let year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  let day = date.getDate();
-
-  if (month < 10) {
-    month = `0${month}`;
-  }
-
-  if (day < 10) {
-    day = `0${day}`;
-  }
-
-  return `${year}-${month}-${day}`;
-};
 
 const DiaryEditor = ({
   isEdit, originData,

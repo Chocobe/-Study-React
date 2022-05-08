@@ -1,0 +1,87 @@
+.Diary {
+
+}
+
+.Diary-article {
+
+}
+
+.Diary-article-section {
+  width: 100%;
+
+  margin-bottom: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.Diary-article-section-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* 감정 */
+.Diary-article-section-imgWrapper {
+  width: 250px;
+  height: 250px;
+
+  border-radius: 4px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  
+  background-color: #ececec;
+}
+
+.Diary-article-section-imgWrapper_emotion1 {
+  background-color: #64c964;
+}
+.Diary-article-section-imgWrapper_emotion2 {
+  background-color: #9dd772;
+}
+.Diary-article-section-imgWrapper_emotion3 {
+  background-color: #fdce17;
+}
+.Diary-article-section-imgWrapper_emotion4 {
+  background-color: #fd8446;
+}
+.Diary-article-section-imgWrapper_emotion5 {
+  background-color: #fd565f;
+}
+
+.Diary-article-section-imgWrapper-img {
+
+}
+
+.Diary-article-section-imgWrapper-description {
+  color: #fff;
+  font-size: 24px;
+}
+
+/* 컨텐츠 */
+.Diary-article-section-contentWrapper {
+  width: 100%;
+
+  border-radius: 4px;
+
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  
+  background-color: #ececec;
+}
+
+.Diary-article-section-contentWrapper-content {
+  padding: 20px;
+  
+  font-size: 20px;
+  font-family: "Yeon Sung";
+  font-weight: 400;
+  text-align: left;
+  line-height: 2.5;
+}
