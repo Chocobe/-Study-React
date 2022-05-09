@@ -3315,4 +3315,314 @@ export default MyTest;
 
 
 
-#
+# 05. Firebase 로 배포하기
+
+``Firebase`` 는 ``Google`` 에서 제공하는 ``앱 개발 플랫폼`` 서비스 입니다.
+
+무료버전으로도 사용할 수 있어서, 간단한 토이 프로젝트를 배포할 수 있습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-01. Firebase Console 페이지에서 프로젝트 생성 준비
+
+먼저 [Firebase](https://firebase.google.com/) 홈페이지에서 로그인 합니다.
+
+이후, 메인 페이지에서 ``시작하기`` 페이지에 들어갑니다.
+
+<img src="./readmeAssets/05-01-01%20시작하기.png" width="700" /><br />
+
+<br />
+
+``Firebase 프로젝트`` 페이지에서 ``프로젝트 추가`` 를 클릭 합니다.
+
+<img src="./readmeAssets/05-01-02%20프로젝트%20추가.png" width="700" /><br />
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-02. 프로젝트 생성 1단계 - 프로젝트 이름 정하기
+
+먼저 1단계에서는 ``프로젝트 이름`` 을 정합니다.
+
+<img src="./readmeAssets/05-02%20프로젝트%20이름%20입력.png" width="700" /><br />
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-03. 프로젝트 생성 2단계 - Google Analistic 설정
+
+``Firebase`` 는 ``Google`` 에서 제공하는 다양한 서비스를 함께 사용할 수 있습니다.
+
+이번에는 ``배포`` 를 목적으로 하므로, ``Google Analistic`` 은 ``미사용`` 으로 만들겠습니다.
+
+<img src="./readmeAssets/05-03%20Google%20Analistic%20설정.png" width="700" /><br />
+
+<br />
+
+프로젝트가 생성되면, 다음과 같은 안내 페이지가 열립니다.
+
+<img src="./readmeAssets/05-03-02%20프로젝트%20생성%20완료.png" width="700" /><br />
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-04. Project Console 페이지
+
+이제 프로젝트를 배포할 수 있는 ``Firebase 프로젝트`` 가 만들어 졌습니다.
+
+이후 우리가 만들었던 ``Firebase 프로젝트 페이지`` 에 들어갈 수 있게 되는데, 이 페이지를 ``Firebase Project Console`` 이라고 부릅니다.
+
+다양한 기능 중, ``Web`` 이나 ``App`` 을 배포할 수 있는 서비스로 ``Hosting`` 이 있습니다.
+
+<br />
+
+``Hosting`` 페이지의 주요 기능은 다음과 같으며, 자세한 내용은 [Firebase Docs](https://firebase.google.com/docs/hosting?hl=ko) 에서 확인할 수 있습니다.
+
+* 별도의 구성 없이, ``SSL`` 을 기본으로 제공 합니다.
+* ``정적 콘텐츠``, ``동적 콘텐츠`` 등, 모든 종류의 콘텐츠를 Hosting 할 수 있습니다.
+* ``Firebase CLI`` 를 사용하여 배포를 쉽고 빠르게 할 수 있습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-05. Hosting 설정하기
+
+``Firebase Project Console`` 페이지에서 ``Hosting`` 페이지로 이동합니다.
+
+<img src="./readmeAssets/05-05-01%20Firebase%20Project%20Console.png" width="700" /><br />
+
+<br />
+
+``Hosting`` 페이지에서 ``시작하기`` 를 클릭 합니다.
+
+<img src="./readmeAssets/05-05-02%20Hosting%20시작하기.png" width="700" /><br />
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-06. Firebase Hoisting 설정
+
+``Hosting`` 설정을 3단계로 안내하는 것을 볼 수 있습니다.
+
+1. Firebase CLI 설치
+2. 프로젝트 초기화
+3. Firebase 호스팅에 배포
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-07. 1단계 - Firebase CLI 설치
+
+``npm`` 을 사용하여 ``Firebase CLI`` 를 ``Global`` 로 설치 합니다.
+
+```bash
+npm i -g firebase-tools
+```
+
+<br />
+
+<img src="./readmeAssets/05-07-01%20Firebase%20CLI%20설치.png" width="700" /><br />
+
+<br />
+
+설치가 정상적으로 되었는지 확인해 봅니다.
+
+<img src="./readmeAssets/05-07-02%20Firebase%20CLI%20설치%20확인.png" width="700" /><br />
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-08. 2단계 - 프로젝트 초기화
+
+<img src="./readmeAssets/05-08-01%20프로젝트%20초기화.png" width="700" /><br />
+
+<br />
+
+이제 우리가 배포할 프로젝트에서 ``Firebase 초기화`` 를 하기위해, ``프로젝트 Root`` 경로에서 ``터미널`` 을 실행 합니다.
+
+그리고 ``터미널`` 에서 ``Firebase CLI`` 를 사용하여 ``Google 로그인`` 을 합니다.
+
+```base
+// 터미널 입력
+
+firebase login
+```
+
+<br />
+
+<img src="./readmeAssets/05-08-02%20Firebase%20CLI%20로%20Google%20로그인.png" width="700" /><br />
+
+<br />
+
+<img src="./readmeAssets/05-08-03%20Firebase%20CLI%20로%20Google%20로그인%202.png" width="700" /><br />
+
+<br />
+
+<img src="./readmeAssets/05-08-04%20로그인%20완료.png" width="700" /><br />
+
+<br />
+
+로그인을 한 후, 터미널에서 다음 명령을 실행 합니다.
+
+```bash
+// 터미널 입력
+
+firebase init
+```
+
+<br />
+
+실행하면, 프로젝트 초기화를 위한 몇가지 설정을 하게 됩니다.
+
+중요한 것은 우리가 배포하려는 방법인 ``Hosting`` 항목과, ``Firebase Project Console`` 에 생성했던 ``프로젝트 이름`` 을 맞춰서 선택해야 합니다.
+
+<br />
+
+<img src="./readmeAssets/05-08-05%20초기화%20-%20Hosting%20선택.png" width="700" /><br />
+
+<br />
+
+<img src="./readmeAssets/05-08-06%20초기화%20-%20프로젝트%20설정.png" width="700" /><br />
+
+<br />
+
+<img src="./readmeAssets/05-08-07%20초기화%20-%20Firebase%20Console%20에%20만든%20프로젝트%20선택.png" width="700" /><br />
+
+<br />
+
+설정 진행 중, ``public directory`` 를 설정하는 항목이 있습니다.
+
+기본값으로 ``public`` 으로 되어 있지만, 우리 프로젝트를 ``build`` 명령으로 ``Bundling`` 했을 때 생성되는 ``폴더명`` 을 입력해야 합니다.
+
+``create-react-app`` 으로 생성한 프로젝트라면, ``build 결과물``이 ``build`` 폴더에 담기게 됩니다.
+
+그러므로, ``public directory`` 에 ``build`` 를 입력해 줍니다.
+
+<img src="./readmeAssets/05-08-08%20초기화%20-%20public%20directory%20설정.png" width="700" /><br />
+
+<br />
+
+<img src="./readmeAssets/05-08-09%20초기화%20-%20SPA%20설정.png" width="700" /><br />
+
+<br />
+
+초기화 설정을 모두 마치면, ``firebase.json`` 과 ``.firebaserc`` 파일이 생성 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-09. 3단계 - 배포하기
+
+``Firebase Project Console`` 과 ``배포할 React 프로젝트`` 의 설정을 모두 마쳤습니다.
+
+이제 배포 명령으로 프로젝트를 배포할 수 있게 되었습니다.
+
+<img src="./readmeAssets/05-09-01%203단계.png" width="700" /><br />
+
+<br />
+
+여기서 안내해 주는 명령을 통해 바로 배포할 수 있습니다.
+
+배포하게되면, ``Firebase Project Console`` 에서 만들었던 ``프로젝트 명`` 을 ``도메인 주소`` 로 하게 되며, 실제 배포가 진행되게 됩니다.
+
+<br />
+
+만약, ``도메인 주소`` 를 변경하고 싶다면, ``콘솔로 이동`` 을 클릭 합니다.
+
+이동하게 되면, ``Hosting 대시보드`` 페이지가 열립니다.
+
+<img src="./readmeAssets/05-09-02%20Hosting%20대시보드.png" width="700" /><br />
+
+<br />
+
+``Hosting 대시보드`` 의 하단에 보면, ``고급`` 항목이 있습니다.
+
+여기서 ``다른 사이트 추가`` 로 ``새로운 도메인`` 을 연결하여 배포할 수 있습니다.
+
+<img src="./readmeAssets/05-09-03%20다른%20사이트%20추가.png" width="700" /><br />
+
+<br />
+
+<img src="./readmeAssets/05-09-04%20다른%20사이트%20추가%202.png" width="700" /><br />
+
+<br />
+
+``다른 사이트 추가`` 를 완료 하였다면, 다음과 같이 ``2개의 사이트 명`` 을 볼 수 있습니다.
+
+<img src="./readmeAssets/05-09-05%20다른%20사이트%20추가%203.png" width="700" /><br />
+
+<br />
+
+이제 추가했던 ``사이트 명`` 을 복사한 후, 배포할 ``React 프로젝트`` 에 적용시켜 보겠습니다.
+
+<img src="./readmeAssets/05-09-06%20사이트명%20복사하기.png" width="700" /><br />
+
+<br />
+
+``React 프로젝트`` 의 ``firebase.json`` 파일을 열고, ``site`` 속성을 추가 합니다.
+
+``site`` 속성값으로는 ``다른 사이트 추가`` 에서 추가했던 ``사이트 명`` 을 붙여넣기 합니다.
+
+<img src="./readmeAssets/05-09-07%20firebase.json%20에%20site%20설정.png" width="700" /><br />
+
+<br />
+
+이제 배포 명령을 하기 전에, 최종 빌드를 합니다.
+
+```base
+npm run build
+```
+
+<br />
+
+그리고 ``Firebase CLI`` 의 ``배포`` 명령으로 배포를 시작 합니다.
+
+```bash
+firebase deploy
+```
+
+<br />
+
+배포가 완료되면, 터미널에서 완료 메시지를 확인할 수 있습니다.
+
+<img src="./readmeAssets/05-09-08%20배포%20완료%201.png" width="700" /><br />
+
+<br />
+
+``Firebase Project Console`` 에서도 배포 내역을 확인할 수 있습니다.
+
+<img src="./readmeAssets/05-09-09%20배포%20완료%202.png" width="700" /><br />
+
+<br />
+
+드디어 배포했던 도메인 주소를 통해 프로젝트를 공개할 수 있게 되었습니다.
+
+<img src="./readmeAssets/05-09-10%20배포%20완료%203.png" width="700" /><br />
