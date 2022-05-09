@@ -38,6 +38,14 @@ const Edit = () => {
     setOriginData(targetDiary);
   }, [id, diaryList]);
 
+  useEffect(() => {
+    const $title = document.getElementsByTagName("title")?.[0];
+
+    if (!$title) return;
+
+    $title.innerHTML = `감정 일기장 - ${id}번 일기 수정`;
+  }, []);
+
   return (
     <div className="Edit">
       {originData && <DiaryEditor 

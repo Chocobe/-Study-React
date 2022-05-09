@@ -46,8 +46,16 @@ const DiaryEditor = ({
   const [content, setContent] = useState("");
   const contentRef = useRef();
 
+  useEffect(() => {
+    console.log(`content 와치`);
+    console.log(content);
+  });
+
   // 컨트롤박스
   const handleSubmit = useCallback(() => {
+    console.log(`content: ${content}`);
+    console.log(content);
+    
     if (content.length < 1) {
       contentRef.current.focus();
       return;
@@ -63,7 +71,7 @@ const DiaryEditor = ({
     }
 
     goToBack();
-  }, []);
+  }, [date, content, emotion]);
 
   // 수정 상태에서, 삭제 버튼
   const handleRemove = useCallback(() => {
@@ -153,7 +161,13 @@ const DiaryEditor = ({
             <textarea 
               ref={contentRef}
               value={content}
-              onChange={e => setContent(e.target.value)}
+              onChange={e => {
+                console.log("onChange() 호출");
+                console.log("e.target.value");
+                console.log(e.target.value);
+                
+                setContent(e.target.value)
+              }}
               placeholder="오늘은 어땠나요?"
               className="DiaryEditor-content-section-inputWrapper-content"
             />

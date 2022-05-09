@@ -3227,4 +3227,92 @@ export default ParentComponent;
 
 
 
+# 04-10. ``public/index.html`` 수정하기
+
+# 04-10-01. 브라우저 상태장의 ``title`` 바꾸기
+
+```html
+<html>
+  <head>
+    <!-- ... 생략 ... -->
+
+    <!-- 브라우저 상태창의 이름이 됩니다. -->
+    <title>프로젝트 이름</title>
+    
+    <!-- ... 생략 ... -->
+  </head>
+</html>
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-10-02. 웹 사이트 설명 작성하기
+
+```html
+<html>
+  <head>
+    <!-- ... 생략 ... -->
+
+    <!-- name="description" 인 <meta /> 태그 -->
+    <meta
+      name="description"
+      content="웹 사이트 설명"
+    >
+
+    <!-- ... 생략 ... -->  
+  </head>
+</html>
+```
+
+
+<br /><hr /><br />
+
+
+
+# 04-10-03. 홈페이지 언어 설정하기
+
+```html
+<html lang="ko">
+  <!-- ... 생략 ... -->
+</html>
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-10-04. 브라우저 상태창의 ``title`` 을 페이지 별로 바꾸기
+
+``Mount`` 시점에 ``<title />`` 요소의 ``innerHTML`` 을 바꿔주면 됩니다.
+
+```javascript
+// MyTest.js
+
+import { useEffect } from "react";
+
+const MyTest = () => {
+  useEffect(() => {
+    const $title = document.getElementsByTagName("title")?.[0];
+
+    if (!$title) return;
+
+    $title.innerHTML = "테스트 페이지";
+  }, []);
+};
+
+export default MyTest;
+```
+
+
+
+<br /><hr /><br />
+
+
+
 #

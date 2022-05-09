@@ -55,6 +55,14 @@ const Home = () => {
   };
   const decreaseMonth = useCallback(_decreaseMonth, []);
 
+  useEffect(() => {
+    const $title = document.getElementsByTagName("title")?.[0];
+
+    if (!$title) return;
+
+    $title.innerHTML = "감정 일기장";
+  }, []);
+
   return (
     <div>
       <MyHeader

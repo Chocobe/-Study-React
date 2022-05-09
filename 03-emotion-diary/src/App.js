@@ -72,7 +72,7 @@ function App() {
 
     diaryList.sort((a, b) => b.id - a.id);
 
-    dataId.current = diaryList[0]?.id + 1;
+    dataId.current = (diaryList[0]?.id ?? -1) + 1;
     
     dispatchData({ type: "INIT", data: diaryList });
   }, []);

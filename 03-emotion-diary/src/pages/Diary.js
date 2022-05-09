@@ -32,8 +32,6 @@ const Diary = () => {
     return parseInt(curEmotion.emotionId) === parseInt(data?.emotion);
   });
 
-  console.log(curEmotionData);
-
   useEffect(() => {
     if (diaryList.length < 1) return;
 
@@ -49,6 +47,15 @@ const Diary = () => {
 
     setData(targetDiary);
   }, [diaryList, id]);
+
+  // 브라우저 상태창의 제목 바꾸기
+  useEffect(() => {
+    const $title = document.getElementsByTagName("title")?.[0];
+
+    if (!$title) return;
+
+    $title.innerHTML = `감정 일기장 - ${id}번 일기`;
+  }, []);
 
   if (!data) return (
     <div className="Diary">
