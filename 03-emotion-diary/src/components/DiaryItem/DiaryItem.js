@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   useNavigate
 } from "react-router-dom";
@@ -65,4 +67,4 @@ const DiaryItem = ({
   );
 };
 
-export default DiaryItem;
+export default React.memo(DiaryItem);

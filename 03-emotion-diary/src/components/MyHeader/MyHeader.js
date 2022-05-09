@@ -1,3 +1,5 @@
+import React from "react";
+
 import "./MyHeader.css";
 
 const MyHeader = ({ 
@@ -20,11 +22,11 @@ const MyHeader = ({
         {rightChild}
       </div>
     </header>
-  )
+  );
 };
 
 MyHeader.defaultProps = {
   children: "MyHeader Default Text",
-}
+};
 
-export default MyHeader;
+export default React.memo(MyHeader);

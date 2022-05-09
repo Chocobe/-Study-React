@@ -1,3 +1,5 @@
+import React from "react";
+
 import "./MyButton.css";
 
 const MyButton = ({
@@ -24,4 +26,4 @@ MyButton.defaultProps = {
   children: "MyButton Component",
 };
 
-export default MyButton;
+export default React.memo(MyButton);

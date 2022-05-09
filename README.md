@@ -3044,4 +3044,187 @@ localStorage 에 데이터를 저장할 때에는 ``String`` 타입으로 저장
 
 
 
+# 04-09. 최적화
+
+컴포넌트의 ``re-rendering`` 은 비용이 많이 드는 작업 입니다.
+
+그래서 불필요한 ``re-rendering`` 을 제거하는 최적화가 필요 합니다.
+
+<br />
+
+컴포넌트의 ``re-rendering`` 조건은 다음과 같습니다.
+
+* 자신의 ``State`` 가 변경될 때,
+* 부모에게 받은 ``Props`` 가 변경될 때,
+* 부모 컴포넌트가 ``re-rendering`` 될 때,
+
+<br />
+
+여기서 최적화할 수 있는 부분은 ``부모 컴포넌트가 re-rendering 될 때`` 입니다.
+
+부모 컴포넌트가 ``re-rendering`` 되더라도, ``자식 컴포넌트`` 에 넘겨주는 ``Props`` 에 영향이 없다면, 해당 ``자식 컴포넌트`` 는 ``Memoization`` 을 적용할 수 있습니다.
+
+최적화의 목적은 ``자식 컴포넌트`` 들의 ``Memoization`` 입니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-10. 최적화를 위한 개발자 도구 설정
+
+최적화 작업 대상을 찾는 방법은 두가지가 있습니다.
+* ``정적 분석``: 코드를 읽고 낭비되는 연산을 찾는 방법
+    * 개발 경험이 적으면, 찾기 어려운 방법 입니다.
+* ``동적 분석``: 프로젝트를 직접 동작시켜보면서, ``개발자 도구``를 통해 ``re-rendering`` 요소 찾는 방법
+    * ``re-rendering`` 되는 컴포넌트를 직접 눈으로 확인할 수 있습니다.
+
+<br />
+
+``동적 분석`` 을 위해 ``개발자 도구`` 에 설정을 해주어야 합니다.
+
+``Ract Dev Tool`` 에서 ``설정에 들어갑니다.
+
+<img src="./readmeAssets/04-09%20동적분석%201.png" width="700" /><br />
+
+<br />
+
+그리고 ``Highlight updates when components render`` 를 ``활성화`` 합니다.
+
+<img src="./readmeAssets/04-09%20동적분석%202.png" width="700" /><br />
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-11. 최적화 하기
+
+이제 본격적으로 최적화를 해 보겠습니다.
+
+먼저 프로젝트를 실행하고, 각 컴포넌트에 ``click``, ``input`` 등의 동작을 해봅니다.
+
+각 입력마다 ``re-rendering`` 이 동작하게 되는데, 이 때 불필요한 ``re-rendering`` 요소를 식별합니다.
+
+<img src="./readmeAssets/04-09%20아이템%20컴포넌트의%20re-rendering%20제거%20결과.png" width="700" /><br />
+
+<br />
+
+식별된 컴포넌트에는 다음과 같은 ``최적화`` 를 적용시킬 수 있습니다.
+
+1. ``React.memo()`` 를 사용하여, ``Memoization 컴포넌트`` 로 만들기
+2. ``Props`` 가 ``람수`` 일 때, ``Memoization 함수`` 로 받기
+
+<br />
+
+컴포넌트의 ``Memoization`` 최소 요건은 ``React.memo()`` 입니다.
+
+```javascript
+import React from "react";
+
+const MyComponent = React.memo(() => {
+  return (
+    <div>My Component</div>
+  );
+});
+
+export default MyComponent;
+```
+
+<br />
+
+그 다음, ``Prop`` 중에서 ``함수`` 가 있다면, 해당 함수를 ``useCallback()`` 으로 만듭니다.
+
+```javascript
+// ChildComponent.js
+
+import React from "react";
+
+const ChildComponent = React.memo({ onClick }) => {
+  return (
+    <button onClick={onClick}>버튼</button>
+  );
+};
+
+export default ChildComponent;
+```
+
+<br />
+
+```javascript
+// ParentComponent.js
+
+import React, {
+  useCallback,
+} from "react";
+
+import ChildComponent from "./ChildComponent";
+
+const ParentComponent = React.memo(() => {
+  const onClick = useCallback(() => {
+    console.log("onClick() 호출");
+  }, []);
+
+  return (
+    <div>
+      <ChildComponent onClick={onClick} />
+    </div>
+  );
+});
+
+export default ParentComponent;
+```
+
+<br />
+
+추가로, ``useState()`` 에서 얻게되는 ``SETTER`` 함수는 ``useCallback()`` 을 사용하지 않아도, ``Memoization`` 되어 있습니다. - (State의 내부 ``id`` 를 보장 하기 때문)
+
+그러므로, ``Props`` 로 넘겨주는 함수에서 단순한 ``State (상태)`` 변경 이라면, ``useState()`` 의 ``SETTER`` 를 그대로 넘겨주어도 됩니다.
+
+```javascript
+// ChildComponent.js
+
+import React from "react";
+
+const ChildComponent = React.memo(({ onClick }) => {
+  return (
+    <button onClick={onClick}>버튼</button>
+  );
+});
+
+export default ChildComponent;
+```
+
+<br />
+
+```javascript
+// ParentComponent.js
+
+import React, {
+  useState,
+} from "react";
+
+import ChildComponent from "./ChildComponent";
+
+const ParentComponent = React.memo(() => {
+  const [myState, setMyState] = useState();
+
+  return (
+    <div>
+      <ChildComponent onClick={setMyState} />
+    </div>
+  );
+});
+
+export default ParentComponent;
+```
+
+
+
+<br /><hr /><br />
+
+
+
 #

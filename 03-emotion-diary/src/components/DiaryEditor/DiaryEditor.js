@@ -1,8 +1,9 @@
-import { 
+import React, { 
   useState, 
   useRef, 
   useContext,
   useEffect,
+  useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +24,12 @@ const DiaryEditor = ({
   const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
   
   const navigate = useNavigate();
-  
+
+  // 뒤로가기
+  const goToBack = useCallback(() => {
+    navigate(-1);
+  }, []);
+
   // 날짜
   const [date, setDate] = useState(
     getStringDate(new Date())
@@ -32,16 +38,16 @@ const DiaryEditor = ({
   // 감정
   const [emotion, setEmotion] = useState(3);
 
-  const onClickEmotion = emotion => {
+  const onClickEmotion = useCallback(emotion => {
     setEmotion(emotion);
-  };
+  }, []);
 
   // 컨텐츠
   const [content, setContent] = useState("");
   const contentRef = useRef();
 
   // 컨트롤박스
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     if (content.length < 1) {
       contentRef.current.focus();
       return;
@@ -56,16 +62,16 @@ const DiaryEditor = ({
         : onCreate(date, content, emotion);
     }
 
-    navigate("/", { replace: true });
-  }
+    goToBack();
+  }, []);
 
   // 수정 상태에서, 삭제 버튼
-  const handleRemove = () => {
+  const handleRemove = useCallback(() => {
     if (window.confirm("정말 삭제 하시겠습니까?")) {
       onRemove(originData.id);
       navigate("/", { replace: true });
     }
-  };
+  }, []);
 
   // 수정용 처리
   useEffect(() => {
@@ -85,7 +91,7 @@ const DiaryEditor = ({
       <MyHeader
         leftChild={
           <MyButton
-            onClick={() => navigate(-1)}
+            onClick={goToBack}
           >
             〈 뒤로가기
           </MyButton>
@@ -157,14 +163,14 @@ const DiaryEditor = ({
         <section className="DiaryEditor-content-section">
           <div className="DiaryEditor-content-section-controlBox">
             <MyButton
-              onClick={() => navigate(-1)}
+              onClick={goToBack}
             >
               취소하기
             </MyButton>
 
             <MyButton
               type="positive"
-              onClick={() => handleSubmit()}
+              onClick={handleSubmit}
             >
               작성완료
             </MyButton>

@@ -1,3 +1,5 @@
+import React from "react";
+
 const ControlMenu = ({
   value,
   onChange,
@@ -32,4 +34,4 @@ ControlMenu.defaultProps = {
   optionList: [],
 };
 
-export default ControlMenu;
+export default React.memo(ControlMenu);
