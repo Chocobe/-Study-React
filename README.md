@@ -3626,3 +3626,45 @@ firebase deploy
 드디어 배포했던 도메인 주소를 통해 프로젝트를 공개할 수 있게 되었습니다.
 
 <img src="./readmeAssets/05-09-10%20배포%20완료%203.png" width="700" /><br />
+
+
+
+<br /><hr /><br />
+
+
+
+# 06. Open Graph (og 태그)
+
+``OG 태그`` 는 ``HTML 문서`` 의 ``메타정보`` 를 쉽게 표시하게 해주는 기능 입니다.
+
+``HTMl`` 파일의 ``<head />`` 에서 ``<meta />`` 를 사용하여 작성할 수 있습니다.
+
+<br />
+
+``OG 태그`` 로 표현할 수 있는 다양한 정보 중, ``사이트 이름``, ``사이트 설명``, ``사이트 썸네일`` 을 설정하면 다음과 같습니다.
+
+그리고 ``썸네일`` 을 설정할 때, 이미지 경로가 필요한데, 이때는 ``public 폴더`` 의 절대경로가 필요합니다.
+
+``<meta />`` 에서 ``public 폴더`` 경로를 사용하려면, 다음과 같이 사용할 수 있습니다.
+
+```html
+<!-- public 절대경로값: "%PUBLIC_URL" -->
+<meta property="og:image" content="%PUBLIC_URL%/myThumbnail.png" />
+```
+
+<br />
+
+```html
+<html lang="ko">
+  <head>
+    <!-- 사이트 이름 -->
+    <meta property="og:site_name" content="나의 사이트" />
+    
+    <!-- 사이트 설명 -->
+    <meta property="og:description" content="사이트 설명" />
+
+    <!-- 썸네일 -->
+    <meta property="og:image" content="%PUBLIC_URL%/myThumbnail.png" />
+  </head>
+</html>
+```
