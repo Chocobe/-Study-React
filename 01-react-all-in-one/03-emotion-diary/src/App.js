@@ -112,7 +112,7 @@ function App() {
     onEdit,
     onRemove,
   }), []);
-  
+
   return (
     <DiaryStateContext.Provider value={data}>
       <DiaryDispatchContext.Provider value={diaryDispatcher}>
