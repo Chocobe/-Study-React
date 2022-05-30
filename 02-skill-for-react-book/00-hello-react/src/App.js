@@ -1,13 +1,10 @@
-import "./App.css";
+import MyComponent from "./MyComponent";
 
 const App = () => {
-  const name = "리액트";
-
   return (
-    <>
-      <div className="react">{name}</div>
-      <input />
-    </>
+    <MyComponent name="React" favoriteNumber={333}>
+      리액트
+    </MyComponent>
   );
 };
 
