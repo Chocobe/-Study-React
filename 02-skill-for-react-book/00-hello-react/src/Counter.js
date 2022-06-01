@@ -1,13 +1,9 @@
 import { Component } from "react";
 
 class Counter extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      number: 0,
-      fixedNumber: 0,
-    };
+  state = {
+    number: 0,
+    fixedNumber: 0,
   }
 
   render() {
@@ -15,13 +11,47 @@ class Counter extends Component {
 
     return (
       <div>
-        <h1>Counter 컴포넌트: {number}</h1>
+        <h1>Counter: {number}</h1>
         <h2>FixedNumber: {fixedNumber}</h2>
-        <button onClick={() => this.setState({ number: number + 1 })}>
-          Increase
+
+        <button
+          onClick={() => {
+            this.setState(prevState => ({
+              number: prevState.number + 1,
+            }));
+
+            this.setState(
+              prevState => ({
+                number: prevState.number + 1,
+              }),
+              () => {
+                console.log("this.setState() 호출");
+                console.log(this.state);
+              }
+            )
+          }}
+        >
+          Increase 2
         </button>
-        <button onClick={() => this.setState({ number: number - 1 })}>
-          Decrease
+
+        <button
+          onClick={() => {
+            this.setState(prevState => ({
+              number: prevState.number - 1,
+            }));
+
+            this.setState(
+              prevState => ({
+                number: prevState.number - 1,
+              }),
+              () => {
+                console.log("this.setState() 호출 !!");
+                console.log(this.state);
+              }
+            )
+          }}
+        >
+          Decrease 2
         </button>
       </div>
     );
