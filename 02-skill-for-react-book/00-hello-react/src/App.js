@@ -1,12 +1,10 @@
-import Counter from "./Counter";
-import Say from "./Say";
+// import Counter from "./Counter";
+// import Say from "./Say";
+import EventPractice from "./EventPractice";
 
 const App = () => {
   return (
-    <>
-      <Counter />
-      <Say />
-    </>
+    <EventPractice />
   )
 };
 
