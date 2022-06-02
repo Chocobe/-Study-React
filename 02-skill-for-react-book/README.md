@@ -38,7 +38,7 @@
     * ``false`` 반환: 업데이트 종료
     * 호출 생명주기: ``업데이트 생명주기``
 
-6. ``getSnapshotBeforeUpdate(prevProps, prevState, snapshot)``
+6. ``getSnapshotBeforeUpdate(prevProps, prevState)``
     * ``render()`` 메서드의 결과물이 브라우저에 실제로 반영되기 진적에 호출합니다.
     * 호출 생명주기: ``업데이트 생명주기``
 
