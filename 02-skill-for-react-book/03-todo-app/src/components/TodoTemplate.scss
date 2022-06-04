@@ -1,0 +1,21 @@
+.TodoTemplate {
+  @apply mx-auto;
+  @apply overflow-hidden;
+
+  margin-top: 6rem;
+  width: 512px;
+  border-radius: 4px;
+
+  .app-title {
+    @apply flex justify-center items-center;
+    
+    font-size: 1.5rem;
+    height: 4rem;
+    color: #fff;
+    background-color: #22b8cf;
+  }
+
+  .content {
+    @apply bg-white;
+  }
+}
