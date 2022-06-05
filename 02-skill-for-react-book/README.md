@@ -143,3 +143,104 @@
 
 
 <br /><hr /><br />
+
+
+
+# 03. ``immer`` 라이브러리를 사용하여, ``State 불변성`` 유지하기
+
+React 컴포넌트는 자신의 ``state`` 가 변경되면 ``re-rendering`` 합니다.
+
+이러한 동작은 ``state`` 의 ``전/후`` 를 비교하여, 서로 다를 경우에만 ``re-rendering`` 하는 방식 입니다.
+
+중요한 점은 ``state`` 의 ``참조값`` 만을 비교하기 때문에, ``state`` 의 내부값만 변경되는 경우는 ``re-rendering`` 되지 않습니다.
+
+즉, ``state`` 의 일부분만 변경하게 되면, 화면에 반영되지 않습니다.
+
+<br />
+
+이러한 원리로 인해 ``state`` 를 변경하려면, ``state`` 를 ``깊은복사`` 한 후, 값을 변경하고 ``setState()`` 로 넘겨주게 됩니다.
+
+<br />
+
+깊이가 깊은 ``Object`` 를 ``state`` 로 사용한다면, ``깊은복사`` 를 하기에 많은 작업이 필요합니다.
+
+그래서 ``lodash.copyDeep()`` 으로 복사한 후, 값을 변경하여 ``setState()`` 로 넘겨주면 좀 더 쉽게 만들 수 있습니다.
+
+<br />
+
+이번에 정리할 ``immer`` 라이브러리는 ``lodash.copyDeep()`` 보다 더 간결하게 ``불변성`` 을 유지할 수 있게 해줍니다.
+
+``immer`` 는 ``state 불변성`` 을 위한 라이브러리 입니다.
+
+<br />
+
+사용 예시는 다음과 같습니다.
+
+```javascript
+import { useState, useCallback } from "react";
+import produce from "immer";
+
+const MyApp = () => {
+  const [data, setData] = useState({
+    arr: [
+      {
+        name: "이름 1",
+        value: 111,
+      },
+      {
+        name: "이름 2",
+        value: 222,
+      },
+    ],
+    something: {
+      someId: 123,
+      someValue: "Hello immer",
+    },
+    job: "programmer",
+    lib: [
+      "react",
+      "immer",
+    ],
+  });
+
+  const [form, setForm] = useState({
+    name: "",
+    value: 0,
+  });
+
+  const onChange = useCallback(e => {
+    const { name, value } = e.target;
+
+    setForm(
+      // 깊은복사된 form 객체에 변경된 값이 반영된 결과 객체가 반환 됩니다.
+      // draft 는 form 객체를 깊은복사한 객체 입니다.
+      // draft 를 통해 직접 property 값을 변경 합니다.
+      // 함수형 업데이트 함수가 반환 됩니다.
+      // 반환값: (form) => {}
+      produce(draft => {
+        draft[name] = value;
+      })
+    );
+  });
+
+  const onSubmit = useCallback(e => {
+    e.preventDefault();
+
+    const { name, value } = form;
+    const info = { name, value };
+
+    setData(
+      // 마찬가지로, drawft.arr 의 배열에 push 를 사용하여, 직접 값을 추가 합니다.
+      produce(draft => {
+        draft.push(info);
+      })
+    );
+  });
+
+  return (
+    <>...</>
+  );
+};
+
+export default MyApp;
+```
