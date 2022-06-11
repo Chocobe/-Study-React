@@ -1,0 +1,18 @@
+.TodoInsert {
+  @apply flex;
+
+  font-size: 20px;
+
+  &-input {
+    @apply py-8 px-16;
+    @apply flex-1;
+    @apply outline-none;
+    @apply text-black;
+  }
+
+  &-submit {
+    @apply px-16;
+    @apply flex items-center;
+    @apply outline-none;
+  }
+}

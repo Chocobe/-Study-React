@@ -1,0 +1,38 @@
+.TodoListItem {
+  @apply flex;
+  @apply py-8 px-16;
+  @apply bg-gray-100;
+  @apply text-black;
+  
+  border-top: 1px solid transparent;
+
+  &:nth-child(2n - 1) {
+    @apply bg-gray-200;
+  }
+
+  & + & {
+    @apply border-gray-400;
+  }
+
+  &-content {
+    @apply flex-1;
+    @apply flex items-center;
+    @apply cursor-pointer;
+
+    &-text {
+      @apply ml-12;
+    }
+
+    &.checked {
+      @apply text-sky-500;
+
+      .TodoListItem-content-text {
+        @apply line-through;
+      }
+    }
+  }
+
+  &-remove {
+    //
+  }
+}

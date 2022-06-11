@@ -1,0 +1,17 @@
+.TodoTemplate {
+  @apply mx-auto mt-80;
+  @apply text-white;
+  @apply overflow-hidden;
+
+  width: 512px;
+  border-radius: 8px;
+
+  &-title {
+    @apply py-12;
+    @apply flex justify-center;
+    @apply bg-sky-400;
+    
+    font-size: 24px;
+    font-weight: 800;
+  }
+}
