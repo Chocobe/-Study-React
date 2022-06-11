@@ -1,0 +1,24 @@
+.TodoInsert {
+  @apply flex;
+
+  .input {
+    @apply flex-1;
+    @apply py-12 px-20;
+    @apply text-white;
+    @apply bg-custom-gray-04;
+    @apply outline-none;
+
+    &::placeholder {
+      @apply text-custom-gray-01;
+    }
+  }
+
+  .button {
+    @apply px-14;
+    @apply flex items-center;
+    @apply bg-custom-gray-02;
+    @apply text-white;
+    
+    font-size: 20px;
+  }
+}

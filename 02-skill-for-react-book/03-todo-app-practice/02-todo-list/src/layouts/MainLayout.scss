@@ -1,0 +1,27 @@
+.MainLayout {
+  @apply mt-80 mx-auto;
+  @apply overflow-hidden;
+
+  width: 500px;
+  border-radius: 8px;
+
+  @media screen and (max-width: 500px) {
+    @apply w-full;
+    @apply mt-0;
+    @apply rounded-none;
+  }
+
+  .title {
+    @apply py-16 px-20;
+    @apply flex justify-center;
+    @apply text-white;
+    @apply font-semibold;
+    @apply bg-custom-blue-01;
+
+    font-size: 20px;
+  }
+
+  .main {
+    @apply bg-white;
+  }
+}

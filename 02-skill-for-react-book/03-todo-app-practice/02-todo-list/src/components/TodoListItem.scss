@@ -1,0 +1,35 @@
+.TodoListItem {
+  @apply py-16 px-20;
+  @apply flex;
+
+  .content {
+    @apply flex items-center gap-8;
+    @apply flex-1;
+    @apply cursor-pointer;
+
+    &-checkbox {
+      font-size: 24px;
+    }
+
+    &-text {
+      @apply flex-1;
+    }
+
+    &.checked {
+      @apply text-custom-gray-01;
+
+      .content-checkbox {
+        @apply text-custom-blue-01;
+      }
+
+      .content-text {
+        @apply line-through;
+      }
+    }
+  }
+
+  .remove {
+    @apply text-custom-orange-01;
+    font-size: 24px;
+  }
+}
