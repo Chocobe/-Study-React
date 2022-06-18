@@ -1,0 +1,22 @@
+.TodoInsert {
+  @apply flex;
+
+  .input {
+    @apply py-12 px-20;
+    @apply flex-1;
+    @apply text-white;
+    @apply bg-custom-gray-05;
+    @apply outline-none;
+
+    &:placeholder {
+      @apply text-custom-gray-02;
+    }
+  }
+
+  .submit {
+    @apply px-14;
+    @apply text-white;
+    @apply bg-custom-gray-03;
+    @apply outline-none;
+  }
+}
