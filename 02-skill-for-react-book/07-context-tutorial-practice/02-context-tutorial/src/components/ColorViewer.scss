@@ -1,0 +1,25 @@
+.ColorViewer {
+  @apply w-full h-64;
+  @apply grid gap-8;
+
+  grid-template-columns: 2fr 1fr;
+
+  @mixin viewer() {
+    @apply w-full h-full;
+    @apply flex justify-center items-center;
+    @apply font-bold;
+    @apply text-white;
+
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    transition: background-color 0.28s ease-in-out;
+  }
+  
+  .mainColor {
+    @include viewer();
+  }
+
+  .subColor {
+    @include viewer();
+  }
+}

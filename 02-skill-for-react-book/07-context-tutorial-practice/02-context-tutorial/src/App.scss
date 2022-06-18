@@ -1,0 +1,20 @@
+.App {
+  @apply w-full;
+  @apply flex justify-center;
+  @apply text-gray-700;
+
+  &-wrapper {
+    @apply mt-80;
+    @apply py-12 px-20;
+    @apply flex flex-col gap-20;
+
+    border-radius: 4px;
+    box-shadow: 1px 3px 6px #fff;
+
+    .title {
+      @apply font-bold;
+      
+      font-size: 20px;
+    }
+  }
+}
