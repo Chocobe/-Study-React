@@ -1,0 +1,24 @@
+.MainLayout {
+  @apply mx-auto mt-80;
+  @apply overflow-hidden;
+
+  width: 512px;
+  border-radius: 8px;
+
+  .header {
+    @apply py-16 px-20;
+    @apply text-center;
+    @apply bg-custom-blue-01;
+
+    &-title {
+      @apply font-semibold;
+      @apply text-white;
+      
+      font-size: 20px;
+    }
+  }
+
+  .main {
+    //
+  }
+}
