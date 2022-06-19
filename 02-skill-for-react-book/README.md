@@ -244,3 +244,564 @@ const MyApp = () => {
 
 export default MyApp;
 ```
+
+
+<br /><hr /><br />
+
+
+
+# 04. Redux 기초
+
+``React`` 는 ``Context API`` 를 사용하여 상태관리를 할 수 있습니다.
+
+``Context API`` 는 작은 단위의 전역 상태관리에 사용할 때는 유용하지만, 큰 단위가 되면 사용성과 유지보수에 어려움이 있습니다.
+
+<br />
+
+그래서 ``React`` 의 전역 상태관리에는 ``Redux`` 라는 라이브러리를 사용합니다.
+
+``Redux`` 의 구조를 살펴보면 다음과 같습니다.
+
+* ``Action``
+* ``reducer()``
+* ``Store``
+* ``dispatch``
+* ``subscribe()``
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-01. Redux - ``Action`` (액션)
+
+``Action`` 객체는 전역 상태를 어떻게 변경할 것인지에 대한 정보를 담는 객체 입니다.
+
+``Action`` 객체의 특징으로는 ``type: string`` Property 를 필수로 가지고 있어야 한다는 점 입니다.
+
+이유는 ``Action`` 객체를 실제로 사용하게 될 함수가 ``reducer()`` 인데, ``reducer()`` 내부에서 동작을 분기하는 기준이 ``type`` Property 이기 때문입니다.
+
+<br />
+
+간단히 사용할 때는 ``Action`` 객체를 직접 만들어 사용하지만, 객체 생성의 실수나 유지보수를 위해서 ``함수`` 로 만들어 사용합니다.
+
+```javascript
+// Todo 추가를 위한 Action 생성 함수
+const addTodo = data => ({
+  type: "ADD_TODO",
+  data,
+});
+
+// input 값을 변경하는 Action 생성 함수
+const changeInput = value => ({
+  type: "CHANGE_INPUT",
+  value,
+});
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-02. Redux - ``reducer()`` (리듀서)
+
+``reducer()`` 함수는 전역 상태값을 변경시키는 함수 입니다.
+
+전달받은 ``Action`` 의 ``type`` 에 따라 상태값을 변경 시킵니다.
+
+```javascript
+const myReducer = (state, action) => {
+  const { type } = action;
+
+  switch (type) {
+    case "ADD_TODO": {
+      // ... 전역 state 에 Todo 를 추가하는 동작
+      return {/* ... */};
+    }
+
+    case "CHANGE_INPUT": {
+      // input 값을 변경하는 동작
+      return {/* ... */};
+    }
+
+    default: {
+      return state;
+    }
+  }
+};
+```
+
+
+<br /><hr /><br />
+
+
+
+# 04-03. Redux - ``Store`` (스토어)
+
+전역 상태관리를 위한 ``Redux`` 의 본체입니다.
+
+``Store`` 는 ``전역 상태값`` 과 ``reducer()`` 함수를 가지고 있습니다.
+
+그리고 몇가지 ``내장 함수`` 를 제공 합니다.
+
+
+<br /><hr /><br />
+
+
+
+# 04-04. Redux - ``dispatch()`` (디스패치)
+
+``dispatch()`` 는 ``Store`` 에서 제공하는 내장함수 입니다.
+
+전역 상태값을 변경하기 위해 우리가 실제로 호출할 함수가 바로 ``dispatch()`` 입니다.
+
+``dispatch(action)`` 형식으로 ``Action`` 객체를 넘겨주면, ``dispatch()`` 함수는 ``reducer()`` 를 호출하며 전역 상태값이 변경됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-05. Redux - ``subscribe()`` (구독)
+
+``subscribe()`` 도 ``Store`` 의 내장함수 입니다.
+
+``subscribe(listener)`` 형식으로 ``callback 함수`` 를 넘겨주면, ``Store`` 의 전역 상태값이 업데이트 될 때마다 ``listener()`` callback 을 호출해 줍니다.
+
+```javascript
+// Store 의 전역 상태값이 업데이트 될 때마다 호출될 callback 함수
+const listener = () => {
+  console.log("전역 상태값이 업데이트 되었습니다.");
+};
+
+// subscribe() 호출 시, unsubscribe() 함수를 반환 받습니다.
+const unsubscribe = store.subscribe(listener);
+
+// 이후, 구독 해제를 할 경우, unsubscribe() 로 할 수 있습니다.
+unsubscribe();
+```
+
+
+
+# 04-06. Redux - Store 만들기
+
+``Redux`` 로 만드는 ``Store`` 는 프로젝트당 ``오직 1개`` 만 만들 수 있습니다.
+
+아래에 정리한 ``Store`` 만드는 방법은 ``redux@4.1.2`` 까지 해당하며, ``redux@4.2.x`` 이상 버전에서는 사용방법이 달라졌습니다.
+
+그러므로 아래의 예시를 사용하기 위해서는 ``redux`` 버전을 낮추어야 합니다.
+
+```bash
+$ yarn add redux@4.1.2
+
+# 또는
+
+$ npm i redux@4.1.2
+```
+
+
+<br /><br />
+
+
+``redux@4.1.2`` 버전의 ``Store`` 만들기 위한 작업 순서는 다음과 같습니다.
+
+1. ``Action`` 타입(이름) 정하기
+2. ``Action`` 객체 생성 함수 만들기 (Factory Function)
+3. ``Store State 초기값`` 만들기
+4. ``reducer()`` 함수 만들기
+5. ``Store`` 객체 생성하기
+6. ``render()`` 함수 만들기
+7. ``subscribe()`` 로 구독하기
+8. 액션 발생시키기
+
+<br />
+
+이제 각 단계를 통해 ``Store`` 를 만들어 보겠습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-01. ``Action`` 타입 정하기
+
+``Action`` 타입이란, ``Store 변화`` 를 시키기 위한 동작을 의미 합니다.
+
+``redux`` 는 ``Action`` 을 통해서 수행할 동작을 분기처리 하게 됩니다.
+
+분기처리의 기준점은 ``Action`` 객체의 ``type`` 속성이며, ``Action 타입`` 이란, ``type`` 이름을 정하는 단계가 됩니다.
+
+일반적으로 ``Action 타입`` 은 ``대문자`` 로 사용하며, 다음과 같이 작성합니다.
+
+```javascript
+const TOGGLE_SWITCH = "TOGGLE_SWITCH";
+const INCREASE_COUNTER = "INCREASE_COUNTER";
+const DECREASE_COUNTER = "DECREASE_COUNTER";
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-02.``Action`` 객체 생성 함수 만들기 (Factory Function)
+
+``Action`` 객체를 만들 때, 직접 만들어도 무방합니다.
+
+하지만, ``Store`` 를 여러곳에서 팀원들과 함께 사용하게 되면, 잘못된 형태나 실수들이 발생할 수 있습니다.
+
+이러한 이슈를 미연에 방지하기 위해, ``Action`` 객체를 생성하는 ``Factory Function`` 으로 정의하여 사용합니다.
+
+```javascript
+const toggleSwitch = () => ({
+  type: TOGGLE_SWITCH,
+});
+
+const increaseCounter = difference => ({
+  type: INCREASE_COUNTER,
+  difference,
+});
+
+const decreaseCounter = difference => ({
+  type: DECREASE_COUNTER,
+  difference,
+});
+```
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-03. ``Store State 초기값`` 만들기
+
+``Store`` 의 초기 상태값은 ``undefined`` 입니다.
+
+그래서 초기값을 설정해주기 위한 과정입니다.
+
+```javascript
+const initialState = {
+  toggle: false,
+  counter: 0,
+};
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-04. ``reducer()`` 함수 만들기
+
+``reducer()`` 함수는 ``Store State`` 를 실제로 변화시키는 동작을 합니다.
+
+그래서 우리가 ``Store State`` 상태를 어떻게 바꿀 것인지 정의하는 함수가 ``reducer()`` 입니다.
+
+<br />
+
+``reducer()`` 함수는 ``2개`` 의 params 를 받게 되며 다음과 같습니다.
+
+```typescript
+const reducer = (
+  state: Store상태값 = initialState, // state 초기값 지정
+  action: {
+    type: string;
+    ...그 외 전달할 Properties
+  }
+) => {
+  switch (action.type) {
+    case Action타입: {
+      // do something;
+
+      return {
+        // 갱신할 State 값들
+      };
+    }
+
+    default: {
+      return state;
+    }
+  }
+};
+```
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-05. ``Store`` 객체 생성하기
+
+드디어 ``Store`` 객체를 생성하기 위한 준비가 되었습니다.
+
+``Store`` 객체는 ``createStore()`` 함수를 사용하여 만들 수 있습니다.
+
+> ``createStore()`` 함수는 ``redux@4.1.2`` 까지만 지원하며, ``redux@4.2.x`` 이상 버전에서는 사용할 수 없습니다.
+> ``redux@4.2.x`` 이상 => ``configureStore()`` 를 사용
+
+<br />
+
+```javascript
+import { createStore } from "redux";
+
+/**
+ * @type { import("redux").Store<{
+ *  toggle: boolean;
+ *  counter: number;
+ * }> }
+ */
+const store = createStore(reducer);
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-06. ``render()`` 함수 만들기
+
+이번에 만들 ``render()`` 함수는, ``React 컴포넌트`` 의 ``render()`` 함수와는 다른 역할의 함수입니다.
+
+``Store State`` 가 변경될 때마다 호출될 ``callback`` 이며, ``Store State`` 변경값을 ``HTML Tag`` 에 반영시키는 역할을 하게 됩니다.
+
+즉, ``React 컴포넌트`` 의 ``render()`` 함수와 전혀 다른 함수라는 것을 인지해야 합니다.
+
+```javascript
+const divToggle = document.querySelector("#toggle");
+const divCounter = document.querySelector("#counter");
+
+const render = () => {
+  const state = store.getStore();
+
+  // divToggle 요소에 state.toggle 값 반영하기
+  state.toggle
+    ? divToggle.classList.add("active")
+    : divToggle.classList.remove("active");
+
+  // divCounter 요소에 state.counter 값 반영하기
+  divCounter.innerText = state.counter;
+};
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-07. ``subscribe()`` 로 구독하기
+
+``Store state`` 의 값이 바뀔 때 마다 위에서 작성한 ``render()`` 함수가 호출되었으면 좋겠습니다.
+
+그래서 ``store`` 객체의 ``subscribe(callback)`` 를 통해서 ``render()`` 함수를 지정해 주어야 합니다.
+
+```javascript
+// render() 함수가 호출되도록, Store 구독하기
+const unsubscribe = store.subscribe(render);
+
+// 구독 취소가 필요하다면, unsubscribe() 호출하기
+unsubscribe();
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-08. 액션 발생시키기
+
+위 단계로 ``Store`` 를 생성하였습니다.
+
+마지막으로 ``Store`` 의 값을 바꾸기 위해 액션을 발생시켜 보겠습니다.
+
+<br />
+
+``createStore()`` 로 생성한 ``store`` 는 내장함수를 제공합니다.
+
+내장함수 중, ``dispatch()`` 함수를 통해서 ``State`` 를 변경시킬 수 있습니다.
+
+``dispatch(action)`` 으로 호출하게 되면, 우리가 작성했던 ``reducer`` 에서 ``action`` 을 받아서 ``Store State`` 를 변경해 줍니다.
+
+그리고 ``subscribe(callback)`` 으로 구독했다면, ``Store State`` 가 변경된 직 후, ``callback()`` 도 호출됩니다.
+
+```javascript
+store.dispatch(increaseCounter());
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-06-09. ``Redux`` 로 ``Store`` 구현 전체 예시
+
+지금까지 살펴본 ``Redux`` 를 간단한 ``Vanilla JS`` 로 사용해 보면 다음과 같습니다.
+
+```html
+<!DOCTYPE html>
+  <body>
+    <div id="toggle"></div>
+    
+    <div>
+      <h1>
+        카운터값: <span id="counter">loading...</span>
+      </h1>
+
+      <button id="increase">Increase</button>
+      <button id="decrease">Decrease</button>
+    </div>
+  </body>
+</html>
+```
+
+<br />
+
+```javascript
+import { createStore } from "redux";
+
+const $toggle = document.querySelector("#toggle");
+const $counter = document.querySelector("#counter");
+const $increase = document.querySelector("#increase");
+const $decrease = document.querySelector("#decrease");
+
+// 1. Action Type 만들기
+const TOGGLE_SWITCH = "TOGGLE_SWITCH";
+const INCREASE_COUNTER = "INCREASE_COUNTER";
+const DECREASE_COUNTER = "DECREASE_COUNTER";
+
+// 2. Action 객체 생성 함수 만들기 (Factory Function)
+const toggleSwitch = () => ({
+  type: TOGGLE_SWITCH,
+});
+const increateCounter = difference => ({
+  type: INCREASE_COUNTER,
+  difference,
+});
+const decreaseCounter = difference => ({
+  type: DECREASE_COUNTER,
+  difference,
+});
+
+// 3. State 초기값 만들기
+const initialState = {
+  toggle: false,
+  counter: 0,
+};
+
+// 4. reducer() 함수 만들기
+const reducer = (
+  state = initialState,
+  action
+) => {
+  const { type } = action;
+
+  switch (type) {
+    case TOGGLE_SWITCH: {
+      return {
+        ...state,
+        toggle: !state.toggle,
+      };
+    }
+
+    case INCREASE_COUNTER: {
+      const { counter } = state;
+      const { difference } = action;
+
+      return {
+        ...state,
+        counter: counter + difference,
+      };
+    }
+
+    case DECREASE_COUNTER: {
+      const { counter } = state;
+      const { difference } = action;
+
+      return {
+        ...state,
+        counter: counter - difference,
+      };
+    }
+
+    default: {
+      return state;
+    }
+  }
+};
+
+// 5. Store 객체 만들기
+/**
+ * @type { import("redux").Store<{
+ *  toggle: boolean;
+ *  counter: number;
+ * }> }
+ */
+const store = createStore(reducer);
+
+// 6. render() 함수 만들기
+const render = () => {
+  const state = store.getState();
+
+  // $toggle 요소에 state.toggle 값 반영하기
+  state.toggle
+    ? $toggle.classList.add("active")
+    : $toggle.classList.remove("active");
+
+  // $counter 요소에 state.counter 값 반영하기
+  $counter.innerText = state.counter;
+};
+
+// 7. subscribe() 로 구독하기
+// react-redux 사용 시 (React 프로젝트에서 redux 사용 시), 내부에서 처리해 줍니다.
+const unsubscribe = store.subscribe(render);
+
+// 8. 액션 발생시키기
+// 8-1. state.toggle 값 변경하기
+store.dispatch(toggleSwitch()); // toggle 변경 후, render() 에 의해 HTML에 반영 완료
+
+// 8-2. state.counter 값 7증가 시키기
+store.dispatch(increaseCounter(7)); // counter 변경 후, render() 에 의해 HTML에 반영 완료
+
+// 8-3. state.counter 값 3감소 시키기
+store.dispatch(decreaseCounter(3)); // counter 변경 후, render() 에 의해 HTML에 반영 완료
+
+// 9. 구독해제
+unsubscribe(); // state 변경 시, 더이상 render() 함수가 호출되지 않습니다.
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 04-07. ``Redux`` 사용 규칙
+
+마지막으로 ``Redux`` 사용 시, 유의사항 3가지를 정리하면 다음과 같습니다.
+
+1. 프로젝트 전체에서 ``Store`` 는 ``단 1개`` 만 사용해야 합니다.
+    * 복수의 ``State`` 를 사용할 수도 있지만, 상태관리가 복잡해지므로, ``단일 Store`` 를 권장 합니다.
+2. ``Redux State`` 는 ``읽기 전용`` 상태를 유지해야 합니다.
+    * ``Redux State`` 를 변경할 때, ``store.dispatch()`` 가 아닌 직접 변경을 해서는 안됩니다.
+3. ``reducer()`` 함수는 ``Pure Function (퓨어 함수)`` 로 만들어야 합니다.
+    * ``reducer()`` 함수는 함수 외부값에 의존해서는 안됩니다.
+    * ``reducer()`` 함수가 인자로 전달받는 ``state`` 를 직접 변경해서는 안됩니다.
+    * ``reducer()`` 함수가 ``state`` 를 변경할 때는, ``새로운 객체를 반환`` 하면 됩니다.
+    * ``state`` 의 구조가 복잡하거나 ``depth (깊이)`` 가 깊다면, ``dimmer 라이브러리`` 가 좋은 선택지가 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
