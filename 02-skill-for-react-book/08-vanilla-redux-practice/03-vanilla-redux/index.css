@@ -1,0 +1,55 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #383841;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app {
+  width: 500px;
+  margin-top: 80px;
+  padding: 20px 40px;
+
+  border-radius: 8px;
+  background-color: #dedede;
+  filter: drop-shadow(3px 3px 9px #03a9f4);
+}
+
+.toggleWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.toggleWrapper-title {
+  margin-right: 12px;
+}
+
+.toggleWrapper-toggle::before {
+  content: "";
+  display: block;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+  background-color: #03a9f4;
+  box-shadow: 3px 3px 12px #333;
+
+  transition: background-color 0.28s ease-in-out;
+}
+
+.toggleWrapper-toggle.active::before {
+  background-color: #f0f400;
+}
+
+.counterWrapper-actions-increase,
+.counterWrapper-actions-decrease {
+  padding: 4px 8px;
+}
