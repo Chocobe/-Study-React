@@ -1,0 +1,82 @@
+body {
+  background-color: #383841;
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  width: 500px;
+  margin-top: 80px;
+  box-shadow: 1px 1px 9px #fff;
+}
+
+.toggle {
+  padding: 20px 40px;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+}
+.toggle::before {
+  content: "";
+  display: block;
+  margin-right: 8px;
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+  background-color: #f0f400;
+}
+.toggle::after {
+  content: "";
+  display: block;
+  margin-left: 20px;
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background-color: #03a9f4;
+
+  transition: background-color 0.28s ease-in-out;
+}
+.toggle__active::after {
+  background-color: #ff1493;
+}
+
+.counter {
+  padding: 20px 40px;
+  
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.counter-info {
+  width: 100%;
+  color: #fff;
+  text-align: center;
+}
+
+.counter-button__increase,
+.counter-button__decrease {
+  margin-top: 12px;
+  width: 100%;
+  padding: 8px 20px;
+
+  font-size: 20px;
+  font-weight: 700;
+}
