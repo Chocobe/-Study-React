@@ -1,0 +1,50 @@
+.MyCounter {
+  // @apply flex items-center;
+
+  .title {
+    @apply mr-12;
+    @apply text-gray-500;
+
+    font-size: 20px;
+  }
+
+  .counterWrapper {
+    @apply font-semibold;
+    
+    color: #383841;
+
+    &-counter {
+      @apply text-green-600;
+      @apply pl-8;
+    }
+  }
+
+  .actions {
+    @apply mt-8;
+
+    &-button {
+      @apply py-4 px-8;
+      @apply text-white;
+      @apply bg-purple-600;
+
+      font-size: 14px;
+      font-weight: 900;
+      border-radius: 4px;
+      box-shadow: 1px 1px 4px #383841;
+
+      transition: box-shadow 0.28s ease-in-out;
+
+      &:first-child {
+        @apply mr-8;
+      }
+
+      &:hover {
+        box-shadow: 3px 3px 9px #383841;
+      }
+
+      &:active {
+        box-shadow: 1px 1px 4px #383841;
+      }
+    }
+  }
+}

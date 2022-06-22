@@ -1,0 +1,34 @@
+.MyToggle {
+  @apply flex items-center;
+
+  &-title {
+    @apply mr-12;
+    @apply text-gray-500;
+
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  &-toggle {
+    @apply w-20 h-20;
+    @apply overflow-hidden;
+
+    border-radius: 50%;
+    box-shadow: 2px 2px 9px #383841;
+
+    &::before {
+      @apply bg-sky-500;
+      @apply block;
+      
+      content: "";
+      width: 100%;
+      height: 100%;
+
+      transition: background-color 0.28s ease-in-out;
+    }
+
+    &.active::before {
+      @apply bg-pink-400;
+    }
+  }
+}
