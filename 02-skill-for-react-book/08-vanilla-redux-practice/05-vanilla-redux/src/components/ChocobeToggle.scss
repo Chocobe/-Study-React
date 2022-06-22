@@ -1,0 +1,23 @@
+.ChocobeToggle {
+  @apply flex items-center;
+
+  .title {
+    @apply mr-8;
+    @apply text-gray-500;
+    
+    font-size: 20px;
+  }
+
+  .toggle {
+    @apply w-20 h-20;
+    @apply bg-green-600;
+
+    border-radius: 50%;
+    box-shadow: 1px 1px 6px #383841;
+    transition: background-color 0.28s;
+
+    &.active {
+      @apply bg-amber-400;
+    }
+  }
+}

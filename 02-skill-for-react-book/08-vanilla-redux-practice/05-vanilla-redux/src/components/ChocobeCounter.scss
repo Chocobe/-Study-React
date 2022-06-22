@@ -1,0 +1,39 @@
+.ChocobeCounter {
+  //
+
+  .title {
+    @apply text-gray-500;
+  }
+
+  .counterWrapper {
+    //
+
+    &-counter {
+      @apply ml-8;
+      @apply text-lime-600;
+      @apply font-black;
+    }
+  }
+
+  .actions {
+    @apply mt-8;
+
+    &-button {
+      @apply py-4 px-8;
+      @apply text-white;
+      @apply font-black;
+      @apply bg-green-600;
+
+      font-size: 13px;
+      transition: background-color 0.28s;
+
+      &:first-child {
+        @apply mr-4;
+      }
+
+      &.active {
+        @apply bg-yellow-600;
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+export const ACTION_TYPE = {
+  TOGGLE: "TOGGLE",
+  INCREASE: "INCREASE",
+  DECREASE: "DECREASE",
+};
