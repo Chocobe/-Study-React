@@ -1,0 +1,19 @@
+.MainLayout {
+  @apply mx-auto mt-80;
+  @apply bg-white;
+  @apply overflow-hidden;
+  
+  width: 512px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 20px 6px #333;
+
+  .title {
+    @apply py-16 px-20;
+    @apply font-black;
+    @apply text-white;
+    @apply text-center;
+    @apply bg-custom-blue-01;
+    
+    font-size: 20px;
+  }
+}

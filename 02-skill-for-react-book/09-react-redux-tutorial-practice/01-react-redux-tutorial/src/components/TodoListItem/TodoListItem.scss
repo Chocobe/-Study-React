@@ -1,0 +1,45 @@
+.TodoListItem {
+  @apply py-16 px-20;
+  @apply flex items-center;
+
+  .todo {
+    @apply flex-1;
+    @apply flex;
+    @apply cursor-pointer;
+
+    transition: all 0.28s;
+    
+    &-checkbox {
+      @apply mr-8;
+
+      font-size: 20px;
+    }
+
+    &-content {
+      @apply flex-1;
+    }
+
+    
+    &.done {
+      @apply text-custom-blue-01;
+
+      .todo-content {
+        @apply line-through;
+      }
+    }
+  }
+
+  .remove {
+    @apply text-custom-orange-01;
+    
+    font-size: 20px;
+  }
+
+  & + & {
+    border-top: 1px solid #bbb;
+  }
+
+  &:nth-child(even) {
+    @apply bg-custom-gray-01;
+  }
+}

@@ -1,0 +1,19 @@
+.TodoInput {
+  @apply flex;
+
+  .input {
+    @apply w-full;
+    @apply flex-1;
+    @apply py-12 px-20;
+    @apply text-custom-gray-02;
+    @apply bg-custom-gray-05;
+  }
+
+  .button {
+    @apply px-14;
+    @apply text-white;
+    @apply bg-custom-gray-03;
+
+    font-size: 20px;
+  }
+}
