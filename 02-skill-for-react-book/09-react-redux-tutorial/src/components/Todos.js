@@ -5,10 +5,23 @@ const TodoItem = ({
 }) => {
   return (
     <div className="TodoItem">
-      <input type="checkbox" />
+      <input
+        type="checkbox"
+        checked={todo.done}
+        onClick={() => onToggle(todo.id)}
+        readOnly={true}
+      />
 
-      <span>예제 테스트</span>
-      <button>삭제</button>
+      <span style={{
+        textDecoration: todo.done ? "line-through" : "none",
+        color: todo.done ? "#777" : "#000",
+      }}>
+        {todo.text}
+      </span>
+
+      <button onClick={() => onRemove(todo.id)}>
+        삭제
+      </button>
     </div>
   );
 };
@@ -23,21 +36,30 @@ const Todos = ({
 }) => {
   const onSubmit = e => {
     e.preventDefault();
+    onInsert(input);
+    onChangeInput("");
   };
+
+  const onInput = e => {
+    onChangeInput(e.target.value);
+  }
 
   return (
     <div className="Todos">
       <form onSubmit={onSubmit}>
-        <input />
+        <input value={input} onChange={onInput} />
         <button type="submit">등록</button>
       </form>
 
       <div>
-        <TodoItem />
-        <TodoItem />
-        <TodoItem />
-        <TodoItem />
-        <TodoItem />
+        {todos.map(todo => (
+          <TodoItem
+            todo={todo}
+            onToggle={onToggle}
+            onRemove={onRemove}
+            key={todo.id}
+          />
+        ))}
       </div>
     </div>
   );

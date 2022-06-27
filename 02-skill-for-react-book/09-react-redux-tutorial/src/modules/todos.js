@@ -16,9 +16,11 @@ export const toggle = id => ({
 });
 export const insert = text => ({
   type: INSERT,
-  id: id++,
-  text,
-  done: false,
+  todo: {
+    id: id++,
+    text,
+    done: false,
+  },
 });
 export const remove = id => ({
   type: REMOVE,
@@ -46,6 +48,8 @@ const initialState = {
 const todos = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_INPUT: {
+      console.log("받은 값: ", action.input);
+      
       return {
         ...state,
         input: action.input,
