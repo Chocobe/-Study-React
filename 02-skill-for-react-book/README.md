@@ -805,3 +805,422 @@ unsubscribe(); // state 변경 시, 더이상 render() 함수가 호출되지 �
 
 
 
+# 05. React & Redux 
+
+``React`` 에서 ``Redux`` 를 사용한다면, ``react-redux`` 를 추가로 사용하게 됩니다.
+
+``react-redux`` 는 ``Store`` 의 ``subscribe()`` 와 ``unsubscribe()`` 를 내부에서 처리해 줍니다.
+
+또한, 컴포넌트에서 ``state`` 와 ``dispatch`` 를 좀 더 편하게 ``props`` 로 넘겨줄 수 있도록 해 줍니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-01. reducer() 만들기
+
+이전에 살펴보았던 ``createStore()`` 를 사용하여 ``Store`` 객체를 생성합니다.
+
+``React`` 에서 ``Redux`` 를 사용할 경우에도 ``Vanilla JS`` 에서 ``Redux`` 를 사용하는 것과 동일한 작업을 합니다.
+
+<br />
+
+1. ``Action Type`` 만들기
+2. ``Action Object Factory Method`` 만들기
+3. ``initialState`` 만들기
+4. ``reducer`` 만들기
+5. ``createStore()`` 로 ``Store`` 객체 생성하기
+
+<br />
+
+위 과정을 작성하면 다음과 같이 만들 수 있습니다.
+
+```javascript
+// ./src/store/todoList.js
+
+// 1. Action Type 만들기
+const CONTENT = "todoList/CONTENT";
+const INSERT = "todoList/INSERT";
+const REMOVE = "todoList/REMOVE";
+const TOGGLE = "todoList/TOGGLE";
+
+// 2. Action Object Factory Method 만들기
+const content = content => ({
+  type: CONTENT,
+  content,
+});
+
+let id = 2;
+const insert = content => ({
+  type: INSERT,
+  todo: {
+    id: id++,
+    content,
+    toggle: false,
+  },
+});
+
+const remove = id => ({
+  type: REMOVE,
+  id,
+});
+
+const toggle = id => ({
+  type: TOGGLE,
+  id,
+});
+
+// 3. initialState 만들기
+const initialState = {
+  content: "",
+  todoList: [
+    {
+      id: 0,
+      content: "할 일 0",
+      toggle: true,
+    },
+    {
+      id: 1,
+      content: "할 일 1",
+      toggle: false,
+    },
+  ],
+};
+
+// 4. reducer() 만들기
+const reducer = (state, action) => {
+  switch (action.type) {
+    case CONTENT: {
+      return {
+        ...state,
+        content: action.content,
+      };
+    }
+
+    case INSERT: {
+      return {
+        ...state,
+        todoList: [action.todo, ...state.todoList],
+      };
+    }
+
+    case REMOVE: {
+      return {
+        ...state,
+        todoList: {
+          ...state,
+          todoList: state.todoList.filter(todo => {
+            return todo.id !== action.id;
+          }),
+        },
+      };
+    }
+
+    case TOGGLE: {
+      return {
+        ...state,
+        todoList: state.todoList.map(todo => {
+          return todo.id !== action.id
+            ? todo
+            : { ...todo, toggle: !todo.toggle };
+        }),
+      };
+    }
+    
+    default: {
+      return state;
+    }
+  }
+};
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-02. 복수의 Store 만들기
+
+위에서 작성했던 ``Action Type`` 에는 ``namespace/타입명`` 형식으로 만들었습니다.
+
+``Store`` 를 의미 단위로 나누어 만들기 위한 방법입니다.
+
+이를 위해 ``redux`` 는 ``combineReducers()`` 함수를 제공 합니다.
+
+```javascript
+combineReducers(
+  reducer01,
+  reducer02,
+);
+```
+
+<br />
+
+``combineReducers()`` 는 ``params`` 로 넘겨주었던 ``reducer`` 함수들을 통합한, ``reducer() 하나`` 를 반환해 줍니다.
+
+이렇게 반환받은 ``reducer()`` 함수를 ``createStore()`` 의 ``params`` 로 넘겨주면, 의미단위로 분리한 형태의 ``Store`` 를 생성할 수 있게 됩니다.
+
+```javascript
+import { createStore } from "redux";
+
+import todoListReducer from "./todoListReducer";
+import counterReducer from "./counterReducer";
+
+const rootReducer = combineReducers(
+  todoListReducer,
+  counterReducer,
+);
+
+const store = createStore(rootReducer);
+
+export default store;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-03. Chrome 의 Redux DevTools 사용하기
+
+``Redux`` 를 사용하게 되면, Store 의 상태를 확인해야 할 경우들이 발생합니다.
+
+이를 위해, ``Chrome`` 의 확장 프로그램을 사용합니다.
+
+> ``Redux DevTools`` 검색 및 설치
+
+<br />
+
+확장 프로그램을 설치 했다면, 프로젝트에도 해당 설정을 해 주어야 합니다.
+
+설치할 라이브러리는 다음과 같습니다.
+
+```bash
+yarn add redux-devtools-extension
+```
+
+<br />
+
+설치가 완료 되었다면, ``createStore()`` 의 ``2번째 Params`` 에 다음과 같이 설정해 줍니다.
+
+```javascript
+// ./src/index.js
+
+import { createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import rootReducer from "./store";
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools()
+);
+```
+
+<br />
+
+이제 Chrome 의 개발자 도구에서 ``Redux`` 탭을 사용할 수 있게 되었습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-04. 프로젝트에 ``Store`` 연결하기
+
+위에서 만들었던 ``Store`` 객체를 프로젝트에 연결해 보겠습니다.
+
+``react-redux`` 에서 제공하는 ``<Provider />`` 컴포넌트를 사용하게 됩니다.
+
+```javascript
+// App.js
+
+import rootReducer from "./store";
+import { createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { Provider } from "react-redux";
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools()
+);
+
+const App = () => {
+  return (
+    <Provider store={store}>
+      <div className="App">
+        My App
+      </div>
+    </Provider>
+  );
+};
+```
+
+<br />
+
+이제 프로젝트 전역에서 ``Store`` 를 사용할 수 있게 되었습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-05. 컨테이너 컴포넌트와 프레젠테이셔널 컴포넌트
+
+``Store`` 를 생성하였다면, 원하는 컴포넌트에서 ``Store`` 를 직접 사용할 수 있게 됩니다.
+
+여기서 ``Redux`` 를 사용하는 컴포넌트와 아닌 컴포넌트로 분리하여 생각할 수 있습니다.
+
+그래서 ``Redux`` 를 사용할 때는 다음과 같이 2가지 컴포넌트로 분리하는 패턴을 사용합니다.
+
+* ``컨테이너 컴포넌트``: ``Redux`` 를 직접 사용하는 컴포넌트
+* ``프레젠테이셔널 컴포넌트``: ``Redux`` 를 사용하지 않는 컴포넌트
+
+<br />
+
+``<TodoList />`` 라는 컴포넌트를 만들고 ``Redux`` 를 사용하는 경우를 생각해 보겠습니다.
+
+기존에 만들었던 ``<TodoList />`` 컴포넌트에 ``Redux`` 를 바로 사용하지 않습니다.
+
+대신 ``<TodoListContainer />`` 컴포넌트를 만들고, 여기서 ``Redux`` 를 사용합니다.
+
+그리고 ``<TodoList />`` 에 ``Props`` 로 넘겨줍니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 05-06. 컨테이너 컴포넌트 만들기
+
+``Redux`` 를 실제로 사용하는 ``컨테이너 컴포넌트`` 를 만들어 보겠습니다.
+
+이 때 사용할 라이브러리가 ``react-redux`` 입니다.
+
+``react-redux`` 는 Store 의 ``subscribe()``, ``unsubscribe()``, ``state``, ``dispatch`` 를 컴포넌트의 ``Props`` 로 넘겨주는 기능을 해 줍니다.
+
+<br />
+
+``Store`` 의 모든 ``state`` 와 ``dispatch`` 를 사용하는 것 이 아닌, 필요한 부분만을 추출하여 사용하게 됩니다.
+
+추출한 ``state`` 와 ``dispatch`` 는 ``react-redux`` 에서 제공하는 ``connect()`` 함수로 ``컨테이너 컴포넌트`` 에 연결해 줍니다.
+
+<br />
+
+* ``mapStateToProps``: 사용할 ``state`` 를 묶어 반환할 함수 입니다.
+* ``mapDispatchToProps``: 사용할 ``dispatch`` 를 묵어 반환할 함수 입니다.
+
+<br />
+
+```javascript
+// ./src/containers/todoList.js
+
+import TodoList from "../components/TodoList";
+
+import { connect } from "react-redux";
+
+// Action Object Factory Method
+import { remove, toggle } from "../store/todoListStore";
+
+// TodoListContainer 컴포넌트
+const TodoListContainer = ({
+  // connect() 에 의해, state 와 dispatch 를 Props 로 받게 됩니다.
+  todoList,
+  remove,
+  toggle,
+}) => {
+  return (
+    <TodoList
+      todoList={todoList}
+      onRemove={remove}
+      onToggle={toggle}
+    />
+  );
+};
+
+// 사용할 state 를 추출하는 함수 - <TodoListContainer /> 에 넘겨줄 state 를 정의합니다.
+const mapStateToProps = state => ({
+  // todoList: state.모듈명.state명
+  todoList: state.todoList.todoList,
+});
+
+// 사용할 dispatch 를 추출하는 함수 - <TodoListContainer /> 에 넘겨줄 dispatch 를 정의합니다.
+const mapDispatchToProps = dispatch => ({
+  remove: id => dispatch(remove(id)),
+  toggle: id => dispatch(toggle(id)),
+});
+
+// connect() 로 <TodoListContainer /> 에 연결하기
+const makeContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default makeContainer(TodoListContainer);
+```
+
+<br />
+
+``connect()`` 로 연결하는 부분을 다음과 같이 짧게 사용할 수 있습니다.
+
+```javascript
+// const makeContainer = connect(
+//   mapStateToProps,
+//   mapDispatchToProps,
+// );
+
+// export makeContainer(TodoListContainer);
+
+export default connect(
+  mapStateToProps,
+  makDispatchToProps,
+)(TodoListContainer);
+```
+
+<br />
+
+``connect()`` 의 ``2번째 Params`` 를 다음과 같이 작성하면, ``mapDispatchToProps`` 를 생략할 수 있습니다.
+
+```javascript
+import { remove, toggle } from "../store/todoList";
+
+export default connect(
+  mapStateToProps,
+  {
+    // Action Object Factory Method 를 넘겨줍니다.
+    remove,
+    toggle,
+  },
+)(TodoListContainer);
+```
+
+<br />
+
+``mapStateToProps`` 까지 ``connect()`` 에서 정의한다면, 다음과 같이 만들 수 있습니다.
+
+```javascript
+import { remove, toggle } from "../store/todoList";
+
+export default connect(
+  state => ({
+    todoList: state.todoList,
+  }),
+  {
+    remove,
+    toggle,
+  },
+)(TodoListContainer);
+```
+
+
+
+<br /><hr /><br />
+
+
+
