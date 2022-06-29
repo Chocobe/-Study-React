@@ -1224,3 +1224,366 @@ export default connect(
 
 
 
+# 06. redux-actions 라이브러리로 가독성 높이기
+
+``Redux`` 로 ``Store`` 를 만들때, ``reducer(state, action)`` 함수에 ``state`` 를 변경시키는 로직을 작성합니다.
+
+그리고 ``Store`` 를 사용할 ``컨테이너 컴포넌트`` 에서는 ``mapDispatchToProps`` 를 만들기 위해, ``Action Object Factory Method`` 를 작성합니다.
+
+작성할 것들이 많기 때문에 가독성에 조금은 부담이 됩니다.
+
+``redux-actions`` 라이브러리를 사용하면, ``Action Object Factory Method`` 와 ``reducer(state, action)`` 를 좀 더 가독성 좋게 만들 수 있습니다.
+
+<br />
+
+``redux-actions`` 에서 제공하는 기능 중, 아래의 기능들을 사용할 것입니다.
+
+* ``createAction("Action_타입", Action_객체_생성_함수)``: ``Action Object Factory Method`` 를 좀 더 가독성 좋게 만들 수 있습니다.
+* ``handleActions({ [ACTION_타입]: (state, action) => State_결과 })``: ``reducer(state, action)`` 을 좀 더 가독성 좋게 만들 수 있습니다.
+
+
+
+<br />
+
+
+
+# 06-01. ``createAction()`` 으로 ``Action Object Factory Method`` 만들기
+
+아래의 코드는 기존의 ``Action Object Factory Method`` 입니다.
+
+```javascript
+// Action 타입 정의
+const CHANGE_INPUT = "todos/CHANGE_INPUT";
+const TOGGLE = "todos/TOGGLE";
+const INSERT = "todos/INSERT";
+const REMOVE = "todos/REMOVE";
+
+// Action Object Factory Method
+export const changeInput = input => ({
+  type: CHANGE_INPUT,
+  input,
+});
+
+export const toggle = id => ({
+  type: TOGGLE,
+  id,
+});
+
+let id = 3;
+export const insert => text => ({
+  type: INSERT,
+  id: id++,
+  text,
+  done: false,
+});
+
+export const remove = id => ({
+  type: REMOVE,
+  id,
+});
+```
+
+<br />
+
+위 코드를 ``createAction()`` 으로 작성하면 다음과 같습니다.
+
+```javascript
+// Action 정의
+const CHANGE_INPUT = "todos/CHANGE_INPUT";
+const TOGGLE = "todos/TOGGLE";
+const INSERT = "todos/INSERT";
+const REMOVE = "todos/REMOVE";
+
+// Action Object Factory Method
+export const changeInput = createAction(CHANGE_INPUT, text => text);
+
+export const toggle = createAction(TOGGLE, id => id);
+
+let id = 3;
+export const insert = createAction(INSERT, text => ({
+  id: id++,
+  text,
+  done: false,
+}));
+
+export const remove = createAction(REMOVE, id => id);
+```
+
+<br />
+
+``createAction()`` 을 사용한 결과, 코드량도 줄어들고 비교적 간단하게 읽어집니다.
+
+기존에는 ``reducer(state, action)`` 으로 넘겨주는 객체의 ``type`` 을 ``[Key]: value`` 형태로 넘겨주었는데, ``createAction()`` 의 ``첫전째 params`` 에 ``타입 문자열`` 만 넘겨주고 있습니다.
+
+그리고, ``두번째 params`` 에는 ``action`` 객체를 반환하는 ``callback`` 함수는 넘겨주는데, ``type`` 을 제외한 ``Payload`` 를 반환하는 ``callback`` 을 넘겨줍니다.
+
+즉, ``createAction()`` 의 ``두번째 params`` 에 넘겨주는 ``callback`` 은 실제 사용할 데이터만을 반환하는 형식이 됩니다.
+
+* ``createAction()`` 의 ``두번째 params`` 함수가 반환하는 데이터는, ``reducer(state, action)`` 함수의 ``action.payload`` 형태로 접근할 수 있습니다.
+
+
+
+
+<br /><hr /><br />
+
+
+
+# 06-02 handleActions() 로 reducer() 만들기
+
+이번에는 ``handleActions()`` 로 ``reducer()`` 를 좀 더 가독성 좋게 만들어 보겠습니다.
+
+아래의 코드는 기존의 ``reducer()`` 함수 입니다.
+
+```javascript
+import { createAction, handleActions } from "redux-actions";
+
+// Action 타입
+const CHANGE_INPUT = "todos/CHANGE_INPUT";
+const TOGGLE = "todos/TOGGLE";
+const INSERT = "todos/INSERT";
+const REMOVE = "todos/REMOVE";
+
+// Action Object Factory Method
+export const changeInput = createAction(CHANGE_INPUT, input => input);
+
+export const toggle = createAction(TOGGLE, id => id);
+
+let id = 2;
+export const insert = createAction(INSERT, text => ({
+  id: id++,
+  text,
+  done: false,
+}));
+
+export const remove = createAction(REMOVE, id => id);
+
+// state 초기값
+const initialState = {
+  input: "",
+  todos: [
+    {
+      id: 1,
+      text: "redux-actions 라이브러리 정리하기",
+      done: false,
+    },
+  ],
+};
+
+const todos = handleActions({
+  [CHANGE_INPUT]: (state, action) => ({
+    ...state,
+    input: action.payload,
+  }),
+
+  [TOGGLE]: (state, action) => ({
+    ...state,
+    todos: state.todos.map(todo => {
+      return todo.id !== action.payload
+        ? todo
+        : { ...todo, done: !todo.done };
+    }),
+  }),
+
+  [INSERT]: (state, action) => ({
+    ...state,
+    todos: state.todos.concat(action.payload),
+  }),
+
+  [REMOVE]: (state, action) => ({
+    ...state,
+    todos: state.todos.filter(todo => todo.id !== action.payload),
+  }),
+}, initialState);
+```
+
+<br />
+
+``handleActions()`` 에 ``params`` 로 넘겨준 객체를 살펴보면, 다음과 같은 형식으로 만들어 졌습니다.
+
+```javascript
+const params = {
+  ["Action타입"]: (state, action) => {
+    // state 변경 로직
+  },
+};
+```
+
+<br />
+
+``state 변경 로직`` 에서도 다른부분이 있는데, ``createAction()`` 함수의 반환 객체를 읽는 방법이, ``action.payload`` 라는 점 입니다.
+
+``createAction()`` 의 ``두번째 params`` 로 생성하는 ``Action Object`` 의 참조값이 ``handleActions()`` 에서는 ``action.payload`` 로 제공됩니다.
+
+그러므로, ``createAction()`` 의 ``두번째 params`` 에서 ``id`` 값만을 반환하면, ``handleActions()`` 에서는 ``action.payload`` 가 ``id`` 값이 됩니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 06-03 ``handleActions()`` 에 구조분해 문법을 사용하여, 가독성 높이기
+
+``createAction()`` 에서 생성한 ``action`` 객체는 ``handleActions()`` 에서는 ``action.payload`` 에 담겨 있습니다.
+
+아래의 코드는 ``action.payload`` 를 구조분해 하여, 좀 더 명시적인 ``params 명`` 으로 나타내 줍니다.
+
+<br />
+
+```javascript
+import { createAction, handleActions } from "redux-actions";
+
+// Action 타입
+const CHANGE_INPUT = "todos/CHANGE_INPUT";
+const TOGGLE = "todos/TOGGLE";
+const INSERT = "todos/INSERT";
+const REMOVE = "todos/REMOVE";
+
+// Action Object Factory Method
+export const changeInput = createAction(CHANGE_INPUT, input => input);
+
+export const toggle = createAction(TOGGLE, id => id);
+
+let id = 2;
+export const insert = createAction(INSERT, text => ({
+  id: id++,
+  text,
+  done: false,
+}));
+
+export const remove = createAction(REMOVE, id => id);
+
+// state 초기값
+const initialState = {
+  input: "",
+  todos: [
+    {
+      id: 1,
+      text: "redux-actions 라이브러리 정리하기",
+      done: false,
+    },
+  ],
+};
+
+// reducer()
+const todos = handleActions({
+  [CHANGE_INPUT]: (state, { payload: input }) => ({
+    ...state,
+    input,
+  }),
+
+  [TOGGLE]: (state, { payload: id }) => ({
+    ...state,
+    todos: state.todos.map(todo => {
+      return todo.id !== id
+        ? todo
+        : { ...todo, done: !todo.done };
+    }),
+  }),
+
+  [INSERT]: (state, { payload: todo }) => ({
+    ...state,
+    todos: state.todos.concat(todo),
+  }),
+
+  [REMOVE]: (state, { payload: id }) => ({
+    ...state,
+    todos: state.todos.filter(todo => todo.id !== id),
+  }),
+});
+```
+
+<br />
+
+``action`` 이라는 추상적인 ``params 명`` 을 구체적으로 표현하여, 가독성을 높일 수 있게 되었습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 06-04. immer 라이브러리로 handleActions() 만들기
+
+``State`` 의 깊이가 깊을수록 ``reducer()`` 를 구현하기 어렵습니다.
+
+``Redux`` 의 ``State`` 는 ``불변성`` 을 유지해야 하기 때문에, 계층이 깊은 ``State`` 는 설계시 주의해야하는 부분이 됩니다.
+
+하지만, ``State`` 를 활용하거나 파악할 때는, ``State`` 를 깊은 구조로 만드는 것이 좀 더 유리할 수 있습니다.
+
+이러한 경우에 ``immer`` 라이브러리를 활요하면, ``State`` 의 ``불변성`` 을 유지하는데 편해집니다.
+
+```javascript
+import { createAction, handleAction } from "redux-actions";
+import produce from "immer";
+
+// Action 타입
+const CHANGE_INPUT = "todos/CHANGE_INPUT";
+const TOGGLE = "todos/TOGGLE";
+const INSERT = "todos/INSERT";
+const REMOVE = "todos/REMOVE";
+
+// Action Object Factory Method
+export const changeInput = createAction(CHANGE_INPUT, input => input);
+
+export const toggle = createAction(TOGGLE, id => id);
+
+let id = 2;
+export const insert = createAction(INSERT, text => ({
+  id: id++,
+  text,
+  done: false,
+}));
+
+export const remove = createAction(REMOVE, id => id);
+
+// state 초기값
+const initialState = {
+  input: "",
+  todos: [
+    {
+      id: 1,
+      text: "redux-actions 라이브러리 정리하기",
+      done: false,
+    },
+  ],
+};
+
+// reducer()
+const todos = handleAction({
+  [CHANGE_INPUT]: (state, { payload: input }) =>
+    produce(state, draft => {
+      draft.input = input;
+    }),
+
+  [TOGGLE]: (state, { payload: id }) =>
+    produce(state, draft => {
+      const todo = draft.todos.find(todo => todo.id === id);
+      todo.done = !todo.done;
+    }),
+
+  [INSERT]: (state, { payload: todo }) =>
+    produce(state, draft => {
+      draft.todos.push(todo);
+    }),
+
+  [REMOVE]: (state, { payload: id }) =>
+    produce(state, draft => {
+      const index = draft.todos.findIndex(todo => todo.id === id);
+      draft.todos.splice(index, 1);
+    }),
+});
+```
+
+<br />
+
+``immer`` 를 사용하여 좀 더 복잡해 보이지만, ``state`` 의 계층구조가 더 깊어도 지금의 코드량과 비슷하게 만들게 됩니다.
+
+``state`` 의 계층이 깊을 때 ``immer`` 라이브러리의 효과를 더 크게 볼 수 있습니다.
+
+
+
+<br /><hr /><br />
+
+
+
