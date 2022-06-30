@@ -1,0 +1,44 @@
+.TodoListItem {
+  @apply py-16 px-20;
+  @apply flex justify-between items-center;
+
+  border-top: 1px solid transparent;
+
+  &-wrapper {
+    @apply flex items-center;
+    @apply flex-1;
+    @apply cursor-pointer;
+
+    &-checkbox {
+      @apply mr-8;
+      
+      font-size: 24px;
+    }
+
+    &-content {
+      //
+    }
+
+    &__finished {
+      @apply text-custom-blue-01;
+
+      .TodoListItem-wrapper-content {
+        @apply line-through;
+      }
+    }
+  }
+
+  &-remove {
+    @apply text-custom-orange-01;
+
+    font-size: 24px;
+  }
+
+  &:nth-child(even) {
+    @apply bg-custom-gray-01;
+  }
+
+  & + & {
+    border-color: #ccc;
+  }
+}

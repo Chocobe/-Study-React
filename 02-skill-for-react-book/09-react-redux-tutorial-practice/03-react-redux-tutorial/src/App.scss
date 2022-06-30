@@ -1,0 +1,27 @@
+body {
+  @apply bg-custom-gray-04;
+}
+
+.App {
+  @apply mt-80 mx-auto;
+  @apply w-full;
+  @apply bg-white;
+  @apply overflow-hidden;
+
+  max-width: 512px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 20px 6px #333;
+  .header {
+
+
+    &-title {
+      @apply py-16 px-20;
+      @apply font-semibold;
+      @apply text-center;
+      @apply text-white;
+      @apply bg-custom-blue-01;
+
+      font-size: 24px;
+    }
+  }
+}
