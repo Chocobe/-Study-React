@@ -1,0 +1,11 @@
+body {
+  @apply bg-custom-gray-04;
+}
+
+.App {
+  @apply my-80 mx-auto;
+  @apply overflow-hidden;
+
+  width: 512px;
+  border-radius: 8px;
+}

@@ -1,0 +1,20 @@
+.MainLayout {
+  //
+
+  .header {
+    @apply py-16 px-20;
+    @apply bg-custom-blue-01;
+
+    &-title {
+      @apply text-white;
+      @apply font-semibold;
+      @apply text-center;
+
+      font-size: 20px;
+    }
+  }
+
+  .main {
+    @apply bg-white;
+  }
+}
