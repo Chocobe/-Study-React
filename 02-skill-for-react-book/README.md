@@ -1587,3 +1587,90 @@ const todos = handleAction({
 
 
 
+# 07. react-redux 의 useSelector() 와 useDispatch() 로 Store 사용하기
+
+``react-redux`` 는 ``Store`` 사용을 위해 두가지 방법을 제공 합니다.
+
+* ``connect()`` 로 ``Store`` 사용하기
+* ``Hooks`` 로 ``Store`` 사용하기
+
+<br />
+
+이번에는 ``Hooks`` 로 ``Store`` 를 사용하는 방법에 대해 정리해 보겠습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 07-01. ``useSelector()``
+
+``Store`` 의 ``State`` 를 사용하기 위한 ``Hooks`` 는 ``useSelector()`` 입니다.
+
+``컨테이너 컴포넌트`` 내부에서 ``useSelector()`` 를 사용하여, 직접 ``State`` 를 사용하게 됩니다.
+
+```javascript
+// CounterContainer.js
+
+import React from "react";
+import { useSelector } from "react-redux";
+import Counter from "../components/Counter";
+
+const CounterContainer = () => {
+  const number = useSelector(state => state.counter.number);
+
+  return (
+    <Counter
+      number={number}
+    />
+  );
+};
+
+// Hooks 는 Memoization 을 직접 해주어야 합니다.
+export default React.memo(CounterContainer);
+```
+
+
+<br /><hr /><br />
+
+
+
+# 07-02. ``useDispatch()``
+
+``Store`` 의 ``State`` 를 변경하기 위해, ``Hooks`` 를 사용하여 ``dispatch()`` 를 호출해 보겠습니다.
+
+``react-redux`` 에서 제공하는 ``useDispatch()`` 를 사용하면, ``Sotre`` 의 ``dispatch()`` 함수를 반환해 줍니다.
+
+``dispatch(/* Action Object Factory Method */)`` 형식으로 호출하면, 해당 ``Action`` 이 실행 됩니다.
+
+```javascript
+// CounterContainer.js
+
+import React, {
+  useCallback,
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Counter from "../components/Counter";
+import { increase, decrease } from "../modules/Counter";
+
+const Counter = () => {
+  const number = useSelector(state => state.counter.number);
+
+  const onIncrease = useCallback(() => {
+    dispatch(increase());
+  }, [dispatch]);
+
+  const onDecrease = useCallback(() => {
+    dispatch(decrease());
+  }, [dispatch]);
+
+  return (
+    <Counter
+      number={number}
+      onIncrease={onIncrease}
+      onDecrease={onDecrease}
+    />
+  );
+};
+```
