@@ -1,0 +1,50 @@
+.NewsList {
+  @apply py-20 px-16;
+  
+  .info {
+    @apply grid gap-4;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    &-item {
+      @apply py-8 pl-20;
+
+      background-color: rgba(#03a9f4, 0.2);
+    }
+  }
+
+  .actions {
+    @apply mt-20;
+    @apply flex gap-4;
+
+    &-label {
+      @apply w-100;
+    }
+    
+    &-buttons {
+      @apply flex gap-4 flex-wrap;
+      @apply flex-1;
+
+      &-button {
+        @apply py-4 px-8;
+        @apply font-bold;
+        @apply text-white;
+        @apply bg-green-700;
+
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .list {
+    //
+
+    &-item {
+      @apply mt-20;
+      @apply py-20 px-20;
+
+      border-radius: 8px;
+      box-shadow: 3px 6px 20px 9px #777;
+    }
+  }
+}

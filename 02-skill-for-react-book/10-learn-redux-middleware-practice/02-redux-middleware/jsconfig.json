@@ -1,0 +1,7 @@
+{
+  "extends": "./jsconfig.paths.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS"
+  }
+}
