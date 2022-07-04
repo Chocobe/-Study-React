@@ -1,0 +1,19 @@
+.Category {
+  @apply flex gap-8;
+
+  .button {
+    @apply py-4 px-8;
+    @apply font-black;
+    @apply bg-white;
+    
+    font-size: 20px;
+    border: 1px solid #383841;
+    border-radius: 4px;
+    
+    &.active {
+      @apply text-white;
+
+      background-color: #ff149390;
+    }
+  }
+}
