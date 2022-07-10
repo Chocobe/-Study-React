@@ -29,11 +29,11 @@ const SampleContainer = ({
 };
 
 export default connect(
-  state => ({
-    loadingPost: state.sample.loading.GET_POST,
-    loadingUsers: state.sample.loading.GET_USERS,
-    post: state.sample.post,
-    users: state.sample.users,
+  ({ sample, loading }) => ({
+    loadingPost: loading.GET_POST,
+    loadingUsers: loading.GET_USERS,
+    post: sample.post,
+    users: sample.users,
   }),
   dispatch => ({
     getPost: id => dispatch(getPost(id)),
