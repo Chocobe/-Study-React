@@ -1,0 +1,8 @@
+.MainLayout {
+  //
+
+  &-sticky {
+    @apply sticky;
+    @apply top-0;
+  }
+}
