@@ -11,9 +11,9 @@ const GET_USERS_SUCCESS = "sample/GET_USERS_SUCCESS";
 const GET_USERS_FAILURE = "sample/GET_USERS_FAILURE";
 
 // 02. Thunk 함수 생성 함수로 리펙토링
-export const getPost = createRequestThunk("GET_POST", api.getPost);
+export const getPost = createRequestThunk(GET_POST, api.getPost);
 
-export const getUsers = createRequestThunk("GET_USERS", api.getUsers);
+export const getUsers = createRequestThunk(GET_USERS, api.getUsers);
 
 // 01. Thunk 함수 (Action 생성 함수)
 // export const getPost = id => async dispatch => {
@@ -77,16 +77,16 @@ const sample = handleActions({
     },
   }),
 
-  [GET_POST_SUCCESS]: (state, action) => ({
+  [GET_POST_SUCCESS]: (state, { payload: post }) => ({
     ...state,
     loading: {
       ...state.loading,
       GET_POST: false,
     },
-    post: action.payload,
+    post,
   }),
 
-  [GET_POST_FAILURE]: (state, action) => ({
+  [GET_POST_FAILURE]: (state, _action) => ({
     ...state,
     loading: {
       ...state.loading,
@@ -102,16 +102,16 @@ const sample = handleActions({
     },
   }),
 
-  [GET_USERS_SUCCESS]: (state, action) => ({
+  [GET_USERS_SUCCESS]: (state, { payload: users }) => ({
     ...state,
     loading: {
       ...state.loading,
       GET_USERS: false,
     },
-    users: action.payload,
+    users,
   }),
 
-  [GET_USERS_FAILURE]: (state, action) => ({
+  [GET_USERS_FAILURE]: (state, _action) => ({
     ...state,
     loading: {
       ...state.loading,

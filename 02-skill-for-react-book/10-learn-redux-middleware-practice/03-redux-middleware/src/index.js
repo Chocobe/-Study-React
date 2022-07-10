@@ -4,32 +4,25 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createStore, applyMiddleware } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from "react-redux";
 import rootReducer from "./modules";
-import ReduxThunk from "redux-thunk";
 // import loggerMiddleware from "./lib/loggerMiddleware";
-// import { createLogger } from "redux-logger";
+import { createLogger } from "redux-logger";
+import ReduxThunk from "redux-thunk";
 
-// const logger = createLogger();
+const logger = createLogger();
 
 const store = createStore(
   rootReducer,
-  composeWithDevTools(
-    applyMiddleware(ReduxThunk)
-  )
-  // composeWithDevTools()
-  // applyMiddleware(loggerMiddleware),
-  // applyMiddleware(logger, ReduxThunk)
+  applyMiddleware(logger, ReduxThunk)
+  // applyMiddleware(loggerMiddleware)
 );
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  // <React.StrictMode>
   <Provider store={store}>
     <App />
   </Provider>
-  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

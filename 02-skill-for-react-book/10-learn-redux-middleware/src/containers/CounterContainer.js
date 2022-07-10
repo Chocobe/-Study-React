@@ -10,10 +10,10 @@ const CounterContainer = ({
   onIncrease,
   onDecrease,
 }) => {
-  console.group();
-  console.log("onIncrease()", onIncrease);
-  console.log("onDecrease()", onDecrease);
-  console.groupEnd();
+  // console.group();
+  // console.log("onIncrease()", onIncrease);
+  // console.log("onDecrease()", onDecrease);
+  // console.groupEnd();
   
   return (
     <Counter
