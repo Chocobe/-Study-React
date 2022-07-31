@@ -1,0 +1,11 @@
+.MainMenu {
+  @apply flex gap-1;
+  @apply bg-custom-gray-02;
+
+  .item {
+    @apply py-8 px-12;
+    @apply text-white;
+    @apply font-bold;
+    @apply bg-custom-blue-01;
+  }
+}

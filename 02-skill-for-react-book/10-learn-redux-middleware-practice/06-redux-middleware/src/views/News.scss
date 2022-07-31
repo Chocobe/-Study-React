@@ -1,0 +1,12 @@
+.News {
+  @apply flex flex-col gap-1;
+
+  .loading {
+    @apply mt-20;
+    @apply font-semibold;
+    @apply text-center;
+    @apply text-white;
+    
+    font-size: 20px;
+  }
+}

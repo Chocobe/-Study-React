@@ -1,0 +1,14 @@
+.Home {
+  @apply py-20;
+  @apply text-center;
+  @apply text-custom-gray-02;
+  @apply font-bold;
+
+  &-title {
+    font-size: 20px;
+  }
+
+  &-description {
+    //
+  }
+}

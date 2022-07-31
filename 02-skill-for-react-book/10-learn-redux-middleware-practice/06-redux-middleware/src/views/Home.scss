@@ -1,0 +1,16 @@
+.Home {
+  @apply py-16 px-20;
+  @apply bg-custom-gray-03;
+  @apply text-white;
+
+  &-title {
+    @apply font-bold;
+
+    font-size: 24px;
+  }
+
+  &-description {
+    @apply mt-16;
+    @apply pl-20;
+  }
+}

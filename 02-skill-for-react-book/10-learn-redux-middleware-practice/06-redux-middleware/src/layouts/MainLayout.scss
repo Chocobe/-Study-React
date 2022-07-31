@@ -1,0 +1,25 @@
+.MainLayout {
+  @apply mx-auto;
+  
+  .headerWrapper {
+    @apply sticky top-0;
+    
+    .header {
+      @apply py-20 px-12;
+      @apply text-white;
+      @apply text-right;
+      @apply font-bold;
+      @apply bg-custom-gray-03;
+
+      font-size: 24px;
+    }
+
+    .menu {
+      @apply inline-block;
+    }
+  }
+
+  .contents {
+    //
+  }
+}
