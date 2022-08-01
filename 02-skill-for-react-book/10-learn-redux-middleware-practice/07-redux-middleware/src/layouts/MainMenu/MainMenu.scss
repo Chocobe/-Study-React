@@ -1,0 +1,10 @@
+.MainMenu {
+  @apply inline-block;
+  
+  &-item {
+    @apply py-8 px-12;
+    @apply font-semibold;
+    @apply bg-custom-blue-01;
+    @apply inline-block;
+  }
+}
