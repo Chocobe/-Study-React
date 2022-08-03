@@ -1,0 +1,20 @@
+.MainLayout {
+  @apply mx-auto;
+
+  .header {
+    @apply py-12 px-20;
+    @apply text-right;
+    @apply font-bold;
+    @apply bg-custom-gray-03;
+
+    font-size: 24px;
+  }
+
+  .menu {
+    //
+  }
+
+  .page {
+    //
+  }
+}

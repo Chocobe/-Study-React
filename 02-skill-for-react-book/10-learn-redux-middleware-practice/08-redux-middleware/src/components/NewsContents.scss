@@ -1,0 +1,53 @@
+.NewsContents {
+  @apply py-16 px-20;
+  @apply grid gap-20;
+  @apply bg-custom-gray-03;
+
+  grid-template-columns: 240px 1fr;
+
+  .thumbnail {
+    height: 180px;
+
+    &-img {
+      @apply w-full h-full;
+      @apply object-cover object-center;
+
+      border-radius: 4px;
+    }
+  }
+
+  .info {
+    @mixin ellipsis($line: 1) {
+      @apply overflow-hidden;
+
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: $line;
+    }
+    
+    &-header {
+      border-bottom: 4px solid transparent;
+
+      @apply border-custom-blue-01;
+      @apply mb-8 pb-8;
+
+      &-title {
+        @apply px-12;
+        @apply font-semibold;
+        @include ellipsis();
+      }
+
+      &-publishedAt {
+        @apply px-12;
+        @apply block;
+        @apply text-gray-500;
+        @apply text-right;
+      }
+    }
+
+    &-contents {
+      @apply px-12;
+      @include ellipsis(5);
+    }
+  }
+}

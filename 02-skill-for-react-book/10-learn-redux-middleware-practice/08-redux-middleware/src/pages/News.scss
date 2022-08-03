@@ -1,0 +1,9 @@
+.News {
+  & > * {
+    @apply mt-1;
+
+    &:first-child {
+      @apply mt-0;
+    }
+  }
+}
