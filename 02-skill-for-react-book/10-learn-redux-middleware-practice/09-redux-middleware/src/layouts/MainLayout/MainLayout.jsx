@@ -1,7 +1,14 @@
 import React, {
+  useState,
   useMemo,
+  useRef,
+  useEffect,
 } from "react";
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { 
+  Link,
+  NavLink,
+  Outlet,
+} from "react-router-dom";
 import cn from "classnames";
 
 import "./MainLayout.scss";
@@ -9,17 +16,31 @@ import "./MainLayout.scss";
 const MainLayout = ({
   header, menuItems=[],
 }) => {
-  const routerParams = useParams();
+  const [globalWidth, setGlobalWidth] = useState("auto");
+  const loaded = useMemo(() => globalWidth !== "auto");
 
-  const category = useMemo(() => routerParams.category);
+  /** @type { import("react").Ref<HTMLElement> } */
+  const $menu = useRef(null);
+
+  useEffect(() => {
+    const { width } = $menu.current.getBoundingClientRect();
+    setGlobalWidth(`${width}px`);
+  }, []);
   
   return (
-    <div className="MainLayout">
+    <div 
+      className={cn("MainLayout", { loaded })}
+      style={{ 
+        "--width": globalWidth,
+      }}
+    >
       <header className="header">
-        {header}
+        <Link to="/">
+          {header}
+        </Link>
       </header>
 
-      <nav className="menu">
+      <nav className="menu" ref={$menu}>
         {menuItems.map(({ path, name }) => (
           <NavLink 
             key={name} 

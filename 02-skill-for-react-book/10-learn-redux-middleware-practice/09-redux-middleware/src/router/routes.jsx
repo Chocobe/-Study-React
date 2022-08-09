@@ -1,10 +1,9 @@
 import { lazy, Suspense } from "react";
+import Loading from "@components/Loading/Loading";
 
 const MainLayout = lazy(() => import("@layouts/MainLayout/MainLayout"));
 const Home = lazy(() => import("@pages/Home/Home"));
-const News = lazy(() => import("@pages/News/News"));
-
-const Loading = () => <div>Now Loading...</div>
+const NewsContainer = lazy(() => import("@containers/NewsContainer/NewsContainer"));
 
 import { menuItems } from "./menuItems";
 
@@ -33,7 +32,7 @@ export const routes = [
         path: ":category",
         element: (
           <Suspense fallback={<Loading />}>
-            <News />
+            <NewsContainer />
           </Suspense>
         ),
       },
