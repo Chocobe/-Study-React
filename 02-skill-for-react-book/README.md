@@ -1674,3 +1674,345 @@ const Counter = () => {
   );
 };
 ```
+
+
+
+<br /><hr /><br />
+
+
+
+# 08. Code Splite
+
+``CRA`` 로 만든 프로젝트는 ``webpack`` 을 빌더로 사용합니다.
+
+빌드한 파일은 실제 브라우저에서 다운로드하여 사용하게 되는데, 이때 용량이 크다면 페이지 로딩이 길어지고 트레픽 또한 커지게 됩니다.
+
+그래서 ``webpack`` 으로 빌드를 하게되면 주석 제거나 공백 최소화와 같은 용량을 줄여주는 작업을 해줍니다.
+
+``webpack`` 의 기본 설정에는 라이브러리와 실제 개발코드를 분리하여 빌드해 줍니다.
+
+이렇게 분리하여 빌드한 결과 파일들을 ``Split Chunks`` 라고 합니다.
+
+<br />
+
+``CRA`` 로 생성한 프로젝트의 기본 ``webpack`` 설정에는 라이브러리와 개발코드 두개의 ``Chunk`` 파일로만 분리해 줍니다.
+
+이 상태에서는 어떤 페이지에 접근 하더라도, 프로젝트 전체 코드를 다운로드 받아야 하므로, 로딩과 트레픽에 문제가 됩니다.
+
+이를 해결하기 위해서는 접근한 페이지에 해당하는 코드만 다운로드 받을 수 있도록 코드를 ``분리`` 해야 합니다.
+
+<br />
+
+이렇게 코드를 분리하기 위해, ``Lazy Loading`` (=== ``비동기 로딩``) 방법 이 있습니다.
+
+
+
+<br /><hr /><br />
+
+
+
+# 08-01. 컴포넌트 State 를 사용한 Lazy Loading
+
+함수 내부에서도 프로젝트 구성 파일을 ``import`` 할 수 있습니다.
+
+이 때의 ``import`` 는 함수 호출 형태로 사용하게 됩니다.
+
+```javascript
+const loadComponent = () => {
+  return import("@components/MyComponent");
+};
+```
+
+<br />
+
+위와 같이 ``import()`` 함수를 사용하여 ``비동기 로딩`` 을 할 수 있습니다.
+
+즉, ``import()`` 를 호출한 시점에 해당 컴포넌트를 로딩하게 됩니다.
+
+<br />
+
+아래의 코드는 ``React`` 의 유틸을 사용하지 않고, 단순 ``State`` 를 사용하여 ``Lazy Loading`` 을 구현한 예시 입니다.
+
+```javascript
+// ./src/components/MyComponents.js
+
+import React from "react";
+
+const MyComponent = () => {
+  return (
+    <div className="MyComponent">
+      My Component 입니다.
+    </div>
+  );
+};
+
+export default MyComponent;
+```
+
+<br />
+
+```javascript
+// ./src/App.js
+// (Class Component 로 구현)
+
+import React, { Component } from "react";
+
+class App extends Component {
+  state = {
+    MyComponent: null,
+  };
+
+  onClick = async () => {
+    const MyComponent = await import("./components/MyComponent");
+    this.setState({
+      MyComponent: MyComponent.default,
+    });
+  };
+
+  render() {
+    const { MyComponent } = this.state;
+    
+    return (
+      <div className="App">
+        <h1>Lazy Loading 예시 코드</h1>
+        <button onClick={this.onClick}>
+          Load
+        </button>
+
+        {MyComponent && <MyComponent />}
+      </div>
+    );
+  };
+}
+
+export default App;
+```
+
+
+
+# 08-02. ``React.lazy`` 와 ``Suspense`` 를 사용한 ``Lazy Loading``
+
+위에서 구현한 ``Lazy Loading`` 은 컴포넌트의 ``State`` 를 사용합니다.
+
+그리고 ``render()`` 함수에서 사용할 때에도, ``{ MyComponent && <MyComponent />}`` 형식으로 ``Nullish`` 검사도 해야 합니다.
+
+<br />
+
+``React.lazy`` 는 이러한 작업을 최소화 시켜줍니다.
+
+```javascript
+import React from "react";
+
+const MyComponent = React.lazy(() => import("./components/MyComponent"));
+```
+
+<br />
+
+``React.lazy`` 로 불러오는 컴포넌트는, ``React`` 에서 제공하는 ``<Suspense />`` 를 부모 컴포넌트로 가져야 합니다.
+
+```javascript
+import {
+  lazy,
+  Suspense,
+} from "react";
+
+const MyComponent = lazy(() => import("./components/MyComponent"));
+
+const App = () => {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <MyComponent />
+      </Suspense>
+    </div>
+  );
+};
+```
+
+<br />
+
+``<Suspense />`` 의 ``fallback`` Props 는 ``Lazy Loading`` 의 로딩중에 보여줄 컴포넌트를 받습니다.
+
+``lazy()`` 에서 로딩중일 동안 보여주게 되며, ``필수 Props`` 입니다.
+
+<br />
+
+지금까지 살펴본 ``React.lazy`` 와 ``<Suspense />`` 를 사용한 예시코드는 다음과 같습니다.
+
+* 버튼을 클릭하면 ``<MyComponent />`` 를 로딩합니다.
+
+<br />
+
+```javascript
+// ./src/components/MyComponent.js
+
+import React from "react";
+
+const MyComponent = () => {
+  return (
+    <div className="MyComponent">
+      My Component 입니다.
+    </div>
+  );
+};
+
+export default MyComponent;
+```
+
+<br />
+
+```javascript
+// ./src/App.js
+
+import React, {
+  lazy,
+  Suspense,
+  useState,
+} from "react";
+
+const MyComponent = lazy(() => import("./components/MyComponent"));
+
+const App = () => {
+  const [visible, setVisible] = useState(false);
+
+  const onClick = () => setVisible(true);
+
+  return (
+    <div className="App">
+      <button onClick={onClick}>
+        Load
+      </button>
+
+      {visible && <MyComponent />}
+    </div>
+  );
+};
+
+export default App;
+```
+
+
+
+<br /><hr /><br />
+
+
+
+# 08-02. ``@loadable/component`` 라이브러리
+
+``React.lazy`` 와 ``<Suspense />`` 는 ``CSR (Client Side Rendering)`` 만 지원해 줍니다.
+
+만약 ``SSR (Server Side Rendering)`` 에서 사용하고자 한다면, ``서드 파티 라이브러리`` 를 사용해야 하며, ``React`` 에서 권장하는 라이브러리로는 ``@loadable/component`` 가 있습니다.
+
+<br />
+
+```bash
+$ yarn add @loadable/component
+```
+
+<br />
+
+``@loadable/component`` 은 다음과 같은 기능이 있습니다.
+
+* ``SSR (Server Side Rendering)`` 지원
+* 미리 불러오기 (``preloading``)
+* 타임아웃
+* 로딩 UI 딜레이
+* (그 외...)
+
+<br />
+
+사용방법은 ``React.lazy`` 와 매우 유사합니다.
+
+```javascript
+import loadable from "@loadable/component";
+
+const MyComponent = loadable(() => import("./components/MyComponent"));
+
+const App = () => {
+  return (
+    <div className="App">
+      <MyComponent />
+    </div>
+  );
+};
+
+export default App;
+```
+
+<br />
+
+차이점 중 하나는 ``<Suspense />`` 기능을 가지고 있으므로, ``render()`` 함수에서 일반 컴포넌트 처럼 사용합니다.
+
+만약 ``fallback`` 기능을 사용하고자 한다면, ``loadable()`` 호출 시 옵션으로 넘겨줄 수 있습니다.
+
+```javascript
+import loadable from "@loadable/component";
+
+const MyComponent = loadable(() => import("./components/MyComponent"), {
+  fallback: <div>Loading ...</div>,
+});
+```
+
+<br />
+
+아래의 코드는 ``@loadable/component`` 를 사용한 예시 입니다.
+
+동작은 다음과 같습니다.
+
+* ``<button />`` 에 ``mouseover`` 시, ``미리 불러오기(preloading)`` 을 시작합니다.
+* ``<button />`` 클릭 시, ``<MyComponent />`` 를 Rendering 합니다.
+  * 클릭한 시점에서 아직 로딩이 되지 않았다면, ``fallback`` 요소를 Rendering 합니다.
+
+<br />
+
+```javascript
+// ./src/components/MyComponent.js
+
+import React from "react";
+
+const MyComponent = () => {
+  return (
+    <div className="MyComponent">
+      My Component 입니다.
+    </div>
+  );
+};
+
+export default MyComponent;
+```
+
+<br />
+
+```javascript
+// ./src/App.js
+
+import React, {
+  useState,
+} from "react";
+
+import loadable from "@loadable/component";
+
+const MyComponent = loadable(() => import("./components/MyComponent"), {
+  fallback: <div>Loading...</div>,
+});
+
+const App = () => {
+  const [visible, setVisible] = useState(false);
+
+  const onMouseOver = () => MyComponent.preload();
+
+  const onClick = () => setVisible(true);
+
+  return (
+    <div className="App">
+      <button onMouseOver={onMouseOver}>
+        Load
+      </button>
+
+      {visible && <MyComponent />}
+    </div>
+  );
+};
+
+export default App;
+```
