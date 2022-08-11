@@ -1,0 +1,15 @@
+.MainMenu {
+  @apply inline-block;
+
+  &-item {
+    @apply mr-1;
+    @apply py-8 px-12;
+    @apply inline-block;
+    @apply font-bold;
+    @apply bg-custom-blue-01;
+
+    &:last-child {
+      @apply mr-0;
+    }
+  }
+}
