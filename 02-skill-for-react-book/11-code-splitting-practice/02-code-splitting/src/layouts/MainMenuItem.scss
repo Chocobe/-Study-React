@@ -1,0 +1,13 @@
+.MainMenuItem {
+  @apply inline-block;
+  @apply py-8 px-12;
+  @apply font-bold;
+  @apply text-custom-gray-03;
+  @apply bg-custom-blue-01;
+
+  transition: color 0.5s ease;
+
+  &.isSelected {
+    @apply text-white;
+  }
+}
