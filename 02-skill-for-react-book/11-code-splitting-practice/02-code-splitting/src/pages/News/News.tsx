@@ -1,9 +1,29 @@
 import React from "react";
+import { NewsItemType } from "@/modules/types";
+import NewsItem from "@/components/NewsItem/NewsItem";
 
-const News = () => {
+import "./News.scss";
+
+export type NewsProps = {
+  newsItems: NewsItemType[];
+};
+
+const News = ({
+  newsItems
+}: NewsProps) => {
   return (
     <div className="News">
-      News Page Component
+      {newsItems.map(({
+        title, publishedAt, urlToImage, description,
+      }, idx) => (
+        <NewsItem
+          key={idx}
+          title={title}
+          publishedAt={publishedAt}
+          urlToImage={urlToImage}
+          description={description}
+        />
+      ))}
     </div>
   );
 };

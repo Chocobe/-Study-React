@@ -1,0 +1,5 @@
+.News {
+  & > *:not(:first-child) {
+    @apply mt-1;
+  }
+}

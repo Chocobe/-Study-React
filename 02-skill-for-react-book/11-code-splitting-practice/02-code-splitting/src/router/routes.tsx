@@ -5,7 +5,8 @@ import { RouteObject } from "react-router-dom";
 
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const Home = lazy(() => import("@/pages/Home/Home"));
-const News = lazy(() => import("@/pages/News/News"));
+// const News = lazy(() => import("@/pages/News/News"));
+const NewsContainer = lazy(() => import("@/containers/NewsContainer/NewsContainer"));
 
 const routes: RouteObject[] = [
   {
@@ -28,7 +29,8 @@ const routes: RouteObject[] = [
         path: ":category",
         element: (
           <Suspense fallback={<div>Now News Loading...</div>}>
-            <News />
+            {/* <News /> */}
+            <NewsContainer />
           </Suspense>
         ),
       },
