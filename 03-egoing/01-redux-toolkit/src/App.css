@@ -1,0 +1,9 @@
+#container, #container > div div {
+  border: 5px solid #ff1493;
+  margin: 10px;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
