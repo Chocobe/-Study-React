@@ -1,0 +1,9 @@
+.App {
+  @apply pt-20;
+  @apply w-full;
+
+  hr {
+    @apply my-40 mx-auto;
+    width: 200px;
+  }
+}
