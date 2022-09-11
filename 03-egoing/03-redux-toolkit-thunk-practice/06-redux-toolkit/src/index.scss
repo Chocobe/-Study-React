@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind utilities;
+
+body {
+  @apply text-white;
+  
+  background-color: #383841;
+}
+
+* {
+  @apply m-0 p-0;
+
+  box-sizing: border-box;
+}

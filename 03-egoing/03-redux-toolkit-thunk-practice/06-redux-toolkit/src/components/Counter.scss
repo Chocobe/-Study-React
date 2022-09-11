@@ -1,0 +1,23 @@
+.Counter {
+  @apply py-8 px-16;
+  @apply bg-emerald-900;
+
+  width: 500px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 6px #555;
+
+  &-indicator {
+    @apply font-bold;
+    
+    font-size: 24px;
+  }
+
+  &-actions {
+    @apply mt-20;
+    @apply flex justify-end gap-20;
+
+    &-button {
+      //
+    }
+  }
+}
