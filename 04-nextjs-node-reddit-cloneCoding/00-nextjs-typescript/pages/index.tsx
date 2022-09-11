@@ -1,13 +1,33 @@
-import type { NextPage } from 'next'
+import type { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import Link from 'next/link'
+import { getSortedPostData } from '../lib/posts'
 import homeStyles from '../styles/Home.module.css'
 
-import postDirectory from "../lib/posts";
+export type HomeProps = {
+  allPostData: {
+    id: string;
+    title: string;
+    date: string;
+  }[];
+};
 
-const Home: NextPage = () => {
-  postDirectory;
-  
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+  const allPostData = getSortedPostData();
+  return {
+    props: {
+      allPostData,
+    },
+  };
+};
+
+const Home: NextPage<HomeProps> = ({ allPostData }: {
+  allPostData: {
+    date: string;
+    title: string;
+    id: string;
+  }[];
+}) => {
   return (
     <div>
       <Head>
@@ -26,7 +46,17 @@ const Home: NextPage = () => {
       <section className={`${homeStyles.headingMd} ${homeStyles.padding1px}`}>
         <h2 className={homeStyles.headingLg}>Blog</h2>
         <ul className={homeStyles.list}>
-          {/* Hello World */}
+          {allPostData.map(({ id, title, date }) => (
+            <li className={homeStyles.listItem} key={id}>
+              <Link href={`/posts/${id}`}>
+                <a>{title}</a>
+              </Link>
+              <br />
+              <small className={homeStyles.lightText}>
+                {date}
+              </small>
+            </li>
+          ))}
         </ul>
       </section>
     </div>
