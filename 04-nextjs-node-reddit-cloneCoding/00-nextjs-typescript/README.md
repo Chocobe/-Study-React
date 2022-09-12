@@ -1,34 +1,25 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Nextjs - Typescript 동적 라우팅 작업 흐름
 
-## Getting Started
+1. 프로젝트 생성
+	yarn create next-app --typescript
 
-First, run the development server:
+2. ./pages/index.tsx 수정
+	Home 컴포넌트
+	프로젝트의 메인 페이지 구조 만들기
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+	3. 블로그 데이터로 사용할 Markdown 파일 만들기
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+	3. getStaticProps() 를 만들고, Markdown 데이터 가져오기
+		Home 컴포넌트에 넘겨줄 데이터를 가져오고 (async), Props 로 넘겨주기
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+	4. <Link href=""> 를 사용하여, 라우트 이동 기능 만들기
+		Props 로 받은 블로그 데이터를 사용하여, 이동할 href 지정하기
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+5. ./pages 경로에 블로그 데이터에 대한 동적 라우팅 컴포넌트 만들기
+	./pages/posts/[id].tsx
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+	6. getStaticPaths() 를 사용하여, 블로그 페이지들의 id 값 가져오기
+		여기서 반환하는 객체는 getStaticProps(props) 에서 props 로 받게 된다.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+	7. getStaticProps(props) 에서 props 로 받은 id 를 사용하여, id 에 해당하는 블로그 상세 데이터를 가져온다.
+		[id].tsx 에서 Props 로 받게 된다.
