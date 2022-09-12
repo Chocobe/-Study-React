@@ -29,7 +29,7 @@ const Home: NextPage<HomeProps> = ({ allPostData }: {
   }[];
 }) => {
   return (
-    <div>
+    <div className={homeStyles.container}>
       <Head>
         <title>Chocobe</title>
       </Head>
