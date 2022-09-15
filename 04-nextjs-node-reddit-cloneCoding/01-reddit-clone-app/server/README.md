@@ -13,3 +13,36 @@
   * `@types/node`: `NodeJS` 의 `Type` 정의 라이브러리 입니다.
   * `@types/exporess`: `Express` 프레임워크의 `Type` 정의 라이브러리 입니다.
   * `@types/morgan`: `Morgan` 라이브러리의 `Type` 정의 라이브러리 입니다.
+
+
+
+<br /><hr /><br />
+
+
+
+## package.json 의 scripts 설정
+
+`server` 를 실행하기 위해, `ts-node` 와 `nodemon` 을 사용하게 됩니다.
+
+두 라이브러리를 연동하여, `development` 서버를 실행하려면, `package.json` 의 `scripts` 를 설정해야 합니다.
+
+```json
+// package.json
+{
+  // ...
+
+  "scripts": {
+    "start": "ts-node ./src/server.ts",
+    "dev": "nodemon --exec ts-node ./src/server.ts"
+  }
+
+  // ...
+}
+```
+
+
+
+<br /><hr /><br />
+
+
+
