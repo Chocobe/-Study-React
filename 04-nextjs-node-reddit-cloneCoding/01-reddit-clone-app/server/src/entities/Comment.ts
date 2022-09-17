@@ -1,0 +1,64 @@
+import {
+  BeforeInsert,
+  Column,
+  Entity, Index, JoinColumn, ManyToOne, OneToMany,
+} from "typeorm";
+
+import {
+  Exclude,
+  Expose,
+} from "class-transformer";
+
+import BaseEntity from "./Entity";
+import User from "./User";
+import Post from "./Post";
+import Vote from "./Vote";
+
+import { makeId } from "../utils/helpers";
+
+@Entity("comments")
+export default class Comment extends BaseEntity {
+  @Index()
+  @Column()
+  identifier: string;
+
+  @Column()
+  body: string;
+
+  @Column()
+  username: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "username", referencedColumnName: "username" })
+  user: User;
+
+  @Column()
+  postId: number;
+
+  @ManyToOne(() => Post, post => post.comments, { nullable: false })
+  @JoinColumn({ name: "postId", referencedColumnName: "id" })
+  post: Post;
+
+  @Exclude()
+  @OneToMany(() => Vote, vote => vote.comment)
+  votes: Vote[];
+
+  protected userVote: number;
+
+  setUserVote(user: User) {
+    const index = this.votes?.findIndex(vote => vote.username === user.username);
+    this.userVote = index > -1
+      ? this.votes[index].value
+      : 0;
+  }
+
+  @Expose()
+  get voteScore() {
+    return this.votes?.reduce((memo, vote) => memo + (vote.value || 0), 0) || 0;
+  }
+
+  @BeforeInsert()
+  makeId() {
+    this.identifier = makeId(8);
+  }
+}
