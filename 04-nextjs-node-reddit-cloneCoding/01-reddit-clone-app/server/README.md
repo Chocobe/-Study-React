@@ -51,3 +51,19 @@
 * `bcryptjs`: 비밀번호를 암호화 해서 Database 에 저장할 수 있게 됩니다.
 * `class-validator`: `Client` 의 요청으로 받는 `JSON` 의 `Property` 가 유효한지 검사할 수 있습니다.
 * `class-transformer`: `Class 객체` => `Plain 객체` 또는 반대로 변환해 줍니다.
+
+
+
+<br /><hr /><br />
+
+
+
+## CORS 설정
+
+`Server` 와 `Client` 가 다른 URL 을 갖는다면, `CORS` 설정을 해주어야 합니다.
+
+이를 위해, `cors` 라이브러리를 사용합니다.
+
+```bash
+npm i cors
+```
