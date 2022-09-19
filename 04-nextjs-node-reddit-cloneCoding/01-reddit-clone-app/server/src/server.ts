@@ -5,6 +5,9 @@ import { AppDataSource } from "./data-source";
 
 import authRoutes from "./routes/auth";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 const origin = "http://localhost:3000";
 

@@ -1,6 +1,6 @@
 # Server
 
-## 라이브러리
+## 00. 라이브러리
 
 * 프로덕션 라이브러리
   * `nodemon`: 서버 코드 변경 시, 자동으로 재시작 해줍니다.
@@ -20,7 +20,7 @@
 
 
 
-## package.json 의 scripts 설정
+## 01. package.json 의 scripts 설정
 
 `server` 를 실행하기 위해, `ts-node` 와 `nodemon` 을 사용하게 됩니다.
 
@@ -46,11 +46,14 @@
 
 
 
-## Database 관련 유틸 라이브러리
+## 02. Database 관련 유틸 라이브러리
 
 * `bcryptjs`: 비밀번호를 암호화 해서 Database 에 저장할 수 있게 됩니다.
 * `class-validator`: `Client` 의 요청으로 받는 `JSON` 의 `Property` 가 유효한지 검사할 수 있습니다.
 * `class-transformer`: `Class 객체` => `Plain 객체` 또는 반대로 변환해 줍니다.
+    * `class` 내부의 `property` 에 `Annotation 형식` 으로 사용할 수 있습니다.
+    * `@Expose`: `getter` 를 `Plain Object` 의 `property` 로 변환해 줍니다.
+    * `@Exclude`: 변환한 `Plain Object` 의 `Property` 에서 제외시켜 줍니다.
 
 
 
@@ -58,7 +61,7 @@
 
 
 
-## CORS 설정
+## 03. CORS 설정
 
 `Server` 와 `Client` 가 다른 URL 을 갖는다면, `CORS` 설정을 해주어야 합니다.
 
@@ -74,7 +77,7 @@ npm i cors
 
 
 
-## 로그인 처리 시, `credential` 설정
+## 04. 로그인 처리 시, `credential` 설정
 
 로그인은 사용자의 인증 방법 입니다.
 
@@ -174,3 +177,90 @@ export const login = async ({
 * `Request Header` 는 `origin` 이 다르면, 아무런 `Cookie` 도 담지 않도록 기본설정 되어 있음
 * `credentials` 설정을 해주면, `origin` 이 달라도 `Request Header` 에 `Cookie` 를 담게됨
 * `Server` 는 `Request Header Authorization` 을 통해서, `Client (요청자)` 가 누구인지 알게됨
+
+
+
+<br /><hr /><br />
+
+
+
+## 05. 로그인 처리를 위한 라이브러리
+
+* `jsonwebtoken`: `JWT` 생성 라이브러리 입니다.
+* `dotenv`: `.env` 파일을 사용하기 위한 라이브러리 입니다.
+    * `React` 나 `Vue` 에는 내부에 포함되어 있었습니다.
+* `cookie`: `Cookie` 처리를 위한 라이브러리 입니다.
+
+
+<br /><br />
+
+
+`Typescript` 를 사용한다면, `devDependencies` 에 `@types` 라이브러리도 추가해 줍니다.
+
+* `@types/jsonwebtoken`
+* `@types/cookie`
+
+
+
+<br /><hr /><br />
+
+
+
+## 06. `dotenv` 설정
+
+`Server` 프로젝트의 `root` 에 `.env` 파일을 만들어서 환경변수를 사용하고자 합니다.
+
+이를 위해 `dotenv` 라이브러리를 사용하며, 설치는 다음과 같습니다.
+
+```bash
+npm i dotenv
+```
+
+
+<br /><br />
+
+
+`dotenv` 라이브러리 설정은 `Server` 프로젝트의 `진입점 파일 (index.ts 또는 server.ts)` 에서 합니다.
+
+```typescript
+// server.ts
+
+import express from "express";
+import dotenv from "dotenv";
+
+const app = express();
+
+// dotenv 설정 입니다.
+dotenv.config();
+```
+
+
+<br /><br />
+
+
+위 설정을 하였다면, 프로젝트 `root 경로` 에 `.env` 파일을 작성하고, 프로젝트 전역에서 사용할 수 있게 됩니다.
+
+
+```bash
+# .env
+
+BASE_URL=http://localhost:3000
+```
+
+<br /><br />
+
+
+```typescript
+// ./src/something.ts
+
+const BASE_URL = process.env.BASE_URL;
+console.log(BASE_URL); // http://localhost:3000
+```
+
+
+
+<br /><hr /><br />
+
+
+
+## 07.

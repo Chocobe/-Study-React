@@ -3,7 +3,14 @@ import {
   Request,
   Response,
 } from "express";
-import { validate, ValidationError } from "class-validator";
+import { 
+  validate, 
+  ValidationError,
+  isEmpty,
+} from "class-validator";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import cookie from "cookie";
 
 import User from "../entities/User";
 
@@ -67,13 +74,52 @@ const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   try {
-    // TODO: 여기 할 차례
-    // TODO: 여기 할 차례
-    // TODO: 여기 할 차례
-  } catch (error) {
-    //
+    let errors: any = {};
+
+    // 1. 빈값이 있다면, 에러로 처리
+    if (isEmpty(username)) {
+      errors.username = "사용자 이름은 비워둘 수 없습니다.";
+    }
+
+    if (isEmpty(password)) {
+      errors.password = "비밀번호는 비워둘 수 없습니다.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json(errors);
+    }
+
+    // 2. Database 에서 유저 찾기
+    const user = await User.findOneBy({ username });
+
+    if (!user) {
+      return res.status(404).json({ username: "사용자 이름이 등록되지 않았습니다." });
+    }
+
+    // 3. User 가 있다면, 비밀번호 비교하기
+    const passwordMatches = await bcrypt.compare(password, user.password);
+
+    // 4. 비밀번호가 다르면, 에러로 처리
+    if (!passwordMatches) {
+      return res.status(401).json({ password: "비밀번호가 잘못 되었습니다." });
+    }
+
+    // 5. 비밀번호가 맞다면, Token 생성
+    const token = jwt.sign({ username }, process.env.JWT_SECRET);
+
+    // 6. Cookie 저장
+    res.set("Set-Cookie", cookie.serialize("token", token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    }));
+
+    return res.json({ user, token });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json(error);
   }
-};
+}
 
 const router = Router();
 router.post("/register", register);
