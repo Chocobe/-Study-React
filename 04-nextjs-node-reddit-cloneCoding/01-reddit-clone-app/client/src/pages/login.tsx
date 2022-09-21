@@ -30,7 +30,8 @@ const Login = () => {
       });
 
       authDispatch("LOGIN", response.data?.user);
-      router.push("/");
+      // router.push("/");
+      router.push("/subs/create");
     } catch (error: any) {
       console.log(error);
       setErrors(error.response.data || {});

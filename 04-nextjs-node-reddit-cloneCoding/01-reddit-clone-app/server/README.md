@@ -190,6 +190,7 @@ export const login = async ({
 * `dotenv`: `.env` 파일을 사용하기 위한 라이브러리 입니다.
     * `React` 나 `Vue` 에는 내부에 포함되어 있었습니다.
 * `cookie`: `Cookie` 처리를 위한 라이브러리 입니다.
+* `cookie-parser`: `Request` 객체의 `cookies` 속성을 `object` 로 변환해 줍니다.
 
 
 <br /><br />
@@ -199,6 +200,7 @@ export const login = async ({
 
 * `@types/jsonwebtoken`
 * `@types/cookie`
+* `@types/cookie-parser`
 
 
 
