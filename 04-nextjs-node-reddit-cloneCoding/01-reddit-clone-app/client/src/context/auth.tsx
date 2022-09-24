@@ -1,8 +1,11 @@
+import axios from "axios";
 import React, {
   createContext,
   useReducer,
   useContext,
+  useEffect,
 } from "react";
+import { useRouter } from "next/router";
 
 import { User } from "../types";
 
@@ -61,6 +64,7 @@ const reducer = (state: AuthState, action: Action) => {
 export const AuthProvider = ({ children }: {
   children: React.ReactNode;
 }) => {
+  const router = useRouter();
   const [state, defaultDispatch] = useReducer(reducer, {
     authenticated: false,
     user: undefined,
@@ -70,6 +74,23 @@ export const AuthProvider = ({ children }: {
   const dispatch = (type: string, payload?: any) => {
     defaultDispatch({ type, payload });
   };
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const response = await axios.get("/auth/me", {
+          withCredentials: true,
+        });
+        dispatch("LOGIN", response.data);
+      } catch (error) {
+        console.log("😱: ", error);
+      } finally {
+        dispatch("STOP_LOADING");
+      }
+    }
+
+    loadUser();
+  }, []);
   
   return (
     <AuthDispatchContext.Provider value={dispatch}>

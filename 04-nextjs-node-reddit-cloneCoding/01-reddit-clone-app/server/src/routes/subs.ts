@@ -14,6 +14,7 @@ import User from "../entities/User";
 
 import userMiddleware from "../middlewares/user";
 import authMiddleware from "../middlewares/auth";
+import Post from "../entities/Post";
 
 const createSub = async (req: Request, res: Response, next: NextFunction) => {
   const { name, title, description } = req.body;
@@ -49,7 +50,8 @@ const createSub = async (req: Request, res: Response, next: NextFunction) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Sub 생성을 위한 유효성 검사중, 문제가 발생했습니다." });
+    // return res.status(500).json({ error: "Sub 생성을 위한 유효성 검사중, 문제가 발생했습니다." });
+    return res.status(500).json(error);
   }
 
   try {
@@ -70,8 +72,29 @@ const createSub = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const topSubs = async (req: Request, res: Response) => {
+  try {
+    const imageUrlExp = `COALESCE(s."imageUrn", 'https://gravatar.com/avatar?d=mp&f=y')`;
+    const subs = await AppDataSource
+      .createQueryBuilder()
+      .select(`s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`)
+      .from(Sub, "s")
+      .leftJoin(Post, "p", `s.name = p."subName"`)
+      .groupBy(`s.title, s.name, "imageUrl"`)
+      .orderBy(`"postCount"`, "DESC")
+      .limit(5)
+      .execute();
+
+    return res.json(subs);
+  } catch (error) {
+    console.log(error);
+    console.log("query: ", error.query);
+    return res.status(500).json({ error: "topSubs 조회중, 문제가 발생하였습니다.", detail: error });
+  }
+};
+
 const subsRouter = Router();
-// subsRouter.post("/", createSub);
 subsRouter.post("/", userMiddleware, authMiddleware, createSub);
+subsRouter.get("/sub/topSubs", topSubs);
 
 export default subsRouter;

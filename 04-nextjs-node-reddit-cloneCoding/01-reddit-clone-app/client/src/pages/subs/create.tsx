@@ -2,11 +2,49 @@ import {
   useState,
   FormEvent,
 } from "react";
+import {
+  GetServerSideProps,
+} from "next";
 import { useRouter } from "next/router";
 import InputGroup from "../../components/InputGroup";
 import axios from "axios";
 
-const SubCreate = () => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  try {
+    const cookie = req.headers.cookie;
+
+    // Cookie 가 없다면, 에러
+    if (!cookie) {
+      console.log("/subs/create 에서 cookie 가 없음", cookie);
+      throw new Error("Missing Auth Token Cookie");
+    }
+
+    // Cookie 를 사용하여, Server 에 인증처리 요청
+    await axios.get("/auth/me", {
+      headers: {
+        cookie,
+      },
+    });
+
+    return {
+      props: {},
+    };
+  } catch (error) {
+    // Server 의 인증처리에서 에러 발생 시, Client 의 /login 페이지로 이동
+    // res.writeHead(307, { Location: "/login" });
+
+    console.log("페이지 여는데 에러 발생: ", error);
+
+    return {
+      redirect: {
+        statusCode: 307,
+        destination: "/login",
+      },
+    };
+  }
+}
+
+function SubCreate() {
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

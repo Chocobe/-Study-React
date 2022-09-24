@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import InputGroup from "../components/InputGroup";
 import axios from "axios";
 
+import { useAuthState } from "../context/auth";
 import { useAuthDispatch } from "../context/auth";
 
 const Login = () => {
@@ -16,7 +17,13 @@ const Login = () => {
 
   const router = useRouter();
 
+  const { authenticated } = useAuthState();
   const authDispatch = useAuthDispatch();
+
+  if (authenticated) {
+    router.replace("/");
+    return;
+  }
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -30,8 +37,7 @@ const Login = () => {
       });
 
       authDispatch("LOGIN", response.data?.user);
-      // router.push("/");
-      router.push("/subs/create");
+      router.push("/");
     } catch (error: any) {
       console.log(error);
       setErrors(error.response.data || {});

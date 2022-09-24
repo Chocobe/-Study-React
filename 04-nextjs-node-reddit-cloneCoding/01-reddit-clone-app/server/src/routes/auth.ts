@@ -12,6 +12,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
 
+import userMiddleware from "../middlewares/user";
+import authMiddleware from "../middlewares/auth";
+
 import User from "../entities/User";
 
 const mapError = (errors: ValidationError[]) => {
@@ -116,13 +119,34 @@ const login = async (req: Request, res: Response) => {
 
     return res.json({ user, token });
   } catch (error: any) {
-    console.error(error);
     return res.status(500).json(error);
   }
+};
+
+const logout = async (_, res: Response) => {
+  res.set(
+    "Set-Cookie",
+    cookie.serialize("token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      expires: new Date(0),
+      path: "/",
+    })
+  );
+
+  res.status(200).json({ success: true });
+}
+
+const me = async (_, res: Response) => {
+  const user = res.locals.user;
+  return res.json(user);
 }
 
 const router = Router();
 router.post("/register", register);
 router.post("/login", login);
+router.post("/logout", userMiddleware, authMiddleware, logout);
+router.get("/me", userMiddleware, authMiddleware, me);
 
 export default router;

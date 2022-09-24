@@ -6,11 +6,13 @@ import {
 import jwt from "jsonwebtoken";
 import User from "../entities/User";
 
-const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+const userMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log("쿠키: ", req.cookies);
+    console.log("쿠키: ", req.cookies.token);
     
     const token = req.cookies.token;
+
+    if (!token) return next();
 
     const { username }: any = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -24,10 +26,11 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 
     // 유저 정보를 res.local.user 에 넣어주기
     res.locals.user = user;
+    return next();
   } catch (error) {
     console.log(error);
     return res.status(400).json({ error: "Something went wrong" });
   }
 };
 
-export default authMiddleware;
+export default userMiddleware;
