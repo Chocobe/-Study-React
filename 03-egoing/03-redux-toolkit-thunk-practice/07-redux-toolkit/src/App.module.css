@@ -1,0 +1,17 @@
+.App {
+  width: 500px;
+  height: 100vh;
+
+  margin: 0 auto;
+  padding: 20px 0;
+
+  color: #fff;
+}
+
+.App > *:not(:first-child) {
+  margin-top: 20px;
+}
+
+.App .title {
+  text-align: center;
+}
