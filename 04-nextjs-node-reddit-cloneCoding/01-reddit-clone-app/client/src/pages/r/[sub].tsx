@@ -118,6 +118,9 @@ function SubPage() {
                   }}
                 >
                   {sub.imageUrl && (
+                    // <div>
+                    //   {sub.imageUrl}
+                    // </div>
                     <Image
                       src={sub.imageUrl}
                       alt="커뮤니티 이미지"

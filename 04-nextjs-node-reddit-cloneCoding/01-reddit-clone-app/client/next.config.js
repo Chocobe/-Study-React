@@ -4,6 +4,7 @@ const nextConfig = {
   images: {
     domains: [
       "www.gravatar.com",
+      "localhost",
     ],
   },
 };

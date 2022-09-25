@@ -17,7 +17,10 @@ export default abstract class Entity extends BaseEntity {
   updatedAt: Date;
 
   toJSON() {
-    return instanceToPlain(this);
+    const rr = instanceToPlain(this);
+    console.log("toJSON(): ", rr);
+
+    return rr;
   }
   
   // toJSON() {
