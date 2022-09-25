@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       {!isAuthRoute && (
         <NavBar />
       )}
-      <div className={isAuthRoute ? "" : "pt-12"}>
+      <div className={isAuthRoute ? "" : "pt-16"}>
         <Component {...pageProps} />
       </div>
     </AuthProvider>
