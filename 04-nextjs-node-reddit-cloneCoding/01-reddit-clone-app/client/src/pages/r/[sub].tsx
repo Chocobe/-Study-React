@@ -9,6 +9,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useAuthState } from "../../context/auth";
+import SideBar from "../../components/SideBar";
 
 function SubPage() {
   const { authenticated, user } = useAuthState();
@@ -150,7 +151,9 @@ function SubPage() {
 
           {/* 포스트와 사이드바 */}
           <div className="flex max-w-5xl px-4 pt-5 mx-auto">
-
+            <div className="w-full md:mr-3 md:w-8/12">
+              <SideBar sub={sub} />
+            </div>
           </div>
         </>
       )}

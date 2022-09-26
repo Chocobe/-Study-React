@@ -91,7 +91,16 @@ const createSub = async (req: Request, res: Response, next: NextFunction) => {
 
 const topSubs = async (req: Request, res: Response) => {
   try {
-    const imageUrlExp = `COALESCE(s."imageUrn", 'https://www.gravatar.com/avatar?d=mp&f=y')`;
+    // const imageUrlExp = `
+    //   COALESCE(s."imageUrn", 'https://www.gravatar.com/avatar?d=mp&f=y')
+    // `;
+    const imageUrlExp = `
+      COALESCE(
+        '${process.env.APP_URL}/images/' || s."imageUrn",
+        'https://www.gravatar.com/avatar?d=mp&f=y'
+      )
+    `;
+    
     const subs = await AppDataSource
       .createQueryBuilder()
       .select(`s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`)
@@ -101,6 +110,8 @@ const topSubs = async (req: Request, res: Response) => {
       .orderBy(`"postCount"`, "DESC")
       .limit(5)
       .execute();
+
+    console.log("🐫 subs: ", subs);
 
     return res.json(subs);
   } catch (error) {

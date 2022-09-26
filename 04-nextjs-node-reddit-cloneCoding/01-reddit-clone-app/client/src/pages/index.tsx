@@ -13,6 +13,11 @@ const Home: NextPage = () => {
   
   const fetcher = async (url: string) => {
     const response = await axios.get(url);
+
+    console.group("index.tsx");
+    console.log("response: ", response);
+    console.groupEnd();
+    
     return response.data;
   };
   const address = "http://localhost:4000/api/subs/sub/topSubs";
