@@ -1,0 +1,24 @@
+.App {
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.App-title {
+  text-align: center;
+}
+
+.App-wrapper {
+  margin-top: 40px;
+  padding: 20px;
+
+  width: 100%;
+}
+
+.App-wrapper > :not(:first-child) {
+  margin-top: 20px;
+}

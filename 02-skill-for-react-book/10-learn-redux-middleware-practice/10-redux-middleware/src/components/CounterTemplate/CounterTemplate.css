@@ -1,0 +1,21 @@
+.CounterTemplate {
+  padding: 20px;
+  width: 100%;
+  border: 1px solid #999;
+}
+
+.CounterTemplate-title {
+
+}
+
+.CounterTemplate-actions {
+  margin-top: 10px;
+  
+  display: flex;
+  justify-content: end;
+  gap: 10px;
+}
+
+.CounterTemplate-actions > * {
+  outline: none;
+}
