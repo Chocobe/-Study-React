@@ -1,8 +1,19 @@
 # React 스터디 저장소 입니다.
 
-* 강의: [한입 크기로 잘라 먹는 리액트(React.js) : 기초부터 실전까지](https://www.inflearn.com/course/%ED%95%9C%EC%9E%85-%EB%A6%AC%EC%95%A1%ED%8A%B8)
+* [01-react-all-in-one](https://github.com/Chocobe/-Study-React/tree/master/01-react-all-in-one) : `한입 크기로 잘라 먹는 리액트(React.js)` 인강 스터디 정리 폴더
+    * 강사: 인프런 - 이정환 님
+    * 인강: [https://github.com/Chocobe/-Study-React/tree/master/01-react-all-in-one](https://github.com/Chocobe/-Study-React/tree/master/01-react-all-in-one)
 
-* 강의 출처: 인프런 - 이정환 강사님
+* [02-skill-for-react-book](https://github.com/Chocobe/-Study-React/tree/master/02-skill-for-react-book) : `리액트를 다루는 기술 (개정판)` 책 스터디 정리 폴더
+    * 저자: 김민준 님
+
+* [03-egoing](https://github.com/Chocobe/-Study-React/tree/master/03-egoing) : `생활코딩 React` 인강 스터디 정리 폴더
+    * 강사: 생활코딩 님
+    * 인강: [https://www.youtube.com/watch?v=9wrHxqI6zuM](https://www.youtube.com/watch?v=9wrHxqI6zuM)
+
+* [04-nextjs-node-reddit-cloneCoding](https://github.com/Chocobe/-Study-React/tree/master/04-nextjs-node-reddit-cloneCoding) : `따라하며 배우는 노드, 리액트 시리즈 - 레딧 사이트 만들기(NextJS)` 인강 스터디 정리 폴더
+    * 강사: John Ahn 님
+    * 인강: [https://www.inflearn.com/course/%EB%94%B0%EB%9D%BC%ED%95%98%EB%8A%94-%EB%A0%88%EB%94%A7#reviews](https://www.inflearn.com/course/%EB%94%B0%EB%9D%BC%ED%95%98%EB%8A%94-%EB%A0%88%EB%94%A7#reviews)
 
 
 
